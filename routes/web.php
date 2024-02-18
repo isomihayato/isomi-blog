@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -26,8 +27,10 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/article/{id}', [FrontController::class, 'article'])->name('article.show');
-
+// Route::resources('articles', 'ArticleController', ['except' => ['show']])->middleware(['auth', 'verified']);
+Route::resource('articles', ArticleController::class)->except(['show'])->middleware(['auth', 'verified']);
+Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->middleware(['auth', 'verified']);
+// Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show')->middleware(['auth', 'verified']);
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
