@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('article_ads', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->foreignId('article_ad_template_id')->constrained('article_ad_templates');
             $table->text('content');
             $table->timestamps();

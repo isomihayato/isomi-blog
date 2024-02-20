@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ArticleAdTemplateController;
+use App\Http\Controllers\ArticleAdController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,6 +31,9 @@ Route::get('/', function () {
 // Route::resources('articles', 'ArticleController', ['except' => ['show']])->middleware(['auth', 'verified']);
 Route::resource('articles', ArticleController::class)->except(['show'])->middleware(['auth', 'verified']);
 Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->middleware(['auth', 'verified']);
+Route::resource('/article_ad_templates', ArticleAdTemplateController::class)->middleware(['auth', 'verified']);
+Route::resource('/article_ads', ArticleAdController::class)->middleware(['auth', 'verified']);
+
 // Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show')->middleware(['auth', 'verified']);
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

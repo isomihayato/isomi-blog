@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 use App\Models\Article;
 
 class ArticleController extends Controller
@@ -20,6 +21,7 @@ class ArticleController extends Controller
 
     public function create()
     {
+        $ad_arrangements = DB::table('ad_arrangements')->pluck('name', 'id');
         return Inertia::render('Articles/Create');
     }
 

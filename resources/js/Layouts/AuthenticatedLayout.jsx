@@ -27,6 +27,9 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('articles.index')} active={route().current('articles.index')}>
                                     記事管理
                                 </NavLink>
+                                <NavLink href={route('article_ad_templates.index')} active={route().current('article_ad_templates.index')}>
+                                    広告テンプレート管理
+                                </NavLink>
                             </div>
                         </div>
 
