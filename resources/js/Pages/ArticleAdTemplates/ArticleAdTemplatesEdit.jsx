@@ -4,17 +4,19 @@ import ADialog from '@/Components/feedback/ADialog';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button } from '@mui/material';
-import postArticleAd from '@/Components/axios/axiosArticleAd';
+import {putArticleAd} from '@/Components/axios/axiosArticleAd';
 
 
-export default function ArticleAdTemplatesCreate({ auth, table_data }) {
+export default function ArticleAdTemplatesEdit({ auth, table_data, template_id, template_name }) {
     const [form, setFrom] = React.useState(new FormData());
+    const [aData, setAData] = React.useState({content: '', name: ''});
     const [tableData, setTableData] = React.useState(table_data);
     const [open, setOpen] = React.useState(undefined);
 
     const clickHndlr = (arrangement_id) => {
+        const tData = tableData[arrangement_id];
+        setAData({content: tData[2], name: tData[1]});
         setOpen(arrangement_id);
-        console.log(open);
     }
     const adClickHndlr = (data) => {
         const form_tmp = Object.assign({}, form);
@@ -30,18 +32,18 @@ export default function ArticleAdTemplatesCreate({ auth, table_data }) {
         setTableData(_tableData);
         setFrom(form_tmp);
         setOpen(undefined);
+        setAData({content:'',name:''});
     }
 
     const submitHndlr = (event) => {
         event.preventDefault();
-        const form_tmp = Object.assign({}, form);
-        console.log(event);
+        const form_tmp = {...form};
         form_tmp['template_name'] = event.target.template_name.value;
-        postArticleAd(form_tmp,(res)=>{
+        console.log(form_tmp);
+        putArticleAd(template_id,form_tmp,(res)=>{
             console.log(res);
-            window.location.href="/article_ad_templates";
-        },
-        (err)=>{
+            // window.location.href="/article_ad_templates";
+        },(err)=>{
             console.log(err);
         });
     }
@@ -62,11 +64,11 @@ export default function ArticleAdTemplatesCreate({ auth, table_data }) {
                                 <Button variant='contained' onClick={()=>{window.location.href="/article_ad_templates"}}>一覧に戻る</Button>
                             </div>
                             <div className="mt-8">
-                                <form action="/article_ad_templates" method="post" onSubmit={submitHndlr}>
+                                <form action={"/article_ad_templates/"+template_id} method="post" onSubmit={submitHndlr}>
                                     <div>
                                         <label htmlFor="title" className="block text-sm font-medium text-gray-700">タイトル</label>
                                         <div className="mt-1">
-                                            <input type="text" name="template_name" id="title" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                                            <input type="text" defaultValue={template_name} name="template_name" id="title" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                                         </div>
                                     </div>
                                     <div className="mt-4">
@@ -76,7 +78,7 @@ export default function ArticleAdTemplatesCreate({ auth, table_data }) {
                                           clickHndlr={clickHndlr}
                                         />
                                     </div>
-                                    <ADialog open={open} clickHndlr={adClickHndlr} closeHndlr={()=>{setOpen(undefined)}} />
+                                    <ADialog open={open} aData={aData} clickHndlr={adClickHndlr} closeHndlr={() => { setAData({content:'',name:''}); setOpen(undefined); } } arrangement_id={0} />
                                     <div className="mt-4">
                                         <Button variant='contained' type="submit">登録</Button>
                                     </div>

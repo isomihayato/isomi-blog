@@ -1,17 +1,22 @@
 import * as React from 'react';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, Grid, Paper, TextField, TextareaAutosize, Typography } from '@mui/material';
+import { useEffect } from 'react';
 
 type Props = {
+    aData: {content: string, name: string},
     arrangement_id: number,
     open: number,
     clickHndlr: any,
     closeHndlr: () => void
 }
 export default function ADialog(props: Props) {
-    const { arrangement_id, open } = props;
+    const { aData, arrangement_id, open } = props;
     const { clickHndlr,closeHndlr } = props;
-    const [data, setData] = React.useState({name: '', content: ''});
+    const [data, setData] = React.useState(aData);
+    useEffect(()=>{
+        setData(aData);
+    },[aData]);
 
     return (
         <div>
@@ -25,6 +30,7 @@ export default function ADialog(props: Props) {
                                 <TextField 
                                   name="name" 
                                   placeholder='例)Docomoのクリック型広告' 
+                                  value={data?.name}
                                   onChange={(e)=>{
                                     const _data = {...data};
                                     _data.name = e.target.value;
@@ -37,6 +43,7 @@ export default function ADialog(props: Props) {
                             <Grid item md={9}>
                                 <TextareaAutosize 
                                   name="content"
+                                  value={data?.content}
                                   onChange={(e)=>{
                                     const _data = {...data};
                                     _data.content = e.target.value;

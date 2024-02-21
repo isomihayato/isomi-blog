@@ -14,15 +14,15 @@ type Props = {
   clickHndlr: any
 }
 
-export default function BasicTable(props: Props) {
+export default function ArrayTable(props: Props) {
   const { rows, headers } = props;
   const { clickHndlr } = props;
-  
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
-          <TableRow>
+          <TableRow key={"header"}>
             {
               headers.map((header, index) => {
                 return <TableCell key={index}>{header}</TableCell>
@@ -32,22 +32,15 @@ export default function BasicTable(props: Props) {
         </TableHead>
         <TableBody>
           {
-            Object.keys(rows).map((key) => {
+            rows.map((row, index) => {
+              const tempEditUrl = "/article_ad_templates/" + row[0] + "/edit";
               return (
-                <TableRow key={key}>
-                  <TableCell component="th" scope="row">
-                    {rows[key][0]}
-                  </TableCell>
-                  <TableCell align="right">
-                    {
-                      rows[key][1] === null ? <span>未登録</span> : rows[key][1]
-                    }
-                  </TableCell>
-                  <TableCell align="right">
-                    {
-                      rows[key][2] === null ? <Button onClick={()=>clickHndlr(Number(key))}>追加する</Button> : rows[key][2]
-                    }
-                  </TableCell>
+                <TableRow key={index}>
+                  {
+                    row.map((cell, index) => {
+                      return <TableCell onClick={()=>{window.location.href=tempEditUrl}}>{cell}</TableCell>
+                    })
+                  }
                 </TableRow>
               )
             })

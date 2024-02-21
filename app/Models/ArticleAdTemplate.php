@@ -26,7 +26,7 @@ class ArticleAdTemplate extends Model
         if ($article_ad_template === null) {
             $article_ad_ids = [];
         }else {
-            $article_ad_ids = self::find($id)->article_ads()->pluck('ad_arrangement_id')->toArray();
+            $article_ad_ids = $article_ad_template->article_ads()->pluck('ad_arrangement_id')->toArray();
         }
 
         // 変換後の配列を格納するための空の配列を用意
@@ -35,24 +35,12 @@ class ArticleAdTemplate extends Model
         // 元の配列をループして、各キーに対して文字列の配列を割り当てる
         foreach ($arrangements as $key => $value) {
             if (in_array($key, $article_ad_ids)) {
-                // $article_ad = self::
-                $convertedArray[$key] = [$value, $value];
+                $article_ad = $article_ad_template->article_ads()->where('ad_arrangement_id','=',$key)->first();
+                $convertedArray[$key] = [$value, $article_ad->name, $article_ad->content];
             } else {
                 $convertedArray[$key] = [$value, null, null];
             }
         }
         return $convertedArray;
-    }
-
-    public static function save_article_ad($ad_data)
-    {
-        foreach ($ad_data as $key => $value) {
-            ArticleAd::create([
-                'article_ad_template_id' => $value['ad_template_id'],
-                'ad_arrangement_id' => $key,
-                'content' => $value['content'],
-                'name' => $value['name'],
-            ]);
-        }
     }
 }

@@ -53,6 +53,16 @@ export async function axiosAwait(props: AxiosType) {
       console.error(error);
       // POSTリクエストが失敗した場合の処理
     }  
+  }else if(method == 'PATCH'){
+    try {
+      const response = await axios.post(url, data,{headers:{'Content-Type': 'multipart/form-data'}, method: 'PATCH'});
+      console.log(response);
+      return response.data;
+      // POSTリクエストが成功した場合の処理
+    } catch (error) {
+      console.error(error);
+      // POSTリクエストが失敗した場合の処理
+    }
   }else{
     try {
       const response = await axios.post(url, data,{headers:{'Content-Type': 'multipart/form-data'}});

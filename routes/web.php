@@ -32,6 +32,7 @@ Route::get('/', function () {
 Route::resource('articles', ArticleController::class)->except(['show'])->middleware(['auth', 'verified']);
 Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->middleware(['auth', 'verified']);
 Route::resource('/article_ad_templates', ArticleAdTemplateController::class)->middleware(['auth', 'verified']);
+Route::post('/article_ad_templates/update/{id}', [ArticleAdTemplateController::class, 'update_ad'])->middleware(['auth', 'verified']);
 Route::resource('/article_ads', ArticleAdController::class)->middleware(['auth', 'verified']);
 
 // Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show')->middleware(['auth', 'verified']);
