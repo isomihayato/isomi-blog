@@ -33,6 +33,7 @@ class ArticleController extends Controller
         Article::create([
             'title' => $request->input('title'),
             'body' => $request->input('body'),
+            'tags' => $request->input('tags'),
             'user_id' => $request->input('user_id'),
             'sort' => 1,
             'article_ad_template_id' => $request->input('article_ad_template_id'),

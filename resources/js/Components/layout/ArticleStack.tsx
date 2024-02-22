@@ -5,6 +5,9 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Avatar, Grid } from '@mui/material';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
+import { ChipPropsColorOverrides } from '@mui/material/Chip';
+import { OverridableStringUnion } from '@mui/types';
+import Tags from '@/Components/Tags';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -17,6 +20,11 @@ const Item = styled(Paper)(({ theme }) => ({
 type Props = {
     articles: any;
 };
+type Color = {
+  color: OverridableStringUnion<
+  'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning',
+  ChipPropsColorOverrides>;
+}
 export default function ArticleStack(props: Props) {
   const { articles } = props;
 
@@ -51,7 +59,9 @@ export default function ArticleStack(props: Props) {
                                 <div id="item--content" style={{ fontSize:'1.8rem',textAlign:'left',fontWeight: '600',overflow: 'hidden'}}>
                                 {article.title}
                                 </div>
-                                <span id="item--tags"></span>
+                                <div id="item--tags" style={{textAlign: 'left'}}>
+                                  <Tags tags={article.tags.split(',')} />
+                                </div>
                             </Grid>
                         </Grid>
                     </div>

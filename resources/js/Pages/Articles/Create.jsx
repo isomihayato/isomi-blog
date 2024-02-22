@@ -12,6 +12,7 @@ export default function Index({ auth, article_ad_templates }) {
         const data = {
             title: form.title.value,
             body: form.body.value,
+            tags: form.tags.value,
             published_at: form.published_at.value,
             user_id: form.user_id.value,
             article_ad_template_id: form.article_ad_template_id.value
@@ -41,6 +42,9 @@ export default function Index({ auth, article_ad_templates }) {
                                 <input type="hidden" name="user_id" value={auth.user.id} />
                                 <div>
                                     <Input type="text" id="title" name="title" required placeholder='記事タイトル' fullWidth />
+                                </div>
+                                <div>
+                                    <Input type="text" name="tags" placeholder='タグ新規登録' fullWidth />
                                 </div>
                                 <div>
                                     <BlogEditor />

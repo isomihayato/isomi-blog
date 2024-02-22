@@ -11,6 +11,7 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
         const data = {
             title: form.title.value,
             body: form.body.value,
+            tags: form.tags.value,
             published_at: form.published_at.value,
             user_id: form.user_id.value,
             article_ad_template_id: form.article_ad_template_id.value
@@ -48,6 +49,9 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
                                       placeholder='記事タイトル' 
                                       fullWidth 
                                     />
+                                </div>
+                                <div>
+                                    <Input type="text" name="tags" value={article.tags} placeholder='タグ新規登録' fullWidth />
                                 </div>
                                 <div>
                                     <BlogEditor body={article.body}/>
