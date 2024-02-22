@@ -2,10 +2,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button, Input, Select, MenuItem } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
-import { postArticle } from '@/Components/axios/axiosArticle';
-import  formatDate  from '@/Components/common/functions';
+import { updateArticle } from '@/Components/axios/axiosArticle';
 
-export default function Index({ auth, article_ad_templates }) {
+export default function Edit({ auth, id, article, article_ad_templates }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         const form = e.target;
@@ -16,7 +15,7 @@ export default function Index({ auth, article_ad_templates }) {
             user_id: form.user_id.value,
             article_ad_template_id: form.article_ad_template_id.value
         }
-        postArticle(data, (response) => {
+        updateArticle(id, data, (response) => {
             console.log(response);
             if (response.data.status === "success") {
                 window.location.href = "/articles";
@@ -40,10 +39,18 @@ export default function Index({ auth, article_ad_templates }) {
                                 <input type="hidden" name="_token" value={auth.csrf_token} />
                                 <input type="hidden" name="user_id" value={auth.user.id} />
                                 <div>
-                                    <Input type="text" id="title" name="title" required placeholder='記事タイトル' fullWidth />
+                                    <Input 
+                                      type="text" 
+                                      id="title" 
+                                      name="title" 
+                                      defaultValue={article.title} 
+                                      required 
+                                      placeholder='記事タイトル' 
+                                      fullWidth 
+                                    />
                                 </div>
                                 <div>
-                                    <BlogEditor />
+                                    <BlogEditor body={article.body}/>
                                 </div>
                                 <div>
                                     <Input 
@@ -52,13 +59,12 @@ export default function Index({ auth, article_ad_templates }) {
                                       name="published_at" 
                                       required 
                                       placeholder='公開日時'
-                                    //   defaultValue={new Date().toLocaleString().slice(0, 14).replace(' ', 'T').replaceAll('/','-').replace('\d)}
-                                      defaultValue={formatDate(new Date())}
+                                      defaultValue={article.published_at.slice(0, 16)}
                                       fullWidth 
                                     /> 
                                 </div>
                                     <div>
-                                        <Select name="article_ad_template_id" required>
+                                        <Select name="article_ad_template_id" required defaultValue={article.article_ad_template_id}>
                                             {
                                                 Object.keys(article_ad_templates).map((key) => {
                                                     return (

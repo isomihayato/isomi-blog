@@ -6,9 +6,14 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { postArticleImg } from './axios/axiosArticle';
 
-function BlogEditor() {
+type Props = {
+  body?: string;
+};
+
+function BlogEditor(props: Props) {
   const [markdown, setMarkdown] = useState('');
   const [emojiShow, setEmojiShow] = useState(false);
+  const { body } = props;
 
   const handleChange = (event) => {
     setMarkdown(event.target.value);
@@ -55,6 +60,7 @@ function BlogEditor() {
             value={markdown}
             onChange={handleChange}
             style={{ width: '100%', height: '540px' }}
+            defaultValue={body}
           />
         </Grid>
         <Grid item xs={6}>

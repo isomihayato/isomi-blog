@@ -8,7 +8,7 @@ export default function Front(props: Props) {
     return(
         <>
           <Box id="main" style={{margin: '0 auto',width: '900px'}} component={Paper}>
-            <div style={{padding: "32px 56px"}}>
+            <div style={{padding: "32px 56px", marginBottom: '50px'}}>
               {element}
             </div>
           </Box>

@@ -11,7 +11,8 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Articles/Index');
+        $articles = Article::all();
+        return Inertia::render('Articles/Index', ['articles' => $articles]);
     }
 
     public function show($id)
@@ -21,8 +22,9 @@ class ArticleController extends Controller
 
     public function create()
     {
-        $ad_arrangements = DB::table('ad_arrangements')->pluck('name', 'id');
-        return Inertia::render('Articles/Create');
+        $article_ad_templates = DB::table('article_ad_templates')->pluck('name', 'id');
+
+        return Inertia::render('Articles/Create', ['article_ad_templates' => $article_ad_templates]);
     }
 
     public function store(Request $request)
@@ -33,6 +35,7 @@ class ArticleController extends Controller
             'body' => $request->input('body'),
             'user_id' => $request->input('user_id'),
             'sort' => 1,
+            'article_ad_template_id' => $request->input('article_ad_template_id'),
             'published_at' => $request->input('published_at') ?? $now,
         ]);
         return response()->json(['status' => "success"]);
@@ -40,12 +43,28 @@ class ArticleController extends Controller
 
     public function edit($id)
     {
-        return Inertia::render('Articles/Edit', ['id' => $id]);
+        $article = Article::find($id);
+        $article_ad_templates = DB::table('article_ad_templates')->pluck('name', 'id');
+        return Inertia::render(
+            'Articles/Edit', 
+            ['id' => $id, 'article' => $article,'article_ad_templates' => $article_ad_templates]
+        );
     }
 
     public function update(Request $request, $id)
     {
         return redirect()->route('articles.show', ['id' => $id]);
+    }
+
+    public function update_article(Request $request, $id)
+    {
+        try {
+            $article = Article::find($id);
+            $article->update($request->all());
+            return response()->json(['status' => "success"]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => "error", 'message' => $e->getMessage()]);
+        }
     }
 
     public function destroy($id)

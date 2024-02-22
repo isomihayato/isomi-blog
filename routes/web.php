@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
@@ -19,17 +20,11 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
+Route::get('/', [FrontController::class, 'index'])->name('fronts.index');
+Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
 // Route::resources('articles', 'ArticleController', ['except' => ['show']])->middleware(['auth', 'verified']);
-Route::resource('articles', ArticleController::class)->except(['show'])->middleware(['auth', 'verified']);
+Route::resource('articles', ArticleController::class)->middleware(['auth', 'verified']);
+Route::post('/articles/update/{id}', [ArticleController::class, 'update_article'])->middleware(['auth', 'verified']);
 Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->middleware(['auth', 'verified']);
 Route::resource('/article_ad_templates', ArticleAdTemplateController::class)->middleware(['auth', 'verified']);
 Route::post('/article_ad_templates/update/{id}', [ArticleAdTemplateController::class, 'update_ad'])->middleware(['auth', 'verified']);

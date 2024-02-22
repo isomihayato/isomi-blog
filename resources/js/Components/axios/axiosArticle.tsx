@@ -19,3 +19,13 @@ export function postArticle(data:any,cb:any) {
       errors: (res:any) => {cb(res)},
     })
 }
+
+export function updateArticle(article_id: number, data:any,cb:any) {
+  AxiosWrapper({
+    method: 'post',
+    url: '/articles/update/'+article_id,
+    data: data,
+    callback: (res:any) => {cb(res)},
+    errors: (res:any) => {cb(res)},
+  })
+}

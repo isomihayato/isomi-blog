@@ -15,5 +15,6 @@ class Article extends Model
         'sort',
         'publish_at',
         'user_id',
+        'article_ad_template_id',
     ];
 }
