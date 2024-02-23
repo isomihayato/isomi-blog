@@ -26,4 +26,8 @@ class FrontController extends Controller
     {
         return Inertia::render('Front/Login');
     }
+
+    public function search() {
+        return Inertia::render('Front/Search');
+    }
 }

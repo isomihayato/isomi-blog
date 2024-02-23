@@ -15,6 +15,13 @@ class ArticleController extends Controller
         return Inertia::render('Articles/Index', ['articles' => $articles]);
     }
 
+    public function search(Request $request)
+    {
+        $search_word = "%$request->search%";
+        $articles = Article::where('title', 'like', $search_word)->get();
+        return response()->json(['articles' => $articles]);
+    }
+
     public function show($id)
     {
         return Inertia::render('Articles/Show', ['id' => $id]);
@@ -71,11 +78,6 @@ class ArticleController extends Controller
     public function destroy($id)
     {
         return redirect()->route('articles.index');
-    }
-
-    public function search(Request $request)
-    {
-        return Inertia::render('Articles/Search', ['search' => $request->search]);
     }
 
     public function uploadImg(Request $request)

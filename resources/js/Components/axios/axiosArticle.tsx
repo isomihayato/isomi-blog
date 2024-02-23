@@ -29,3 +29,13 @@ export function updateArticle(article_id: number, data:any,cb:any) {
     errors: (res:any) => {cb(res)},
   })
 }
+
+export function postSearchArticle(data:any,cb:any) {
+  AxiosWrapper({
+    method: 'post',
+    url: '/articles/search',
+    data: data,
+    callback: (res:any) => {cb(res)},
+    errors: (res:any) => {cb(res)},
+  })
+}
