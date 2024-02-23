@@ -15,7 +15,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Login from '@/Pages/Auth/Login';
 import LoginDialog from '../feedback/LoginDialog';
-import { Alert } from '@mui/material';
+import { Alert, Avatar, Menu, MenuItem } from '@mui/material';
+import { deleteStorage, getStorage } from '../common/functions';
+import { useEffect } from 'react';
 
 interface Props {
   /**
@@ -27,7 +29,15 @@ interface Props {
 
 export default function Front(props: Props) {
   const [open, setOpen] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [drawer, setDrawer] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [status, setStatus] = React.useState("-1,");
+  const [photoURL, setPhotoURL] = React.useState(getStorage('photoUrl'));
+  const user = getStorage('user');
+  useEffect(() => {
+    setPhotoURL(getStorage('photoUrl'));
+  }, [status]);
   const statusHndlr = (status: string) => {
     if (status === "signin" || status === "success") {
       setStatus("0,ログインしました。");
@@ -39,6 +49,26 @@ export default function Front(props: Props) {
       setStatus("2,エラーが発生しました。");
     }
   }
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+    setMenuOpen(true);
+  }
+  const menuClose = () => {
+    setAnchorEl(null);
+    setMenuOpen(false);
+  };
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={()=>setDrawer(false)}>
+      <List>
+        <ListItem key="home" onClick={() => window.location.href = "/"}>
+          <ListItemText primary="ホーム" />
+        </ListItem>
+        <ListItem key="search" onClick={() => window.location.href = "/articles/search"}>
+          <ListItemText primary="記事検索" />
+        </ListItem>
+      </List>
+    </Box>
+  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -50,15 +80,35 @@ export default function Front(props: Props) {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={()=>setDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             INFO BOX
           </Typography>
-          <Button color="inherit" onClick={()=>setOpen(true)}>Login</Button>
+          {
+            user === undefined || user === null?
+              <Button color="inherit" onClick={()=>setOpen(true)}>Login</Button>
+              :
+              <Avatar alt="メンバー画像" src={photoURL} onClick={handleClick}/>
+          }
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={menuOpen}
+            onClose={menuClose}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <MenuItem onClick={()=>{deleteStorage('user');deleteStorage('photoURL');window.location.href="/"}}>Logout</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
+      <Drawer open={drawer} onClose={()=>setDrawer(false)}>
+        {DrawerList}
+      </Drawer>
       <LoginDialog open={open} closeHndlr={() => setOpen(false)} statusHndlr={statusHndlr} />
       {
         status.split(',')[0] === "0"?<Alert severity="success" onClose={() => setStatus('-1,')}>{status.split(',')[1]}</Alert>:null

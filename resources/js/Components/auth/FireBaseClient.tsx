@@ -45,6 +45,7 @@ export class FBClient {
       }, (err: any) => {
         console.log(err);
       });
+      setStorage('photoUrl',  result.user.photoURL)
       setStorage('user', { uid: result.user.uid })
       return "success";
     } catch (error: any) {
