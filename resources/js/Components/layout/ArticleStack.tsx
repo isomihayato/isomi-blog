@@ -20,11 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
 type Props = {
     articles: any;
 };
-type Color = {
-  color: OverridableStringUnion<
-  'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning',
-  ChipPropsColorOverrides>;
-}
+
 export default function ArticleStack(props: Props) {
   const { articles } = props;
 

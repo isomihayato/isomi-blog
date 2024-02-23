@@ -21,4 +21,9 @@ class FrontController extends Controller
             'article' => $article
         ]);
     }
+
+    public function login()
+    {
+        return Inertia::render('Front/Login');
+    }
 }

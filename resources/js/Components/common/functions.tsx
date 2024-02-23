@@ -7,3 +7,17 @@ export default function formatDate(date) {
   
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
+export function getStorage(item: string) {
+  var s_item = undefined;
+  if (localStorage.hasOwnProperty(item)) {
+    s_item = JSON.parse(localStorage[item]);
+  }
+  return s_item;
+}
+
+export function setStorage(item_name: string, item: Object) {
+  localStorage.setItem(item_name, JSON.stringify(item));
+}
+export function deleteStorage(item_name: string) {
+  localStorage.removeItem(item_name);
+}

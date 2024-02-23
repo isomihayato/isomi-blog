@@ -13,6 +13,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Login from '@/Pages/Auth/Login';
+import LoginDialog from '../feedback/LoginDialog';
+import { Alert } from '@mui/material';
 
 interface Props {
   /**
@@ -22,87 +25,50 @@ interface Props {
   window?: () => Window;
 }
 
-const drawerWidth = 240;
-const navItems = ['Home', 'About', 'Contact'];
-
 export default function Front(props: Props) {
-  const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen((prevState) => !prevState);
-  };
-
-  const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        INFO BOX
-      </Typography>
-      <Divider />
-      <List>
-        {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
-
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const [open, setOpen] = React.useState(false);
+  const [status, setStatus] = React.useState("-1,");
+  const statusHndlr = (status: string) => {
+    if (status === "signin" || status === "success") {
+      setStatus("0,ログインしました。");
+    } else if (status === "create") {
+      setStatus("0,新規登録しました。");
+    } else if (status === "error:auth/account-exists-with-different-credential") {
+      setStatus("1,他のSNSアカウントで登録済みです。");
+    } else {
+      setStatus("2,エラーが発生しました。");
+    }
+  }
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar component="nav">
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
         <Toolbar>
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
+            size="large"
             edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             INFO BOX
           </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
-                {item}
-              </Button>
-            ))}
-          </Box>
+          <Button color="inherit" onClick={()=>setOpen(true)}>Login</Button>
         </Toolbar>
       </AppBar>
-      <nav>
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </nav>
-      <Box component="main" sx={{ p: 3 }}>
-        <Toolbar />
-      </Box>
+      <LoginDialog open={open} closeHndlr={() => setOpen(false)} statusHndlr={statusHndlr} />
+      {
+        status.split(',')[0] === "0"?<Alert severity="success" onClose={() => setStatus('-1,')}>{status.split(',')[1]}</Alert>:null
+      }
+      {
+        status.split(',')[0] === "1"?<Alert severity="warning" onClose={() => setStatus('-1,')}>{status.split(',')[1]}</Alert>:null
+      }
+      {
+        status.split(',')[0] === "2"?<Alert severity="error" onClose={() => setStatus('-1,')}>{status.split(',')[1]}</Alert>:null
+      }
     </Box>
   );
 }

@@ -5,6 +5,8 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
+use App\Http\Controllers\MembersController;
+use App\Models\Member;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +24,8 @@ use Inertia\Inertia;
 
 Route::get('/', [FrontController::class, 'index'])->name('fronts.index');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
+Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
+Route::post('/members', [MembersController::class, 'store'])->name('members.store');
 // Route::resources('articles', 'ArticleController', ['except' => ['show']])->middleware(['auth', 'verified']);
 Route::resource('articles', ArticleController::class)->middleware(['auth', 'verified']);
 Route::post('/articles/update/{id}', [ArticleController::class, 'update_article'])->middleware(['auth', 'verified']);

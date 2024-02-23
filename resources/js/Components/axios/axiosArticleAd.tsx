@@ -1,4 +1,3 @@
-import axios from "axios";
 import AxiosWrapper, { axiosAwait } from "./axios"
 
 export default function postArticleAd(data: any,cb: any,errors: any) {
