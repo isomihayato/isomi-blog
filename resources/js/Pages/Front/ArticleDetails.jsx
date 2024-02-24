@@ -6,40 +6,62 @@ import FrontFooter from '@/Components/footer/FrontFooter';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
 import Tags from '@/Components/Tags';
+import { isMobile } from 'react-device-detect';
 
 export default function ArticleDetails({ auth, article }) {
-    console.log(article);
-    const ArticleContent = () => {
-        return (
-            <>
-                <h1>目次</h1>
-                <pre>
-                    <Markdown remarkPlugins={[remarkGfm]}>{article.body}</Markdown>
-                </pre>
-            </>
-        );
-    }
-
+  console.log(article);
+  const ArticleContent = () => {
     return (
-        <>
-            <Front />
-            <Grid container spacing={3}>
-                <Grid item xs={3}>
-                    <FrontSideBar />
-                </Grid>
-                <Grid item xs={6}>
-                    <div style={{fontSize: '2.3rem',fontWeight: 'bold',marginBottom: '70px',marginLeft: '24px'}}>
-                        {article.title}
-                        <Tags tags={article.tags.split(',')} />
-                    </div>
-                    <MainFront element={<ArticleContent/>} />
-                </Grid>
-                <Grid item xs={3}>
-                    <FrontSideBar />
-                </Grid>
-            </Grid>
-
-            <FrontFooter />
-        </>
+      <>
+        <h1>目次</h1>
+        <pre>
+          <Markdown remarkPlugins={[remarkGfm]}>{article.body}</Markdown>
+        </pre>
+      </>
     );
+  }
+  const makeTitleStyle = () => {
+    if (isMobile) {
+      return {
+        padding: '0 20px',
+        fontSize: '1.8rem',
+        fontWeight: 'bold'
+      }
+    } else {
+      return {
+        fontSize: '1.8rem',
+        fontWeight: 'bold',
+        marginBottom: '70px',
+        marginTop: '25px',
+        marginLeft: '6px'
+      } 
+    }
+  }
+
+  return (
+    <>
+      <Front />
+      <Grid container spacing={3}>
+        <Grid item md={3}>
+          {
+            isMobile ? <></> : <FrontSideBar />
+          }
+        </Grid>
+        <Grid item md={6} xs={12}>
+          <div style={makeTitleStyle()}>
+            {article.title}
+            <Tags tags={article.tags.split(',')} />
+          </div>
+          <MainFront element={<ArticleContent />} />
+        </Grid>
+        <Grid item md={3}>
+          {
+            isMobile ? <></> : <FrontSideBar />
+          }
+        </Grid>
+      </Grid>
+
+      <FrontFooter />
+    </>
+  );
 }

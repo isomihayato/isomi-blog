@@ -1,6 +1,7 @@
 import { Paper, Stack, styled } from '@mui/material'
 import Box from '@mui/material/Box'
 import React, { useState, useEffect } from 'react'
+import { isMobile } from 'react-device-detect';
 
 type Props = {
 }
@@ -18,7 +19,13 @@ export default function FrontSideBar(props: Props) {
       
     return(
         <>
-            <Stack spacing={2} padding={"10px 30px"} justifyContent="center" alignItems="center">
+            <Stack 
+              spacing={2} 
+              padding={"10px 30px"} 
+              justifyContent="center" 
+              alignItems="center" 
+              style={isMobile?{}:{marginTop: '20px'}}
+            >
                 <Item>
                     <Box>広告</Box>
                 </Item>

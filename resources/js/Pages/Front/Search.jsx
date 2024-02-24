@@ -20,7 +20,7 @@ export default function Welcome({ auth }) {
         return (
             <>
               <Grid container component={"form"} onSubmit={submitHndlr}>
-                <Grid item xs={11}>
+                <Grid item md={11} xs={10}>
                   <TextField 
                     label="記事タイトル検索" 
                     size='small' 
@@ -28,7 +28,7 @@ export default function Welcome({ auth }) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item md={1} xs={2}>
                   <Button type="submit" variant='contained'>検索</Button>
                 </Grid>
               </Grid>

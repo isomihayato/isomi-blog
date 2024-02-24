@@ -8,6 +8,7 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import { ChipPropsColorOverrides } from '@mui/material/Chip';
 import { OverridableStringUnion } from '@mui/types';
 import Tags from '@/Components/Tags';
+import { isMobile } from 'react-device-detect';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -36,13 +37,16 @@ export default function ArticleStack(props: Props) {
                 >
                     <div >
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={1.3}>
+                          {
+                            isMobile?null:                           
+                             <Grid item xs={12} md={1.3}>
                                 <div id="icon" style={{float: 'right'}}>
                                     <Avatar alt="ブログアバター" sx={{width: '60px', height: '60px'}}>
                                         <ImageNotSupportedIcon />
                                     </Avatar>
                                 </div>
                             </Grid>
+                          }
                             <Grid item xs={12} md={10.7}>
                                 <div id="item--header" style={{height: '60px',textAlign:'left'}}>
                                     <div id="item--title" style={{fontSize: '.8rem',overflow: 'hidden'}}>
