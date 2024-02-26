@@ -15,7 +15,7 @@ class FrontController extends Controller
 
     public function article($id)
     {
-        $article = Article::find($id);
+        $article = Article::with(['comments.member'])->find($id);
         return Inertia::render('Front/ArticleDetails', [
             'id' => $id,
             'article' => $article

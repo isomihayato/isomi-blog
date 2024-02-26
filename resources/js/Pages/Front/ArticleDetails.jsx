@@ -1,4 +1,5 @@
-import { Grid } from '@mui/material';
+import * as React from 'react';
+import { Box, Paper, Grid, TextareaAutosize, Avatar } from '@mui/material';
 import Front from '@/Components/header/Front';
 import FrontSideBar from '@/Components/sidebar/FrontSideBar';
 import MainFront from '@/Components/main/Front';
@@ -7,9 +8,10 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
 import Tags from '@/Components/Tags';
 import { isMobile } from 'react-device-detect';
+import CommentCard from '@/Components/surface/CommentCard';
+import CommentsCard from '@/Components/surface/CommentsCard';
 
 export default function ArticleDetails({ auth, article }) {
-  console.log(article);
   const ArticleContent = () => {
     return (
       <>
@@ -52,7 +54,10 @@ export default function ArticleDetails({ auth, article }) {
             {article.title}
             <Tags tags={article.tags.split(',')} />
           </div>
-          <MainFront element={<ArticleContent />} />
+          <MainFront element={<>
+            <ArticleContent />
+            </>} 
+          />
         </Grid>
         <Grid item md={3}>
           {
@@ -60,7 +65,19 @@ export default function ArticleDetails({ auth, article }) {
           }
         </Grid>
       </Grid>
-
+      <Box component={Paper} style={{width: '50vw',margin: '0 auto',marginBottom: '40px'}}>
+        <Box p={2}>
+          <h2>コメント</h2>
+          {
+            article.comments.map((comment, index) => {
+              return (
+                <CommentsCard key={index} comment={comment} />
+              );
+            })
+          }
+          <CommentCard articleId={article.id}/>
+        </Box>
+      </Box>
       <FrontFooter />
     </>
   );

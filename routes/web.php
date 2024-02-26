@@ -3,12 +3,10 @@
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\MembersController;
 use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
-use App\Http\Controllers\MembersController;
-use App\Models\Article;
-use App\Models\Member;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -27,6 +25,8 @@ Route::get('/', [FrontController::class, 'index'])->name('fronts.index');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+// Route::resource('/comments', CommentController::class);
 // Route::resources('articles', 'ArticleController', ['except' => ['show']])->middleware(['auth', 'verified']);
 Route::get('/articles/search', [FrontController::class, 'search'])->name('fronts.search');
 Route::post('/articles/search', [ArticleController::class, 'search'])->name('articles.search');

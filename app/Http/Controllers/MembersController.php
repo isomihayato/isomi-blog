@@ -15,7 +15,10 @@ class MembersController extends Controller
         if ($fb_uid) {
             return response()->json(['status' => "error", 'message' => "fb_uid already exists"]);
         }
+        $member_name = date('Ymd').Member::makeRandStr(10);
         Member::create([
+            'name' => $member_name,
+            'photo_url' => $request->input('photo_url'),
             'fb_uid' => $request->input('fb_uid')
         ]);
         return response()->json(['status' => "success"]);

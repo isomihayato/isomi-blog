@@ -39,8 +39,8 @@ export class FBClient {
     try {
       const auth = getAuth();
       const result = await signInWithPopup(auth, provider)
-      console.log(result);
-      postMember({ fb_uid: result.user.uid }, (res: any) => {
+      console.log({ fb_uid: result.user.uid, photo_url: result.user.photoURL });
+      postMember({ fb_uid: result.user.uid, photo_url: result.user.photoURL }, (res: any) => {
         console.log(res.data);
       }, (err: any) => {
         console.log(err);
