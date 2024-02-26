@@ -26,6 +26,9 @@ Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name(
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');
 Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::post('/comments/update',[CommentController::class, 'update'])->name('comments.update');
+Route::delete(('/comments/{comment}'), [CommentController::class, 'destroy'])->name('comments.destroy');
+Route::post('/comments/get/comments', [CommentController::class, 'get_comments'])->name('comments.get_comments');
 // Route::resource('/comments', CommentController::class);
 // Route::resources('articles', 'ArticleController', ['except' => ['show']])->middleware(['auth', 'verified']);
 Route::get('/articles/search', [FrontController::class, 'search'])->name('fronts.search');

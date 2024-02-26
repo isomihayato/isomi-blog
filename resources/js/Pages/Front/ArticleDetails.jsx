@@ -10,8 +10,13 @@ import Tags from '@/Components/Tags';
 import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
+import { postComments } from '@/Components/axios/axiosComment';
+
 
 export default function ArticleDetails({ auth, article }) {
+  const [action, setAction] = React.useState(""); // editやdeleteなどのアクション時、comments変数を再読み込み
+  const [comments, setComments] = React.useState(article.comments);
+
   const ArticleContent = () => {
     return (
       <>
@@ -39,6 +44,12 @@ export default function ArticleDetails({ auth, article }) {
       } 
     }
   }
+  React.useEffect(()=>{
+    console.log(action);
+    postComments({id: article.id},(res)=>{
+      setComments(res.data.comments);
+    });
+  },[action]);
 
   return (
     <>
@@ -69,13 +80,19 @@ export default function ArticleDetails({ auth, article }) {
         <Box p={2}>
           <h2>コメント</h2>
           {
-            article.comments.map((comment, index) => {
+            comments.map((comment, index) => {
               return (
-                <CommentsCard key={index} comment={comment} />
+                <CommentsCard 
+                  key={index} 
+                  articleId={article.id} 
+                  comment={comment} 
+                  action={action} 
+                  setAction={setAction}
+                />
               );
             })
           }
-          <CommentCard articleId={article.id}/>
+          <CommentCard articleId={article.id} setAction={setAction}/>
         </Box>
       </Box>
       <FrontFooter />

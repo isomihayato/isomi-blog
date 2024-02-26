@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Comment;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use App\Models\Article;
 
 class CommentController extends Controller
 {
@@ -28,11 +29,14 @@ class CommentController extends Controller
         return response()->json(['status' => "success"]);
     }
 
-    public function destroy(Comment $comment)
+    public function destroy($id)
     {
-        $comment->delete();
-
-        return redirect()->route('comments.index');
+        $comment = Comment::find($id);
+        if ($comment) {
+            $comment->delete();
+            return response()->json(['status' => "success"]);
+        } 
+        return response()->json(['status' => "Comment Not Found"]);
     }
 
     public function edit(Comment $comment)
@@ -40,17 +44,16 @@ class CommentController extends Controller
         return view('comments.edit', compact('comment'));
     }
 
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request)
     {
+        $comment = Comment::find($request->input('id'));
         $request->validate([
             'body' => 'required',
-            'article_id' => 'required|exists:articles,id',
-            'member_id' => 'required|exists:members,id',
         ]);
 
         $comment->update($request->all());
+        return response()->json(['status' => "success"]);
 
-        return redirect()->route('comments.index');
     }
 
     public function create()
@@ -58,8 +61,9 @@ class CommentController extends Controller
         return view('comments.create');
     }
 
-    public function show(Comment $comment)
+    public function get_comments(Request $request)
     {
-        return view('comments.show', compact('comment'));
+        $article = Article::with(['comments.member'])->find($request->input('id'));
+        return response()->json(['comments' => $article->comments]);
     }
 }
