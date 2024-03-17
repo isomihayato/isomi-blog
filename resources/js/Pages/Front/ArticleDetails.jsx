@@ -11,11 +11,13 @@ import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
 import { postComments } from '@/Components/axios/axiosComment';
-
+import { getStorage } from '@/Components/common/functions';
 
 export default function ArticleDetails({ auth, article }) {
   const [action, setAction] = React.useState(""); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments);
+  const t_user = getStorage('user');
+  const logged = t_user === null || t_user === undefined ? false : true;
 
   const ArticleContent = () => {
     return (
@@ -91,6 +93,9 @@ export default function ArticleDetails({ auth, article }) {
                 />
               );
             })
+          }
+          {
+            logged ? <></> : <div className="cover">ログインしてコメントする</div>
           }
           <CommentCard articleId={article.id} setAction={setAction}/>
         </Box>

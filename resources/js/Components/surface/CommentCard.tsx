@@ -26,6 +26,8 @@ export default function CommentCard(props: Props) {
   const [preview, setPreview] = React.useState(false);
   const [comment,setComment] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const t_user = getStorage('user');
+  const logged = t_user === null || t_user === undefined ? false : true;
 
   const photoURL = getStorage('photoUrl');
   const submitHndlr = (e:any) => {
@@ -65,7 +67,7 @@ export default function CommentCard(props: Props) {
         }
         action={
           <>
-            <Button variant='contained' onClick={()=>setPreview(!preview)}>プレビュー</Button>
+            <Button variant='contained' onClick={()=>setPreview(!preview)} disabled={!logged}>プレビュー</Button>
             {
               editTime? 
               <IconButton aria-label="settings" onClick={(e) => { setAnchorEl(e.currentTarget); }}>
@@ -120,7 +122,7 @@ export default function CommentCard(props: Props) {
           :
           null
         }
-        <Button type="submit" variant='contained'>投稿する</Button>
+        <Button type="submit" variant='contained' disabled={!logged}>投稿する</Button>
       </CardActions>
     </Card>
   );

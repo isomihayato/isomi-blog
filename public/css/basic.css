@@ -1,3 +1,9 @@
+pre {
+    overflow-wrap: normal;
+}
+textarea[name="comment_body"] {
+    width: 100%;
+}
 @media (max-width: 2000px) and (min-width: 768px) {
     #body {
         background-color: #dddddd;
@@ -57,6 +63,12 @@
     }
     .form__outer {
         padding: 24px 90px;
+    }
+    div.cover {
+        height: 437px;
+        background-color: #666666a1;
+        position: absolute;
+        width: 83%;
     }
     
     #footer {
@@ -135,5 +147,16 @@
     }
     .form__outer {
         padding: 15px 20px;
+    }
+    div.cover {
+        height: 437px;
+        background-color: #666666a1;
+        position: absolute;
+        width: 83%;
+        text-align: center;
+        padding: 200px 0;
+        font-size: 1.3rem;
+        color: white;
+        font-weight: bold;
     }
 }
