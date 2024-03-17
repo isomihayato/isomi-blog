@@ -76,7 +76,7 @@ export default function ArticleDetails({ auth, article }) {
           }
         </Grid>
       </Grid>
-      <Box component={Paper} style={{width: '50vw',margin: '0 auto',marginBottom: '40px'}}>
+      <Box component={Paper} className='comment__outer'>
         <Box p={2}>
           <h2>コメント</h2>
           {

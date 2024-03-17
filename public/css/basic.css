@@ -40,13 +40,23 @@
         line-height: 1.8;
         margin: 32px 0 16px;
     }
-    body code {
+    code {
+        display: inline-block;
+        padding: 5px; /* 余白を追加 */
         background-color: black;
         color: #32be16;
+        width: 100%;
     }
-    body pre:has(code) {
-        background-color: black;
-        color: #32be16;
+    form {
+        margin: 25px 0;
+    }
+    .comment__outer {
+        width: 50vw;
+        margin: 0 auto;
+        margin-bottom: 40px;
+    }
+    .form__outer {
+        padding: 24px 90px;
     }
     
     #footer {
@@ -92,6 +102,9 @@
     body h6 {
         font-size: .8rem;
     }
+    form {
+        margin: 20px 0;
+    }
     #footer {
         /* background-color: #181818; */
         background-color: #32be16;
@@ -108,12 +121,19 @@
         font-size: .6rem;
         margin-top: 16px;
     }
-    body code {
+    code {
+        display: inline-block;
+        padding: 5px; /* 余白を追加 */
         background-color: black;
         color: #32be16;
+        width: 100%;
     }
-    body pre:has(code) {
-        background-color: black;
-        color: #32be16;
+    .comment__outer {
+        width: 90%;
+        margin: 0 auto;
+        margin-bottom: 40px;
+    }
+    .form__outer {
+        padding: 15px 20px;
     }
 }

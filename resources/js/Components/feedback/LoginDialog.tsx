@@ -30,10 +30,10 @@ export default function LoginDialog(props: Props) {
   return (
     <div>
       <Dialog onClose={closeHndlr} open={Boolean(open)}>
-        <Box component={Paper} >
+        <Box component={Paper} className='form__outer'>
           <Typography variant='h5'>メンバー新規登録/ログイン</Typography>
-          <Box component={"form"} onSubmit={submitHndlr}>
-            <Grid container spacing={2}>
+          <Box component={"form"} onSubmit={submitHndlr} style={{marginBottom: '20px'}}>
+            <Grid container rowSpacing={{ xs: 2, md: 3 }}>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -66,7 +66,7 @@ export default function LoginDialog(props: Props) {
                   ログイン
                 </Button>
               </Grid>
-              <Grid item md={6}>
+              <Grid item md={6} xs={6} textAlign={"center"}>
                 <Button
                   variant="outlined"
                   onClick={async() => {
@@ -79,7 +79,7 @@ export default function LoginDialog(props: Props) {
                   ログイン
                 </Button>
               </Grid>
-              <Grid item md={6}>
+              <Grid item md={6} xs={6} textAlign={"center"}>
                 <Button
                   variant="outlined"
                   onClick={async() => {
