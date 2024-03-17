@@ -14,7 +14,7 @@ type AxiosType = {
 }
 export default function AxiosWrapper(props: WrapperType) {
   const { method, url, data, callback, errors } = props
-  axios.defaults.baseURL = 'http://localhost';
+  axios.defaults.baseURL = 'https://info-space-box.net';
   axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
   axios({
     method: method,
@@ -39,7 +39,7 @@ export default function AxiosWrapper(props: WrapperType) {
 
 export async function axiosAwait(props: AxiosType) {
   const { method, url, data } = props
-  axios.defaults.baseURL = 'http://localhost';
+  axios.defaults.baseURL = 'https://info-space-box.net';
   axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
   axios.defaults.headers.common['SameSite'] = 'None';
   axios.defaults.headers.common['Secure'] = true;
