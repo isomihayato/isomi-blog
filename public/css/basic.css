@@ -1,5 +1,6 @@
 pre {
-    overflow-wrap: normal;
+    white-space: pre-wrap;
+    word-break: break-all;
 }
 textarea[name="comment_body"] {
     width: 100%;
