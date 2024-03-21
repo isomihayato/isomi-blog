@@ -1,0 +1,32 @@
+name: Deploy Server
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  laravel-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Deploy Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ISOMI_SSH_HOST }}
+          username: ${{ secrets.ISOMI_PROD_USERNAME }}
+          key: ${{ secrets.ISOMI_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.ISOMI_SSH_PORT }}
+          script: |
+            cd /var/www/html/isomi-blog
+            eval $(ssh-agent)
+            ssh-add ~/.ssh/github/id_ed25519
+            git pull origin main
+            docker-compose down
+            docker-compose up -d --build
+            sail artisan migrate
+            sail shell
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            npm run build
+            exit
