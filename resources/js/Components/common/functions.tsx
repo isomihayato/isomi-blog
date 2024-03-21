@@ -8,7 +8,7 @@ export default function formatDate(date) {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 export function getStorage(item: string) {
-  var s_item = undefined;
+  let s_item = undefined;
   if (localStorage.hasOwnProperty(item)) {
     s_item = JSON.parse(localStorage[item]);
   }
