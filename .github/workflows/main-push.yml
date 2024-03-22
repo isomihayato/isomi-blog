@@ -26,7 +26,4 @@ jobs:
             docker compose down
             docker compose up -d --build
             ./vendor/bin/sail artisan migrate --force
-            ./vendor/bin/sail shell
-            export NODE_OPTIONS="--max-old-space-size=4096"
-            npm run build
-            exit
+            docker exec isomi-blog-laravel.test-1 bash -c "export NODE_OPTIONS="--max-old-space-size=4096" && npm run build"
