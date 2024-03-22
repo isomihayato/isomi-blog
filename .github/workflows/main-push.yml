@@ -23,9 +23,9 @@ jobs:
             eval $(ssh-agent)
             ssh-add ~/.ssh/github/id_ed25519
             git pull origin main
-            docker-compose down
-            docker-compose up -d --build
-            sail artisan migrate
+            docker compose down
+            docker compose up -d --build
+            sail artisan migrate --force
             sail shell
             export NODE_OPTIONS="--max-old-space-size=4096"
             npm run build
