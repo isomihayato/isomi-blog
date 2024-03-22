@@ -18,7 +18,7 @@ class MembersController extends Controller
         $member_name = date('Ymd').Member::makeRandStr(10);
         Member::create([
             'name' => $member_name,
-            'photo_url' => $request->input('photo_url'),
+            'photo_url' => $request->input('photo_url')&&"",
             'fb_uid' => $request->input('fb_uid')
         ]);
         return response()->json(['status' => "success"]);
