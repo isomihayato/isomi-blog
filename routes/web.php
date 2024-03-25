@@ -5,6 +5,7 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MembersController;
+use App\Http\Controllers\InfomationController;
 use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,9 @@ Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->mid
 Route::resource('/article_ad_templates', ArticleAdTemplateController::class)->middleware(['auth', 'verified']);
 Route::post('/article_ad_templates/update/{id}', [ArticleAdTemplateController::class, 'update_ad'])->middleware(['auth', 'verified']);
 Route::resource('/article_ads', ArticleAdController::class)->middleware(['auth', 'verified']);
+Route::resource('/infomations', InfomationController::class, ['except' => ['index','show']])->middleware(['auth', 'verified']);
+Route::get('/infomations', [InfomationController::class, 'index'])->name('infomations.index');
+Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('infomations.show');
 Route::get('/debug-sentry', function () {
     throw new Exception('My first Sentry error!');
 });

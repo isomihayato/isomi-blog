@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,6 +30,12 @@ class DatabaseSeeder extends Seeder
         ]);
         \App\Models\AdArrangement::factory()->create([
             'name' => '右sidebar広告1'
+        ]);
+        DB::table('categories')->insert([
+            'name' => 'お知らせ'
+        ]);
+        DB::table('categories')->insert([
+            'name' => '障害情報'
         ]);
     }
 }
