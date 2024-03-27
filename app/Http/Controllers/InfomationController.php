@@ -77,4 +77,10 @@ class InfomationController extends Controller
         DB::table('infomations')->where('id', $id)->delete();
         return response()->json(['status' => "success"]);
     }
+
+    public function get_show_by_bar()
+    {
+        $infomations = DB::table('infomations')->where('show_by_bar',true)->get();
+        return response()->json(['infomations' => $infomations]);
+    }
 }

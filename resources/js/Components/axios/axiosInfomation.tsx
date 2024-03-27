@@ -55,3 +55,17 @@ export function deleteInfomation(
     },
   });
 }
+
+export function getShowByBar(cb: ResFunction, err: ErrFunction) {
+  AxiosWrapper({
+    method: 'GET',
+    url: '/infomations/show_by_bar',
+    data: '',
+    callback: (res: AxiosResponse<unknown, object>) => {
+      cb(res);
+    },
+    errors: (res: object) => {
+      err(res);
+    },
+  });
+}

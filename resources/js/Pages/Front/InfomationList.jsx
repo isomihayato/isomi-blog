@@ -30,7 +30,12 @@ export default function InfomationList({ infomations_pagenation }) {
               {infomations.map((infomation) => {
                 return (
                   <>
-                    <ListItem key={infomation.id}>
+                    <ListItem
+                      key={infomation.id}
+                      onClick={() =>
+                        (window.location.href = `/infomations/${infomation.id}`)
+                      }
+                    >
                       <ListItemText
                         primary={
                           <>

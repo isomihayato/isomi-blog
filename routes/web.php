@@ -24,6 +24,7 @@ use Inertia\Inertia;
 
 Route::get('/', [FrontController::class, 'index'])->name('fronts.index');
 Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->name('fronts.infomation_list');
+Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');

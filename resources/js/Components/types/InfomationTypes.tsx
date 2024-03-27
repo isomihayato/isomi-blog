@@ -1,4 +1,5 @@
 export type InfomationDTO = {
+  id?: number;
   title: string;
   category_id: number;
   body: string;

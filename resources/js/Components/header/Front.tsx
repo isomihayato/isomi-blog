@@ -14,6 +14,7 @@ import LoginDialog from '../feedback/LoginDialog';
 import { Alert, Avatar, Menu, MenuItem } from '@mui/material';
 import { deleteStorage, getStorage } from '../common/functions';
 import { useEffect } from 'react';
+import InfoAlert from '../feedback/InfoAlert';
 
 export default function Front() {
   const [open, setOpen] = React.useState(false);
@@ -126,6 +127,7 @@ export default function Front() {
         closeHndlr={() => setOpen(false)}
         statusHndlr={statusHndlr}
       />
+      <InfoAlert />
       {status.split(',')[0] === '0' ? (
         <Alert severity="success" onClose={() => setStatus('-1,')}>
           {status.split(',')[1]}
