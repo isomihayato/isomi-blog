@@ -1,47 +1,49 @@
-import { Button, Grid, TextField} from '@mui/material';
-import { useState } from 'react';
+import React from 'react';
+import { Button, Grid, TextField } from '@mui/material';
 import Front from '@/Components/header/Front';
 import MainFront from '@/Components/main/Front';
-import BlogEditor from '@/Components/BlogEditor';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import ArticleStack from '@/Components/layout/ArticleStack';
-import { postSearchArticle } from '@/Components/axios/axiosArticle';
+import PropTypes from 'prop-types';
 
-export default function Welcome({ auth }) {
-  const [articles, setArticles] = useState([]);
+export default function Search(articles) {
+  console.log(articles);
   const submitHndlr = (e) => {
     e.preventDefault();
-    postSearchArticle({search: e.target.search.value},(res)=>{
-      console.log(res.data);
-      setArticles(res.data.articles);
-    });
-  }
-    const SearchPanel = () => {
-        return (
-            <>
-              <Grid container component={"form"} onSubmit={submitHndlr}>
-                <Grid item md={11} xs={10}>
-                  <TextField 
-                    label="記事タイトル検索" 
-                    size='small' 
-                    name="search" 
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item md={1} xs={2}>
-                  <Button type="submit" variant='contained'>検索</Button>
-                </Grid>
-              </Grid>
-              <div style={{margin: '30px 0 0'}}></div>
-              <ArticleStack articles={articles}/>
-            </>
-        );
-    }
+    window.location.href = `/articles/search?search=${e.target.search.value}`;
+  };
+  const SearchPanel = () => {
     return (
-        <>
-          <Front />
-          <MainFront element={<SearchPanel/>}/>
-          <FrontFooter />
-        </>
+      <>
+        <Grid container component={'form'} onSubmit={submitHndlr}>
+          <Grid item md={11} xs={10}>
+            <TextField
+              label="記事タイトル検索"
+              size="small"
+              name="search"
+              fullWidth
+            />
+          </Grid>
+          <Grid item md={1} xs={2}>
+            <Button type="submit" variant="contained">
+              検索
+            </Button>
+          </Grid>
+        </Grid>
+        <div style={{ margin: '30px 0 0' }}></div>
+        <ArticleStack articles={articles.articles} />
+      </>
     );
+  };
+  return (
+    <>
+      <Front />
+      <MainFront element={<SearchPanel />} />
+      <FrontFooter />
+    </>
+  );
 }
+
+Search.propTypes = {
+  articles: PropTypes.array,
+};

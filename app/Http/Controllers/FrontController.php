@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Article;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class FrontController extends Controller
 {
@@ -28,8 +29,17 @@ class FrontController extends Controller
         return Inertia::render('Front/Login');
     }
 
-    public function search() {
-        return Inertia::render('Front/Search');
+    public function search(Request $request) {
+        $search = $request->input('search');
+        if($search == null) {
+            $articles = Article::all();
+            return Inertia::render('Front/Search',['articles'=>$articles]);
+        }
+        $articles = Article::query()
+                    ->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('body', 'LIKE', "%{$search}%")
+                    ->get();
+        return Inertia::render('Front/Search',['articles'=>$articles]);
     }
 
     public function infomation_list() {
