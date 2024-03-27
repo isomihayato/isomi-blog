@@ -22,7 +22,9 @@ export default function Show({ infomation }) {
             >
               {infomation.title}
             </Typography>
-            <Markdown remarkPlugins={[remarkGfm]}>{infomation.body}</Markdown>
+            <pre className="markdown-preview">
+              <Markdown remarkPlugins={[remarkGfm]}>{infomation.body}</Markdown>
+            </pre>
           </>
         }
       />
