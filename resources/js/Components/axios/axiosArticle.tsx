@@ -1,41 +1,63 @@
-import AxiosWrapper from "./axios"
+import AxiosWrapper from './axios';
+import { AxiosResponse } from 'axios';
+import { ResFunction, ErrFunction } from '../types/CommonTypes';
 
-export function postArticleImg(data:any,cb:any) {
-    AxiosWrapper({
-      method: 'post',
-      url: '/articles/uploadImg',
-      data: data,
-      callback: (res:any) => {cb(res)},
-      errors: (res:any) => {cb(res)},
-    })
-}
-
-export function postArticle(data:any,cb:any) {
-    AxiosWrapper({
-      method: 'post',
-      url: '/articles',
-      data: data,
-      callback: (res:any) => {cb(res)},
-      errors: (res:any) => {cb(res)},
-    })
-}
-
-export function updateArticle(article_id: number, data:any,cb:any) {
+export function postArticleImg(data: ResFunction, cb: ErrFunction) {
   AxiosWrapper({
     method: 'post',
-    url: '/articles/update/'+article_id,
+    url: '/articles/uploadImg',
     data: data,
-    callback: (res:any) => {cb(res)},
-    errors: (res:any) => {cb(res)},
-  })
+    callback: (res: AxiosResponse<unknown, object>) => {
+      cb(res);
+    },
+    errors: (res: object) => {
+      cb(res);
+    },
+  });
 }
 
-export function postSearchArticle(data:any,cb:any) {
+export function postArticle(data: ResFunction, cb: ErrFunction) {
   AxiosWrapper({
     method: 'post',
-    url: '/articles/search',
+    url: '/articles',
     data: data,
-    callback: (res:any) => {cb(res)},
-    errors: (res:any) => {cb(res)},
-  })
+    callback: (res: AxiosResponse<unknown, object>) => {
+      cb(res);
+    },
+    errors: (res: object) => {
+      cb(res);
+    },
+  });
+}
+
+export function updateArticle(
+  article_id: number,
+  data: ResFunction,
+  cb: ErrFunction,
+) {
+  AxiosWrapper({
+    method: 'post',
+    url: '/articles/update/' + article_id,
+    data: data,
+    callback: (res: AxiosResponse<unknown, object>) => {
+      cb(res);
+    },
+    errors: (res: object) => {
+      cb(res);
+    },
+  });
+}
+
+export function getSearchArticle(searchTerm: string, cb: ErrFunction) {
+  AxiosWrapper({
+    method: 'get',
+    url: `/articles/search?search=${searchTerm}`,
+    data: '',
+    callback: (res: AxiosResponse<unknown, object>) => {
+      cb(res);
+    },
+    errors: (res: object) => {
+      cb(res);
+    },
+  });
 }
