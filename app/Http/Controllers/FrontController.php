@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Article;
+use Illuminate\Support\Facades\DB;
 
 class FrontController extends Controller
 {
@@ -29,5 +30,13 @@ class FrontController extends Controller
 
     public function search() {
         return Inertia::render('Front/Search');
+    }
+
+    public function infomation_list() {
+        $infomations_pagenation = DB::table('infomations')
+            ->join('categories', 'infomations.category_id', '=', 'categories.id')
+            ->select('infomations.*', 'categories.name as category_name', 'categories.color')
+            ->paginate(10);
+        return Inertia::render('Front/InfomationList',['infomations_pagenation'=>$infomations_pagenation]);
     }
 }

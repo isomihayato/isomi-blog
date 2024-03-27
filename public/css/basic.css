@@ -78,7 +78,6 @@ textarea[name='comment_body'] {
   }
 
   #footer {
-    /* background-color: #181818; */
     background-color: #32be16;
     color: white;
     font-weight: bold;
@@ -124,7 +123,7 @@ textarea[name='comment_body'] {
     margin: 20px 0;
   }
   #footer {
-    /* background-color: #181818; */
+    margin-top: 25px;
     background-color: #32be16;
     color: white;
     font-weight: bold;

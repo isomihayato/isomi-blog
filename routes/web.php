@@ -5,6 +5,7 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MembersController;
+use App\Http\Controllers\InfomationController;
 use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,8 @@ use Inertia\Inertia;
 */
 
 Route::get('/', [FrontController::class, 'index'])->name('fronts.index');
+Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->name('fronts.infomation_list');
+Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');
@@ -39,6 +42,9 @@ Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->mid
 Route::resource('/article_ad_templates', ArticleAdTemplateController::class)->middleware(['auth', 'verified']);
 Route::post('/article_ad_templates/update/{id}', [ArticleAdTemplateController::class, 'update_ad'])->middleware(['auth', 'verified']);
 Route::resource('/article_ads', ArticleAdController::class)->middleware(['auth', 'verified']);
+Route::resource('/infomations', InfomationController::class, ['except' => ['index','show']])->middleware(['auth', 'verified']);
+Route::get('/infomations', [InfomationController::class, 'index'])->name('infomations.index');
+Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('infomations.show');
 Route::get('/debug-sentry', function () {
     throw new Exception('My first Sentry error!');
 });

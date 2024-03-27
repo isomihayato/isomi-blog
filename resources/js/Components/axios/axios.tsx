@@ -1,45 +1,45 @@
 import axios, { AxiosResponse, Method } from 'axios';
 
-type WrapperType = {
-  method: Method 
-  url: string 
-  data: any
-  callback: (response: AxiosResponse<any>) => void
-  errors: (error: any) => void
-}
-type AxiosType = {
-  method: Method 
-  url: string 
-  data: any
-}
+type WrapperType<T = unknown> = {
+  method: Method;
+  url: string;
+  data: T;
+  callback: (response: AxiosResponse<T>) => void;
+  errors: (error: object) => void;
+};
+type AxiosType<T = unknown> = {
+  method: Method;
+  url: string;
+  data: T;
+};
 export default function AxiosWrapper(props: WrapperType) {
-  const { method, url, data, callback, errors } = props
+  const { method, url, data, callback, errors } = props;
   // axios.defaults.baseURL = 'https://info-space-box.net';
   axios.defaults.baseURL = 'http://localhost:81';
   axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
   axios({
     method: method,
-    url: url, 
+    url: url,
     data: data,
     withCredentials: true,
-    headers:{
-      'SameSite': 'None',
-      'Content-Type': 'multipart/form-data',
-      'Secure': true
-    }
+    headers: {
+      SameSite: 'None',
+      'Content-Type': 'application/json',
+      Secure: true,
+    },
   })
     .then((response) => {
-      callback(response)
+      callback(response);
       console.log(response);
     })
     .catch((error) => {
-      console.error(error)
-      errors(error)
-    })
+      console.error(error);
+      errors(error);
+    });
 }
 
 export async function axiosAwait(props: AxiosType) {
-  const { method, url, data } = props
+  const { method, url, data } = props;
   // axios.defaults.baseURL = 'https://info-space-box.net';
   axios.defaults.baseURL = 'http://localhost:81';
   axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
@@ -54,10 +54,13 @@ export async function axiosAwait(props: AxiosType) {
     } catch (error) {
       console.error(error);
       // POSTリクエストが失敗した場合の処理
-    }  
-  }else if(method == 'PATCH'){
+    }
+  } else if (method == 'PATCH') {
     try {
-      const response = await axios.post(url, data,{headers:{'Content-Type': 'multipart/form-data'}, method: 'PATCH'});
+      const response = await axios.post(url, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        method: 'PATCH',
+      });
       console.log(response);
       return response.data;
       // POSTリクエストが成功した場合の処理
@@ -65,9 +68,11 @@ export async function axiosAwait(props: AxiosType) {
       console.error(error);
       // POSTリクエストが失敗した場合の処理
     }
-  }else{
+  } else {
     try {
-      const response = await axios.post(url, data,{headers:{'Content-Type': 'multipart/form-data'}});
+      const response = await axios.post(url, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       console.log(response);
       return response.data;
       // POSTリクエストが成功した場合の処理
@@ -77,8 +82,7 @@ export async function axiosAwait(props: AxiosType) {
     }
   }
   return null;
-
 }
 AxiosWrapper.defaultProps = {
   errors: () => {},
-}
+};
