@@ -20,13 +20,13 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $member = DB::table('members')->where('fb_uid', $request->input('fb_uid'))->first();
-        Comment::create([
+        $comment = Comment::create([
             'body' => $request->input('body'),
             'article_id' => $request->input('article_id'),
             'member_id' => $member->id,
         ]);
 
-        return response()->json(['status' => "success"]);
+        return response()->json(['status' => "success{$comment->id}"]);
     }
 
     public function destroy($id)
@@ -52,7 +52,7 @@ class CommentController extends Controller
         ]);
 
         $comment->update($request->all());
-        return response()->json(['status' => "success"]);
+        return response()->json(['status' => "success{$comment->id}"]);
 
     }
 
