@@ -61,7 +61,7 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
                   <Input
                     type="text"
                     name="tags"
-                    value={article.tags}
+                    defaultValue={article.tags}
                     placeholder="タグ新規登録"
                     fullWidth
                   />
