@@ -40,6 +40,7 @@ class ArticleController extends Controller
         Article::create([
             'title' => $request->input('title'),
             'body' => $request->input('body'),
+            'describe' => $request->input('describe'),
             'tags' => $request->input('tags'),
             'user_id' => $request->input('user_id'),
             'sort' => 1,
