@@ -2,7 +2,11 @@ import AxiosWrapper from './axios';
 import { AxiosResponse } from 'axios';
 import { ResFunction, ErrFunction } from '../types/CommonTypes';
 
-export function postArticleImg(data: ResFunction, cb: ErrFunction) {
+export function postArticleImg(
+  data: object,
+  cb: ResFunction,
+  cbErr?: ErrFunction,
+) {
   AxiosWrapper({
     method: 'post',
     url: '/articles/uploadImg',
@@ -11,8 +15,9 @@ export function postArticleImg(data: ResFunction, cb: ErrFunction) {
       cb(res);
     },
     errors: (res: object) => {
-      cb(res);
+      cbErr(res);
     },
+    contentType: 'multipart/form-data',
   });
 }
 
