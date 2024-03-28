@@ -3,6 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta content="telephone=no" name="format-detection">
+        <meta property="og:site_name" content="INFO BOX">
+        <meta property="og:locale" content="ja">
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
