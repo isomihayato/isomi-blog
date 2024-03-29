@@ -16,6 +16,14 @@ import { getStorage } from '@/Components/common/functions';
 import { Head } from '@inertiajs/react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
+const TocStyle = {
+  width: isMobile ? '75%' : '60%',
+  margin: '0 auto',
+  border: 'solid 1px #aaaaaa',
+  backgroundColor: '#32be1630',
+  whiteSpace: 'pre-wrap',
+  wordBreak: 'break-all',
+};
 
 export default function ArticleDetails({ article }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
@@ -63,7 +71,7 @@ export default function ArticleDetails({ article }) {
           id="toc__outer"
           border={'solid 1px #aaaaaa'}
           bgcolor={'#32be1630'}
-          style={{ width: '60%', margin: '0 auto' }}
+          style={TocStyle}
         >
           <Box
             id="toc__header"
