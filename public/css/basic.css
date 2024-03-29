@@ -5,6 +5,9 @@ pre {
 textarea[name='comment_body'] {
   width: 100%;
 }
+#toc__content li {
+  text-decoration-line: underline;
+}
 @media (max-width: 2000px) and (min-width: 768px) {
   #body {
     background-color: #dddddd;

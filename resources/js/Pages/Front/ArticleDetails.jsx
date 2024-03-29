@@ -5,7 +5,8 @@ import FrontSideBar from '@/Components/sidebar/FrontSideBar';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import Tags from '@/Components/Tags';
 import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
@@ -15,19 +16,78 @@ import { getStorage } from '@/Components/common/functions';
 import { Head } from '@inertiajs/react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
+const TocStyle = {
+  width: isMobile ? '75%' : '60%',
+  margin: '0 auto',
+  border: 'solid 1px #aaaaaa',
+  backgroundColor: '#32be1630',
+  whiteSpace: 'pre-wrap',
+  wordBreak: 'break-all',
+};
 
 export default function ArticleDetails({ article }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments);
+  let count = 1;
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
 
+  const listItems = article.body.split('\n').map((line, index) => {
+    if (line.startsWith('# ')) {
+      const item = (
+        <li
+          key={index}
+          onClick={() =>
+            (window.location.href = `/articles/details/${article.id}#${line.replace('# ', '').replaceAll('.', '-').replaceAll(' ', '').toLowerCase()}`)
+          }
+        >
+          {line.replace('# ', `${count}. `)}
+        </li>
+      );
+      count++;
+      return item;
+    }
+    if (line.startsWith('## ')) {
+      const item = (
+        <li
+          key={index}
+          onClick={() =>
+            (window.location.href = `/articles/details/${article.id}#${line.replace('## ', '').replaceAll('.', '-').replaceAll(' ', '').toLowerCase()}`)
+          }
+        >
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          {line.replace('## ', `${count}. `)}
+        </li>
+      );
+      count++;
+      return item;
+    }
+    return null;
+  });
   const ArticleContent = () => {
     return (
       <>
-        <h1>目次</h1>
+        <Box
+          id="toc__outer"
+          border={'solid 1px #aaaaaa'}
+          bgcolor={'#32be1630'}
+          style={TocStyle}
+        >
+          <Box
+            id="toc__header"
+            textAlign={'center'}
+            style={{ fontSize: '1.4rem', fontWeight: 'bold', padding: '15px' }}
+          >
+            目次
+          </Box>
+          <Box id="toc__content" style={{ padding: '0 20px 15px' }}>
+            <ul>{listItems}</ul>
+          </Box>
+        </Box>
         <pre>
-          <Markdown remarkPlugins={[remarkGfm]}>{article.body}</Markdown>
+          <Markdown rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}>
+            {article.body}
+          </Markdown>
         </pre>
       </>
     );

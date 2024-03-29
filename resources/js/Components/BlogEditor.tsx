@@ -1,12 +1,13 @@
 import { Button, Grid } from '@mui/material';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { postArticleImg } from './axios/axiosArticle';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -79,7 +80,9 @@ function BlogEditor(props: Props) {
         </Grid>
         <Grid item xs={6}>
           <pre className="markdown-preview">
-            <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
+            <Markdown rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}>
+              {markdown}
+            </Markdown>
           </pre>
         </Grid>
       </Grid>
