@@ -5,7 +5,8 @@ import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import { Typography } from '@mui/material';
 import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 export default function Show({ infomation }) {
   return (
@@ -23,7 +24,9 @@ export default function Show({ infomation }) {
               {infomation.title}
             </Typography>
             <pre className="markdown-preview">
-              <Markdown remarkPlugins={[remarkGfm]}>{infomation.body}</Markdown>
+              <Markdown rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}>
+                {infomation.body}
+              </Markdown>
             </pre>
           </>
         }

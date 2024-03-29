@@ -8,12 +8,13 @@ import { getStorage } from '../common/functions';
 import Button from '@mui/material/Button';
 import { TextareaAutosize } from '@mui/material';
 import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import postComment, { postUpdateComment } from '../axios/axiosComment';
 import { Menu, MenuItem } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { CommentType } from '../types/CommentTypes';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeSlug from 'rehype-slug';
 
 type Props = {
   articleId: number;
@@ -108,7 +109,7 @@ export default function CommentCard(props: Props) {
       <CardContent>
         {preview ? (
           <pre className="markdown-preview">
-            <Markdown remarkPlugins={[remarkGfm]}>
+            <Markdown rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}>
               {comment == '' ? defaultComment?.body + comment : comment}
             </Markdown>
           </pre>

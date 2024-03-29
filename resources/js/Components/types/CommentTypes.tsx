@@ -6,4 +6,11 @@ export type CommentType = {
   created_at: string;
   updated_at: string;
   user_id: number;
+  member: {
+    id: number;
+    name: string;
+    photo_url: string;
+    created_at: string;
+    updated_at: string;
+  };
 };
