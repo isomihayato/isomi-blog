@@ -28,6 +28,7 @@ Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->na
 Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
+Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('fronts.ad_list');
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');
 Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 Route::post('/comments/update',[CommentController::class, 'update'])->name('comments.update');
@@ -64,6 +65,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+Route::fallback(function(){
+    return redirect(route('fronts.index')); 
 });
 
 require __DIR__.'/auth.php';

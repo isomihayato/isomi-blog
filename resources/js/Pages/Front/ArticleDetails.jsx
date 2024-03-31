@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Box, Paper, Grid } from '@mui/material';
 import Front from '@/Components/header/Front';
-import FrontSideBar from '@/Components/sidebar/FrontSideBar';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import Markdown from 'react-markdown';
@@ -18,6 +17,10 @@ import { Helmet } from 'react-helmet';
 import SnsSideBar from '@/Components/sidebar/SnsSideBar';
 import PropTypes from 'prop-types';
 import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
+import LeftSideBar from '@/Components/sidebar/LeftSideBar';
+import RightSideBar from '@/Components/sidebar/RightSideBar';
+import { postAdvertisement } from '@/Components/axios/axiosAdvertisement';
+
 const TocStyle = {
   width: isMobile ? '75%' : '60%',
   margin: '0 auto',
@@ -31,6 +34,7 @@ export default function ArticleDetails({ article }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments);
   const [favorites, setFavorites] = React.useState(undefined); // お気に入り数
+  const [advertisements, setAdvertisements] = React.useState([]);
   const [loginedMemberFavorite, setLoginedMemberFavorite] =
     React.useState(undefined); // お気に入り登録済みかどうか
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
@@ -116,6 +120,20 @@ export default function ArticleDetails({ article }) {
     }
   };
   React.useEffect(() => {
+    postAdvertisement(
+      { article_id: article.id },
+      (res) => {
+        console.log(res);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        setAdvertisements(res.data.ad_templates);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
+  }, []);
+  React.useEffect(() => {
     console.log(action);
     postComments({ id: article.id }, (res) => {
       setComments(res.data.comments);
@@ -145,7 +163,7 @@ export default function ArticleDetails({ article }) {
       <Front loginOpen={loginOpen} setLoginOpen={setLoginOpen} />
       <Grid container spacing={3}>
         <Grid item md={2.5} xs={0}>
-          {isMobile ? <></> : <FrontSideBar />}
+          {isMobile ? <></> : <LeftSideBar advertisements={advertisements} />}
         </Grid>
         <Grid item md={0.5} xs={0}>
           <SnsSideBar
@@ -170,9 +188,23 @@ export default function ArticleDetails({ article }) {
           />
         </Grid>
         <Grid item md={3} xs={0}>
-          {isMobile ? <></> : <FrontSideBar />}
+          {isMobile ? <></> : <RightSideBar advertisements={advertisements} />}
         </Grid>
       </Grid>
+      {isMobile ? null : (
+        <>
+          {advertisements
+            .filter((ad) => ad.arrangement_name.includes('中央'))
+            .map((ad) => {
+              return (
+                <div
+                  key={ad.arrangement_name}
+                  dangerouslySetInnerHTML={{ __html: ad.content }}
+                />
+              );
+            })}
+        </>
+      )}
       <Box component={Paper} className="comment__outer">
         <Box p={2}>
           <h2>コメント</h2>
@@ -193,6 +225,20 @@ export default function ArticleDetails({ article }) {
             <div className="cover">ログインしてコメントする</div>
           )}
           <CommentCard articleId={article.id} setAction={setAction} />
+          {isMobile ? null : (
+            <>
+              {advertisements
+                .filter((ad) => ad.arrangement_name.includes('コメント下'))
+                .map((ad) => {
+                  return (
+                    <div
+                      key={ad.arrangement_name}
+                      dangerouslySetInnerHTML={{ __html: ad.content }}
+                    />
+                  );
+                })}
+            </>
+          )}
         </Box>
       </Box>
       <FrontFooter />

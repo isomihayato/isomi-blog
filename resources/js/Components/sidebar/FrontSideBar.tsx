@@ -2,8 +2,13 @@ import { Stack, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import { isMobile } from 'react-device-detect';
+import { AdvertiseDTO } from '../types/AdvertiseTypes';
 
-export default function FrontSideBar() {
+type Props = {
+  advertisements: AdvertiseDTO[];
+};
+export default function FrontSideBar(props: Props) {
+  const { advertisements } = props;
   const Item = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -24,15 +29,11 @@ export default function FrontSideBar() {
         alignItems="center"
         style={isMobile ? {} : { marginTop: '20px' }}
       >
-        <Item>
-          <Box>広告</Box>
-        </Item>
-        <Item>
-          <Box>広告</Box>
-        </Item>
-        <Item>
-          <Box>広告</Box>
-        </Item>
+        {advertisements.map((ad) => (
+          <Item key={ad.arrangement_name}>
+            <div dangerouslySetInnerHTML={{ __html: ad.content }} />
+          </Item>
+        ))}
       </Stack>
     </>
   );

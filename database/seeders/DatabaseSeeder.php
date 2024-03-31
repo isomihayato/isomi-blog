@@ -31,6 +31,12 @@ class DatabaseSeeder extends Seeder
         \App\Models\AdArrangement::factory()->create([
             'name' => '右sidebar広告1'
         ]);
+        \App\Models\AdArrangement::factory()->create([
+            'name' => '右sidebar広告2'
+        ]);
+        \App\Models\AdArrangement::factory()->create([
+            'name' => '右sidebar広告3'
+        ]);
         DB::table('categories')->insert([
             'name' => 'お知らせ'
         ]);
