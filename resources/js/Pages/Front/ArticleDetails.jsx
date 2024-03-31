@@ -15,7 +15,9 @@ import { postComments } from '@/Components/axios/axiosComment';
 import { getStorage } from '@/Components/common/functions';
 import { Head } from '@inertiajs/react';
 import { Helmet } from 'react-helmet';
+import SnsSideBar from '@/Components/sidebar/SnsSideBar';
 import PropTypes from 'prop-types';
+import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 const TocStyle = {
   width: isMobile ? '75%' : '60%',
   margin: '0 auto',
@@ -28,6 +30,10 @@ const TocStyle = {
 export default function ArticleDetails({ article }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments);
+  const [favorites, setFavorites] = React.useState(undefined); // お気に入り数
+  const [loginedMemberFavorite, setLoginedMemberFavorite] =
+    React.useState(undefined); // お気に入り登録済みかどうか
+  const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
   let count = 1;
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
@@ -114,6 +120,18 @@ export default function ArticleDetails({ article }) {
     postComments({ id: article.id }, (res) => {
       setComments(res.data.comments);
     });
+    getFavoritesCount(
+      article.id,
+      t_user.uid,
+      (res) => {
+        console.log(res);
+        setFavorites(res.data.favorites);
+        setLoginedMemberFavorite(res.data.logined_member_favorite);
+      },
+      (err) => {
+        console.log(err);
+      },
+    );
   }, [action]);
 
   return (
@@ -124,10 +142,19 @@ export default function ArticleDetails({ article }) {
         <meta property="og:type" content="article" />
       </Helmet>
       <Head title={article.title} />
-      <Front />
+      <Front loginOpen={loginOpen} setLoginOpen={setLoginOpen} />
       <Grid container spacing={3}>
-        <Grid item md={3}>
+        <Grid item md={2.5}>
           {isMobile ? <></> : <FrontSideBar />}
+        </Grid>
+        <Grid item md={0.5}>
+          <SnsSideBar
+            article={article}
+            favorites={favorites}
+            loginedMemberFavorite={loginedMemberFavorite}
+            setOpen={setLoginOpen}
+            setAction={setAction}
+          />
         </Grid>
         <Grid item md={6} xs={12}>
           <div style={makeTitleStyle()}>
