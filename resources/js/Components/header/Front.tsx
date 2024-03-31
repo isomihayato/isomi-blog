@@ -16,7 +16,12 @@ import { deleteStorage, getStorage } from '../common/functions';
 import { useEffect } from 'react';
 import InfoAlert from '../feedback/InfoAlert';
 
-export default function Front() {
+type Props = {
+  loginOpen?: boolean;
+  setLoginOpen?: React.SetStateAction<boolean>;
+};
+export default function Front(props: Props) {
+  const { loginOpen, setLoginOpen } = props;
   const [open, setOpen] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [drawer, setDrawer] = React.useState(false);
@@ -24,6 +29,9 @@ export default function Front() {
   const [status, setStatus] = React.useState('-1,');
   const [photoURL, setPhotoURL] = React.useState(getStorage('photoUrl'));
   const user = getStorage('user');
+  useEffect(() => {
+    setOpen(loginOpen);
+  }, [loginOpen]);
   useEffect(() => {
     setPhotoURL(getStorage('photoUrl'));
   }, [status]);
@@ -124,7 +132,10 @@ export default function Front() {
       </Drawer>
       <LoginDialog
         open={open}
-        closeHndlr={() => setOpen(false)}
+        closeHndlr={() => {
+          setOpen(false);
+          setLoginOpen(false);
+        }}
         statusHndlr={statusHndlr}
       />
       <InfoAlert />

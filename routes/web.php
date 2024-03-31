@@ -8,6 +8,7 @@ use App\Http\Controllers\MembersController;
 use App\Http\Controllers\InfomationController;
 use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
+use App\Http\Controllers\FavoritesController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -49,6 +50,9 @@ Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('in
 Route::get('/debug-sentry', function () {
     throw new Exception('My first Sentry error!');
 });
+Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
+Route::post('/favorites', [FavoritesController::class, 'store'])->name('favorites.store');
+Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');
 
 
 // Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show')->middleware(['auth', 'verified']);
