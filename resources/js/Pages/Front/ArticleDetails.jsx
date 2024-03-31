@@ -144,10 +144,10 @@ export default function ArticleDetails({ article }) {
       <Head title={article.title} />
       <Front loginOpen={loginOpen} setLoginOpen={setLoginOpen} />
       <Grid container spacing={3}>
-        <Grid item md={2.5}>
+        <Grid item md={2.5} xs={0}>
           {isMobile ? <></> : <FrontSideBar />}
         </Grid>
-        <Grid item md={0.5}>
+        <Grid item md={0.5} xs={0}>
           <SnsSideBar
             article={article}
             favorites={favorites}
@@ -169,7 +169,7 @@ export default function ArticleDetails({ article }) {
             }
           />
         </Grid>
-        <Grid item md={3}>
+        <Grid item md={3} xs={0}>
           {isMobile ? <></> : <FrontSideBar />}
         </Grid>
       </Grid>

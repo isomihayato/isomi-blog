@@ -10,6 +10,7 @@ import { deleteFavorite, postFavorite } from '../axios/axiosFavorite';
 import { getStorage } from '../common/functions';
 import { ArticleType } from '../types/ArticleTypes';
 import { FavoriteType } from '../types/FavoriteType';
+import SPBottonAppBar from '../surface/SPBottonAppBar';
 
 type Props = {
   article: ArticleType;
@@ -66,54 +67,64 @@ export default function SnsSideBar(props: Props) {
 
   return (
     <>
-      <Stack
-        spacing={2}
-        padding={'10px 30px'}
-        justifyContent="center"
-        alignItems="center"
-        style={isMobile ? {} : { marginTop: '120px', marginRight: '-20px' }}
-      >
-        <Item>
-          <div
-            style={{
-              textAlign: 'center',
-              color: '#9a9a9a',
-              fontWeight: 'bold',
-            }}
-          >
-            {favorites}
-          </div>
-          {loginedMemberFavorite ? (
-            <Avatar onClick={loginedMemberFavoriteClick}>
-              <FavoriteIcon />
+      {isMobile ? (
+        <SPBottonAppBar
+          article={article}
+          favorites={favorites}
+          loginedMemberFavorite={loginedMemberFavorite}
+          user={user}
+          setAction={setAction}
+        />
+      ) : (
+        <Stack
+          spacing={2}
+          padding={'10px 30px'}
+          justifyContent="center"
+          alignItems="center"
+          style={isMobile ? {} : { marginTop: '120px', marginRight: '-20px' }}
+        >
+          <Item>
+            <div
+              style={{
+                textAlign: 'center',
+                color: '#9a9a9a',
+                fontWeight: 'bold',
+              }}
+            >
+              {favorites}
+            </div>
+            {loginedMemberFavorite ? (
+              <Avatar onClick={loginedMemberFavoriteClick}>
+                <FavoriteIcon />
+              </Avatar>
+            ) : (
+              <Avatar onClick={favoriteClick}>
+                <FavoriteBorderIcon />
+              </Avatar>
+            )}
+          </Item>
+          <Item>
+            <Avatar
+              onClick={() =>
+                (window.location.href =
+                  encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | 磯海隼人&hashtags=infobox
+  `))
+              }
+            >
+              <XIcon />
             </Avatar>
-          ) : (
-            <Avatar onClick={favoriteClick}>
-              <FavoriteBorderIcon />
+          </Item>
+          <Item>
+            <Avatar
+              onClick={() =>
+                (window.location.href = `http://www.facebook.com/sharer.php?u=https://info-space-box.net/articles/details/${article.id}`)
+              }
+            >
+              <FacebookIcon />
             </Avatar>
-          )}
-        </Item>
-        <Item>
-          <Avatar
-            onClick={() =>
-              (window.location.href =
-                encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | 磯海隼人&hashtags=infobox
-`))
-            }
-          >
-            <XIcon />
-          </Avatar>
-        </Item>
-        <Item>
-          <Avatar
-            onClick={() =>
-              (window.location.href = `http://www.facebook.com/sharer.php?u=https://info-space-box.net/articles/details/${article.id}`)
-            }
-          >
-            <FacebookIcon />
-          </Avatar>
-        </Item>
-      </Stack>
+          </Item>
+        </Stack>
+      )}
     </>
   );
 }
