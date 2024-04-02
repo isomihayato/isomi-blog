@@ -22,22 +22,25 @@ textarea[name='comment_body'] {
   }
   body h2 {
     border-bottom: 1px solid var(--color-divider);
-    font-size: 1.53em;
+    font-size: 1.5em;
     line-height: 1.4;
-    margin: 56px 0 16px;
-    padding-bottom: 4px;
     font-weight: bold;
+    margin-top: 2.3em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #d6e3ed;
   }
   body h3 {
     font-size: 1.29em;
     line-height: 1.6;
-    margin: 40px 0 16px;
+    margin-top: 2.3em;
+    padding-bottom: 0.3em;
     font-weight: bold;
   }
   body h4 {
     font-size: 1.06em;
     line-height: 1.6;
-    margin: 40px 0 16px;
+    margin-top: 2.3em;
+    padding-bottom: 0.3em;
     font-weight: bold;
   }
   body h5 {
@@ -49,13 +52,6 @@ textarea[name='comment_body'] {
     font-size: 0.84em;
     line-height: 1.8;
     margin: 32px 0 16px;
-  }
-  code {
-    display: inline-block;
-    padding: 5px; /* 余白を追加 */
-    background-color: black;
-    color: #32be16;
-    width: 100%;
   }
   form {
     margin: 25px 0;
@@ -140,13 +136,6 @@ textarea[name='comment_body'] {
   #copyright {
     font-size: 0.6rem;
     margin-top: 16px;
-  }
-  code {
-    display: inline-block;
-    padding: 5px; /* 余白を追加 */
-    background-color: black;
-    color: #32be16;
-    width: 100%;
   }
   .comment__outer {
     width: 90%;
