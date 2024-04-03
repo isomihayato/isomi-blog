@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use App\Models\Infomation;
+use Illuminate\Support\Facades\Storage;
 
 class InfomationController extends Controller
 {
@@ -38,6 +40,24 @@ class InfomationController extends Controller
             'show_by_bar' => $request->input('show_by_bar'),
             'category_id' => $request->input('category_id'),
         ]);
+        // サイトマップのベース部分を作成
+        $sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>';
+        $sitemapContent .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+        // 固定ページのURLを追加
+        $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+
+        // 記事のURLを動的に追加
+        $infomations = Infomation::all(); // すべての記事を取得
+        foreach ($infomations as $infomation) {
+            $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/' . $infomation->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
+        }
+
+        // サイトマップの終了タグを追加
+        $sitemapContent .= '</urlset>';
+
+        // publicフォルダの中のsitemap.xmlに書き込む
+        Storage::disk('public')->put('sitemap_infomations.xml', $sitemapContent);
         return response()->json(['status' => "success"]);
     }
 
@@ -80,7 +100,7 @@ class InfomationController extends Controller
 
     public function get_show_by_bar()
     {
-        $infomations = DB::table('infomations')->where('show_by_bar',true)->get();
+        $infomations = DB::table('infomations')->where('show_by_bar', true)->get();
         return response()->json(['infomations' => $infomations]);
     }
 }
