@@ -5,6 +5,7 @@ import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import ArticleStack from '@/Components/layout/ArticleStack';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 
 export default function Search(articles) {
   console.log(articles);
@@ -15,6 +16,13 @@ export default function Search(articles) {
   const SearchPanel = () => {
     return (
       <>
+        <Helmet>
+          <meta property="og:type" content="article" />
+          <link
+            rel="canonical"
+            href="https://info-space-box.net/articles/search"
+          />
+        </Helmet>
         <Grid container component={'form'} onSubmit={submitHndlr}>
           <Grid item md={11} xs={10}>
             <TextField

@@ -15,6 +15,7 @@ export default function Welcome({ articles }) {
           content="INFO BOXは、磯海隼人がIT関連の知識を記録・共有するためのサービスです。 プログラミングに関するTips、ノウハウ、メモを簡単に記録 &amp; 公開することができます。"
         />
         <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://info-space-box.net" />
       </Helmet>
       <Front />
       <MainFront element={<ArticleStack articles={articles} />} />

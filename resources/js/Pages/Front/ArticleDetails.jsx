@@ -158,6 +158,10 @@ export default function ArticleDetails({ article }) {
         <meta name="keywords" content={article.tags} />
         <meta name="description" content={article.describe} />
         <meta property="og:type" content="article" />
+        <link
+          rel="canonical"
+          href={`https://info-space-box.net/articles/details/${article.id}`}
+        />
       </Helmet>
       <Head title={article.title} />
       <Front loginOpen={loginOpen} setLoginOpen={setLoginOpen} />
