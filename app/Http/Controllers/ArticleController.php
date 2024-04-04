@@ -18,8 +18,12 @@ class ArticleController extends Controller
 
     public function search(Request $request)
     {
+        // 1990年を取得
+        $from = now()->subYears(30)->startOfYear();
+        // 現在の年を取得
+        $to = now();
         $search_word = "%$request->search%";
-        $articles = Article::where('title', 'like', $search_word)->get();
+        $articles = Article::where('title', 'like', $search_word)->where('visible', true)->whereBetween('published_at', [$from, $to])->get();
         return response()->json(['articles' => $articles]);
     }
 
@@ -47,27 +51,30 @@ class ArticleController extends Controller
             'sort' => 1,
             'article_ad_template_id' => $request->input('article_ad_template_id'),
             'published_at' => $request->input('published_at') ?? $now,
+            'created_at' => $now,
+            'updated_at' => $now,
+            'visible' => $request->input('visible') ?? true,
         ]);
-       // サイトマップのベース部分を作成
-       $sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>';
-       $sitemapContent .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+        // サイトマップのベース部分を作成
+        $sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>';
+        $sitemapContent .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-       // 固定ページのURLを追加
-       $sitemapContent .= '<url><loc>https://info-space-box.net/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>';
-       $sitemapContent .= '<url><loc>https://info-space-box.net/articles/search</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
-       $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+        // 固定ページのURLを追加
+        $sitemapContent .= '<url><loc>https://info-space-box.net/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>';
+        $sitemapContent .= '<url><loc>https://info-space-box.net/articles/search</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+        $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
 
-       // 記事のURLを動的に追加
-       $articles = Article::all(); // すべての記事を取得
-       foreach ($articles as $article) {
-           $sitemapContent .= '<url><loc>https://info-space-box.net/articles/details/' . $article->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
-       }
+        // 記事のURLを動的に追加
+        $articles = Article::all(); // すべての記事を取得
+        foreach ($articles as $article) {
+            $sitemapContent .= '<url><loc>https://info-space-box.net/articles/details/' . $article->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
+        }
 
-       // サイトマップの終了タグを追加
-       $sitemapContent .= '</urlset>';
+        // サイトマップの終了タグを追加
+        $sitemapContent .= '</urlset>';
 
-       // publicフォルダの中のsitemap.xmlに書き込む
-       Storage::disk('public')->put('sitemap.xml', $sitemapContent);
+        // publicフォルダの中のsitemap.xmlに書き込む
+        Storage::disk('public')->put('sitemap.xml', $sitemapContent);
         return response()->json(['status' => "success"]);
     }
 
@@ -76,8 +83,8 @@ class ArticleController extends Controller
         $article = Article::find($id);
         $article_ad_templates = DB::table('article_ad_templates')->pluck('name', 'id');
         return Inertia::render(
-            'Articles/Edit', 
-            ['id' => $id, 'article' => $article,'article_ad_templates' => $article_ad_templates]
+            'Articles/Edit',
+            ['id' => $id, 'article' => $article, 'article_ad_templates' => $article_ad_templates]
         );
     }
 

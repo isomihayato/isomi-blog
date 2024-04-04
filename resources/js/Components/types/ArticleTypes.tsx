@@ -5,7 +5,8 @@ export type ArticleImageType = {
 export type ArticleType = {
   id: number;
   title: string;
-  content: string;
+  body: string;
+  visible: boolean;
   created_at: string;
   updated_at: string;
   member_uid: string;
