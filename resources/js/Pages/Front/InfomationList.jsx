@@ -12,6 +12,7 @@ import {
   Box,
   Divider,
 } from '@mui/material';
+import { Helmet } from 'react-helmet';
 
 export default function InfomationList({ infomations_pagenation }) {
   console.log(infomations_pagenation);
@@ -19,6 +20,13 @@ export default function InfomationList({ infomations_pagenation }) {
   const infomations = infomations_pagenation.data;
   return (
     <>
+      <Helmet>
+        <meta property="og:type" content="website" />
+        <link
+          rel="canonical"
+          href="https://info-space-box.net/infomations/list"
+        />
+      </Helmet>
       <Front />
       <MainFront
         element={
