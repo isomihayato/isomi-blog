@@ -21,7 +21,7 @@ export default function InfomationList({ infomations_pagenation }) {
   return (
     <>
       <Helmet>
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content="article" />
         <link
           rel="canonical"
           href="https://info-space-box.net/infomations/list"
