@@ -7,7 +7,6 @@ import BlogEditor from '@/Components/BlogEditor';
 import { updateInfomation } from '@/Components/axios/axiosInfomation';
 
 export default function Edit({ auth, categories, infomation }) {
-  console.log(infomation.publish_at);
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -18,18 +17,16 @@ export default function Edit({ auth, categories, infomation }) {
       publish_at: form.published_at.value,
       show_by_bar: form.show_by_bar.checked ? 1 : 0,
     };
-    console.log(data);
+
     updateInfomation(
       infomation.id,
       data,
       (response) => {
-        console.log(response);
         if (response.data.status === 'success') {
           window.location.href = '/infomations';
         }
       },
       (error) => {
-        console.log(error);
         alert(error.response.data.message);
       },
     );

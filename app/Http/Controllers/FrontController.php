@@ -11,7 +11,11 @@ class FrontController extends Controller
 {
     public function index()
     {
-        $articles = Article::all();
+        // 1990年を取得
+        $from = now()->subYears(30)->startOfYear();
+        // 現在の年を取得
+        $to = now();
+        $articles = Article::where('visible', true)->whereBetween('published_at', [$from, $to])->get();
         return Inertia::render('Welcome', ['articles' => $articles]);
     }
 
@@ -29,28 +33,37 @@ class FrontController extends Controller
         return Inertia::render('Front/Login');
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
+        $from = now()->subYears(30)->startOfYear();
+        // 現在の年を取得
+        $to = now();
         $search = $request->input('search');
-        if($search == null) {
-            $articles = Article::all();
-            return Inertia::render('Front/Search',['articles'=>$articles]);
+        if ($search == null) {
+            $articles = Article::where('visible', true)->whereBetween('published_at', [$from, $to])->get();
+            return Inertia::render('Front/Search', ['articles' => $articles]);
         }
         $articles = Article::query()
-                    ->where('title', 'LIKE', "%{$search}%")
-                    ->orWhere('body', 'LIKE', "%{$search}%")
-                    ->get();
-        return Inertia::render('Front/Search',['articles'=>$articles]);
+            ->where('title', 'LIKE', "%{$search}%")
+            ->orWhere('body', 'LIKE', "%{$search}%")
+            ->get()
+            ->where('visible', true)
+            ->whereBetween('published_at', [$from, $to])
+            ->values();
+        return Inertia::render('Front/Search', ['articles' => $articles]);
     }
 
-    public function infomation_list() {
+    public function infomation_list()
+    {
         $infomations_pagenation = DB::table('infomations')
             ->join('categories', 'infomations.category_id', '=', 'categories.id')
             ->select('infomations.*', 'categories.name as category_name', 'categories.color')
             ->paginate(10);
-        return Inertia::render('Front/InfomationList',['infomations_pagenation'=>$infomations_pagenation]);
+        return Inertia::render('Front/InfomationList', ['infomations_pagenation' => $infomations_pagenation]);
     }
 
-    public function ad_list(Request $request) {
+    public function ad_list(Request $request)
+    {
         $article = Article::find($request->input('article_id'));
         // article_ad_templates、article_ads、ad_arrangementsの3つのテーブルを結合して、article_ad_templatesのname、article_adsのcontent、ad_arrangementsのnameを取得
         $ad_templates = DB::table('article_ad_templates')

@@ -40,18 +40,16 @@ export default function CommentCard(props: Props) {
     e.preventDefault();
     if (editTime) {
       const data = { body: comment, id: defaultComment.id };
-      console.log(data);
+
       postUpdateComment(data, (res: { data: string }) => {
-        console.log(res.data);
         setEdit(false);
         setAction(`comment update${res.data}`);
       });
     } else {
       const user = getStorage('user');
       const data = { body: comment, fb_uid: user.uid, article_id: articleId };
-      console.log(data);
+
       postComment(data, (res: { data: string }) => {
-        console.log(res.data);
         setComment('');
         setAction(`comment create${res.data}`);
       });

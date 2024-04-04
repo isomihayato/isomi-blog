@@ -16,7 +16,8 @@ class Article extends Model
         'describe',
         'tags',
         'sort',
-        'publish_at',
+        'published_at',
+        'visible',
         'user_id',
         'article_ad_template_id',
     ];

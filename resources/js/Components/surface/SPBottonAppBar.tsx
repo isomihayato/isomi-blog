@@ -23,13 +23,12 @@ export default function SPBottonAppBar(props: Props) {
   const { article, favorites, loginedMemberFavorite, user, setAction } = props;
   const goods = favorites ? favorites : '';
   const handleChange = (event, newValue) => {
-    console.log('newValue', newValue);
-
     if (newValue === 'favorite') {
       postFavorite(
         { member_uid: user.uid, article_id: article.id },
         (res) => {
-          console.log(res);
+          console.log(res.data);
+
           setAction('favorite');
         },
         (err) => {
@@ -37,11 +36,10 @@ export default function SPBottonAppBar(props: Props) {
         },
       );
     } else if (newValue === 'unfavorite') {
-      console.log('unfavorite');
       deleteFavorite(
         loginedMemberFavorite.id,
         (res) => {
-          console.log(res);
+          console.log(res.data);
           setAction('unfavorite');
         },
         (err) => {

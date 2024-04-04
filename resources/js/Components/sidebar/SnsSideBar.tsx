@@ -38,7 +38,7 @@ export default function SnsSideBar(props: Props) {
     postFavorite(
       { member_uid: user.uid, article_id: article.id },
       (res) => {
-        console.log(res);
+        console.log(res.data);
         setAction('favorite');
       },
       (err) => {
@@ -56,7 +56,7 @@ export default function SnsSideBar(props: Props) {
     deleteFavorite(
       loginedMemberFavorite.id,
       (res) => {
-        console.log(res);
+        console.log(res.data);
         setAction('unfavorite');
       },
       (err) => {

@@ -17,12 +17,11 @@ function ImageUpload() {
       axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
       axios.defaults.headers.common['SameSite'] = 'None';
       axios.defaults.headers.common['Secure'] = true;
-      const response = await axios.post('/articles/updateImg', formData, {
+      await axios.post('/articles/updateImg', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      console.log('Image uploaded successfully:', response.data);
     } catch (error) {
       console.error('Error uploading image:', error);
     }

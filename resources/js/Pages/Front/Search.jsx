@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 
 export default function Search(articles) {
-  console.log(articles);
   const submitHndlr = (e) => {
     e.preventDefault();
     window.location.href = `/articles/search?search=${e.target.search.value}`;

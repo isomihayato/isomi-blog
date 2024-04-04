@@ -1,12 +1,14 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Button, Input, Select, MenuItem } from '@mui/material';
+import { Button, Input, Select, MenuItem, Switch } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
 import { updateArticle } from '@/Components/axios/axiosArticle';
 import PropTypes from 'prop-types';
 
 export default function Edit({ auth, id, article, article_ad_templates }) {
+  const label = { inputProps: { name: 'visible', 'aria-label': '表示' } };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -16,17 +18,16 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
       tags: form.tags.value,
       describe: form.describe.value,
       published_at: form.published_at.value,
+      visible: form.visible.checked,
       user_id: form.user_id.value,
       article_ad_template_id: form.article_ad_template_id.value,
     };
     updateArticle(id, data, (response) => {
-      console.log(response);
       if (response.data.status === 'success') {
         window.location.href = '/articles';
       }
     });
   };
-  console.log(article_ad_templates);
 
   return (
     <AuthenticatedLayout
@@ -89,6 +90,13 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
                     placeholder="公開日時"
                     defaultValue={article.published_at.slice(0, 16)}
                     fullWidth
+                  />
+                </div>
+                <div>
+                  <label htmlFor="visible">表示</label>
+                  <Switch
+                    {...label}
+                    defaultChecked={article.visible === 1 ? true : false}
                   />
                 </div>
                 <div>

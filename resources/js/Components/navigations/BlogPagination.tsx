@@ -25,11 +25,10 @@ export default function Pagination(props: Proops) {
     current_page,
     last_page,
   } = paginator;
-  console.log(paginator);
+
   const start_page = current_page - gap <= 0 ? 1 : current_page - gap;
   const end_page =
     current_page + gap >= last_page ? last_page : current_page + gap;
-  console.log(start_page, end_page);
 
   const pageNums: JSX.Element[] = [];
   for (let index = start_page; index <= end_page; index++) {
