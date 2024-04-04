@@ -28,8 +28,7 @@ export default function CommentsCard(props: Props) {
     setAnchorEl(null);
   };
   const deleteHndlr = (commentId: number) => {
-    deleteComment(commentId, (res) => {
-      console.log(res.data);
+    deleteComment(commentId, () => {
       setAction(`comments delete${commentId}`);
       setAnchorEl(null);
     });

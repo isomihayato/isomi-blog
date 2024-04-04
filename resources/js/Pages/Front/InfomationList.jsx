@@ -15,8 +15,6 @@ import {
 import { Helmet } from 'react-helmet';
 
 export default function InfomationList({ infomations_pagenation }) {
-  console.log(infomations_pagenation);
-
   const infomations = infomations_pagenation.data;
   return (
     <>

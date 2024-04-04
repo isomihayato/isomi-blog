@@ -31,7 +31,6 @@ export default function AxiosWrapper(props: WrapperType) {
   })
     .then((response) => {
       callback(response);
-      console.log(response);
     })
     .catch((error) => {
       console.error(error);
@@ -50,7 +49,7 @@ export async function axiosAwait(props: AxiosType) {
   if (method == 'GET') {
     try {
       const response = await axios.get(url);
-      console.log(response);
+
       return response.data;
     } catch (error) {
       console.error(error);
@@ -62,7 +61,7 @@ export async function axiosAwait(props: AxiosType) {
         headers: { 'Content-Type': 'multipart/form-data' },
         method: 'PATCH',
       });
-      console.log(response);
+
       return response.data;
       // POSTリクエストが成功した場合の処理
     } catch (error) {
@@ -74,7 +73,7 @@ export async function axiosAwait(props: AxiosType) {
       const response = await axios.post(url, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log(response);
+
       return response.data;
       // POSTリクエストが成功した場合の処理
     } catch (error) {

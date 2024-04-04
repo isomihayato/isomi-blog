@@ -7,7 +7,6 @@ import BlogEditor from '@/Components/BlogEditor';
 import { postInfomation } from '@/Components/axios/axiosInfomation';
 
 export default function Create({ auth, categories }) {
-  console.log(categories);
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -21,13 +20,11 @@ export default function Create({ auth, categories }) {
     postInfomation(
       data,
       (response) => {
-        console.log(response);
         if (response.data.status === 'success') {
           window.location.href = '/infomations';
         }
       },
       (error) => {
-        console.log(error);
         alert(error.response.data.message);
       },
     );

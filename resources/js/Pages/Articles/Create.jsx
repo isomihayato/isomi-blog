@@ -23,13 +23,11 @@ export default function Create({ auth, article_ad_templates }) {
       article_ad_template_id: form.article_ad_template_id.value,
     };
     postArticle(data, (response) => {
-      console.log(response);
       if (response.data.status === 'success') {
         window.location.href = '/articles';
       }
     });
   };
-  console.log(article_ad_templates);
 
   return (
     <AuthenticatedLayout

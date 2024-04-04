@@ -123,7 +123,6 @@ export default function ArticleDetails({ article }) {
     postAdvertisement(
       { article_id: article.id },
       (res) => {
-        console.log(res);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         setAdvertisements(res.data.ad_templates);
@@ -134,7 +133,6 @@ export default function ArticleDetails({ article }) {
     );
   }, []);
   React.useEffect(() => {
-    console.log(action);
     postComments({ id: article.id }, (res) => {
       setComments(res.data.comments);
     });
@@ -142,7 +140,6 @@ export default function ArticleDetails({ article }) {
       article.id,
       t_user.uid,
       (res) => {
-        console.log(res);
         setFavorites(res.data.favorites);
         setLoginedMemberFavorite(res.data.logined_member_favorite);
       },

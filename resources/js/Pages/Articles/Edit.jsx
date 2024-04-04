@@ -23,13 +23,11 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
       article_ad_template_id: form.article_ad_template_id.value,
     };
     updateArticle(id, data, (response) => {
-      console.log(response);
       if (response.data.status === 'success') {
         window.location.href = '/articles';
       }
     });
   };
-  console.log(article_ad_templates);
 
   return (
     <AuthenticatedLayout
