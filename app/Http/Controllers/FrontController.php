@@ -19,6 +19,11 @@ class FrontController extends Controller
         return Inertia::render('Welcome', ['articles' => $articles]);
     }
 
+    public function about()
+    {
+        return Inertia::render('Front/About');
+    }
+
     public function article($id)
     {
         $article = Article::with(['comments.member'])->find($id);
