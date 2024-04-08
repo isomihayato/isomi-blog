@@ -66,6 +66,9 @@ export default function Front(props: Props) {
         <ListItem key="home" onClick={() => (window.location.href = '/')}>
           <ListItemText primary="ホーム" />
         </ListItem>
+        <ListItem key="home" onClick={() => (window.location.href = '/about')}>
+          <ListItemText primary="このサイトについて" />
+        </ListItem>
         <ListItem
           key="search"
           onClick={() => (window.location.href = '/articles/search')}
@@ -134,6 +137,8 @@ export default function Front(props: Props) {
         open={open}
         closeHndlr={() => {
           setOpen(false);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           setLoginOpen(false);
         }}
         statusHndlr={statusHndlr}

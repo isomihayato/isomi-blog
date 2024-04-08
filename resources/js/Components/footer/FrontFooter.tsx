@@ -20,6 +20,9 @@ export default function FrontFooter() {
                   <a href="/">ホーム</a>
                 </Grid>
                 <Grid item md={1} xs={12}>
+                  <a href="/about">このサイトについて</a>
+                </Grid>
+                <Grid item md={1} xs={12}>
                   <a href="/articles/search">記事検索</a>
                 </Grid>
                 <Grid item md={2} xs={12}>
