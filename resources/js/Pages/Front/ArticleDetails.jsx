@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Paper, Grid } from '@mui/material';
+import { Box, Paper, Grid, Breadcrumbs, Link, Typography } from '@mui/material';
 import Front from '@/Components/header/Front';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
@@ -20,6 +20,8 @@ import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 import RightSideBar from '@/Components/sidebar/RightSideBar';
 import { postAdvertisement } from '@/Components/axios/axiosAdvertisement';
+import HomeIcon from '@mui/icons-material/Home';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 const TocStyle = {
   width: isMobile ? '75%' : '60%',
@@ -163,6 +165,16 @@ export default function ArticleDetails({ article }) {
       </Helmet>
       <Head title={article.title} />
       <Front loginOpen={loginOpen} setLoginOpen={setLoginOpen} />
+      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+        <Link underline="hover" color="inherit" href="/">
+          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          Top 記事一覧
+        </Link>
+        <Typography color="text.primary">
+          <AutoStoriesIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          記事詳細
+        </Typography>
+      </Breadcrumbs>
       <Grid container spacing={3}>
         <Grid item md={2.5} xs={0}>
           {isMobile ? <></> : <LeftSideBar advertisements={advertisements} />}

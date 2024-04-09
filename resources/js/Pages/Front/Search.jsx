@@ -1,5 +1,14 @@
 import React from 'react';
-import { Button, Grid, TextField } from '@mui/material';
+import {
+  Typography,
+  Button,
+  Grid,
+  TextField,
+  Breadcrumbs,
+  Link,
+} from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import FindInPageIcon from '@mui/icons-material/FindInPage';
 import Front from '@/Components/header/Front';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
@@ -58,6 +67,16 @@ export default function Search(articles) {
   return (
     <>
       <Front />
+      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+        <Link underline="hover" color="inherit" href="/">
+          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          Top 記事一覧
+        </Link>
+        <Typography color="text.primary">
+          <FindInPageIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          記事検索
+        </Typography>
+      </Breadcrumbs>
       <MainFront element={<SearchPanel />} />
       <FrontFooter />
     </>
