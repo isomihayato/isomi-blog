@@ -158,6 +158,17 @@ export default function ArticleDetails({ article }) {
         <meta name="keywords" content={article.tags} />
         <meta name="description" content={article.describe} />
         <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@info_space_box" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={article.describe} />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:url" content={window.location.href} />
+        {/* <meta property="og:image" content="画像のURL" /> */}
+        <meta property="og:description" content={article.describe} />
+        <meta property="og:site_name" content="INFO BOX" />
+        <meta property="fb:app_id" content="1437461986868001" />
+        {/* <meta name="twitter:image" content="画像のURL"></meta> */}
         <link
           rel="canonical"
           href={`https://info-space-box.net/articles/details/${article.id}`}

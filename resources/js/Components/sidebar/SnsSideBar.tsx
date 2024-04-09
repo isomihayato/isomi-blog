@@ -11,6 +11,7 @@ import { getStorage } from '../common/functions';
 import { ArticleType } from '../types/ArticleTypes';
 import { FavoriteType } from '../types/FavoriteType';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
+import PocketLink from '../sns/PocketLink';
 
 type Props = {
   article: ArticleType;
@@ -122,6 +123,25 @@ export default function SnsSideBar(props: Props) {
             >
               <FacebookIcon />
             </Avatar>
+          </Item>
+          <Item>
+            <a
+              href="https://b.hatena.ne.jp/entry/"
+              className="hatena-bookmark-button"
+              data-hatena-bookmark-layout="touch-counter"
+              title="このエントリーをはてなブックマークに追加"
+            >
+              <img
+                src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png"
+                alt="このエントリーをはてなブックマークに追加"
+                width="20"
+                height="20"
+                style={{ border: 'none' }}
+              />
+            </a>
+          </Item>
+          <Item>
+            <PocketLink url={window.location.href} title={article.title} />
           </Item>
         </Stack>
       )}

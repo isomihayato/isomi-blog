@@ -28,6 +28,9 @@
         gtag('config', 'G-S5HP2QHWW3');
     </script>
     <!-- Google Tag Manager -->
+    <!-- hatena bookmarkのボタン -->
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charSet="utf-8" async="async"></script>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script>
         (function(w, d, s, l, i) {
             w[l] = w[l] || [];
