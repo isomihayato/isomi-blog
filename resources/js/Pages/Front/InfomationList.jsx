@@ -11,7 +11,11 @@ import {
   ListItemText,
   Box,
   Divider,
+  Breadcrumbs,
+  Link,
 } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import InfoIcon from '@mui/icons-material/Info';
 import { Helmet } from 'react-helmet';
 import { Head } from '@inertiajs/react';
 
@@ -35,6 +39,16 @@ export default function InfomationList({ infomations_pagenation }) {
         title={`お知らせ一覧 ${infomations_pagenation.current_page}ページ目`}
       />
       <Front />
+      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+        <Link underline="hover" color="inherit" href="/">
+          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          Top 記事一覧
+        </Link>
+        <Typography color="text.primary">
+          <InfoIcon sx={{ fontSize: '1rem' }} fontSize="inherit" />
+          お知らせ一覧
+        </Typography>
+      </Breadcrumbs>
       <MainFront
         element={
           <>

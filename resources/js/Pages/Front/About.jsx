@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import Front from '@/Components/header/Front';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Breadcrumbs, Link } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import WebIcon from '@mui/icons-material/Web';
 import { Helmet } from 'react-helmet';
 import { Head } from '@inertiajs/react';
 
@@ -25,6 +27,16 @@ export default function InfomationList() {
       </Helmet>
       <Head title={`INFO BOXについて`} />
       <Front />
+      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+        <Link underline="hover" color="inherit" href="/">
+          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          Top 記事一覧
+        </Link>
+        <Typography color="text.primary">
+          <WebIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          このサイトについて
+        </Typography>
+      </Breadcrumbs>
       <MainFront
         element={
           <>

@@ -79,6 +79,12 @@ textarea[name='comment_body'] {
     color: white;
     font-weight: bold;
   }
+  li.MuiBreadcrumbs-li {
+    font-size: 0.9rem;
+  }
+  li.MuiBreadcrumbs-li p {
+    font-size: 0.9rem;
+  }
 
   #footer {
     background-color: #32be16;
