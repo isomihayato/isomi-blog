@@ -13,6 +13,7 @@ import {
   Divider,
 } from '@mui/material';
 import { Helmet } from 'react-helmet';
+import { Head } from '@inertiajs/react';
 
 export default function InfomationList({ infomations_pagenation }) {
   const infomations = infomations_pagenation.data;
@@ -20,11 +21,19 @@ export default function InfomationList({ infomations_pagenation }) {
     <>
       <Helmet>
         <meta property="og:type" content="article" />
+        <meta name="keywords" content={'INFO BOX,INFO BOX お知らせ一覧'} />
+        <meta
+          name="description"
+          content="お知らせ一覧 ${infomations_pagenation.current_page}ページ目 | INFO BOX"
+        />
         <link
           rel="canonical"
           href="https://info-space-box.net/infomations/list"
         />
       </Helmet>
+      <Head
+        title={`お知らせ一覧 ${infomations_pagenation.current_page}ページ目`}
+      />
       <Front />
       <MainFront
         element={

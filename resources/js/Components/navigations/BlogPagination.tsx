@@ -53,7 +53,7 @@ export default function Pagination(props: Proops) {
   }
 
   return (
-    <div className="pagination">
+    <div className="pagination" style={{ marginTop: '15px' }}>
       <a
         href={first_page_url}
         className="pagination-link"

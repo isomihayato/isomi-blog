@@ -5,6 +5,7 @@ import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import { Box, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet';
+import { Head } from '@inertiajs/react';
 
 export default function InfomationList() {
   return (
@@ -12,7 +13,7 @@ export default function InfomationList() {
       <Helmet>
         <meta
           name="keywords"
-          content={'このブログサイトは一体...? - INFO BOX'}
+          content={'INFO BOX,INFO BOX about,INFO BOX 概要'}
         />
         <meta
           name="description"
@@ -22,6 +23,7 @@ export default function InfomationList() {
         />
         <meta property="og:type" content="article" />
       </Helmet>
+      <Head title={`INFO BOXについて`} />
       <Front />
       <MainFront
         element={

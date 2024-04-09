@@ -42,7 +42,7 @@ export default function ArticleDetails({ article }) {
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
 
-  const listItems = article.body.split('\n').map((line, index) => {
+  const listItems = article.body?.split('\n').map((line, index) => {
     if (line.startsWith('# ')) {
       const item = (
         <li
@@ -136,6 +136,7 @@ export default function ArticleDetails({ article }) {
     postComments({ id: article.id }, (res) => {
       setComments(res.data.comments);
     });
+    if (t_user === null || t_user === undefined) return;
     getFavoritesCount(
       article.id,
       t_user.uid,

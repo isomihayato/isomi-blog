@@ -15,8 +15,10 @@ class FrontController extends Controller
         $from = now()->subYears(30)->startOfYear();
         // 現在の年を取得
         $to = now();
-        $articles = Article::where('visible', true)->whereBetween('published_at', [$from, $to])->get();
-        return Inertia::render('Welcome', ['articles' => $articles]);
+        $articles_pagenation = Article::where('visible', true)
+            ->whereBetween('published_at', [$from, $to])
+            ->paginate(5);
+        return Inertia::render('Welcome', ['articles_pagenation' => $articles_pagenation]);
     }
 
     public function about()
