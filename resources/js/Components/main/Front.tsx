@@ -3,6 +3,8 @@ import React from 'react';
 import { isMobile } from 'react-device-detect';
 import FacebookShareButton from '../sns/FacebookShareButton';
 import PocketLinkVertical from '../sns/PocketLinkVertical';
+import { Suspense } from 'react';
+
 type Props = {
   element: JSX.Element;
 };
@@ -26,11 +28,15 @@ export default function Front(props: Props) {
   return (
     <>
       <Box id="main" style={makeOuterStyle()} component={Paper}>
-        <div
-          style={isMobile ? { padding: '10px 15px' } : { padding: '32px 56px' }}
-        >
-          {element}
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <div
+            style={
+              isMobile ? { padding: '10px 15px' } : { padding: '32px 56px' }
+            }
+          >
+            {element}
+          </div>{' '}
+        </Suspense>
         {snsNavShow && (
           <>
             <Typography
@@ -48,7 +54,9 @@ export default function Front(props: Props) {
             >
               励みになります！
             </Typography>
-            <Box sx={{ width: '340px', margin: '0 auto' }}>
+            <Box
+              sx={{ width: '340px', margin: '0 auto', paddingBottom: '20px' }}
+            >
               <Grid
                 container
                 direction="row"
