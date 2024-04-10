@@ -20,7 +20,7 @@ type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setAction: React.Dispatch<React.SetStateAction<string>>;
 };
-export default function SnsSideBar(props: Props) {
+export default React.memo(function SnsSideBar(props: Props) {
   const { article, favorites, loginedMemberFavorite, setOpen, setAction } =
     props;
   const user = getStorage('user');
@@ -147,5 +147,4 @@ export default function SnsSideBar(props: Props) {
       )}
     </>
   );
-}
-SnsSideBar.defaultProps = {};
+});

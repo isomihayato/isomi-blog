@@ -12,8 +12,8 @@
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link href="/css/basic.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="/css/basic.css" rel="stylesheet" async />
+    <link rel="preconnect" href="https://fonts.bunny.net" async>
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-S5HP2QHWW3"></script>

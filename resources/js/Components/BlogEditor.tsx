@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import imageCompression from 'browser-image-compression';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -32,16 +33,27 @@ function BlogEditor(props: Props) {
   const handleChange = (event) => {
     setMarkdown(event.target.value);
   };
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     event.preventDefault();
     const file = event.target.files[0];
-    if (file) {
-      postArticleImg({ file: file }, (res) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
-        const imageUrl = res.data.url;
-        setMarkdown(markdown + `![${file.name}](${imageUrl})\n`);
-      });
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      if (compressedFile) {
+        postArticleImg({ file: compressedFile }, (res) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
+          const imageUrl = res.data.url;
+          setMarkdown(markdown + `![${file.name}](${imageUrl})\n`);
+        });
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
   const onEmojiSelectHndl = (emoji) => {
