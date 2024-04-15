@@ -142,7 +142,13 @@ export default function ArticleDetails({ article }) {
               }
             />
           </Item>
-          <Item>{isMobile ? <></> : <RightSideBar chapters={chapters} />}</Item>
+          {isMobile ? (
+            <></>
+          ) : (
+            <Item>
+              <RightSideBar chapters={chapters} />
+            </Item>
+          )}
         </Stack>
       </Box>
       {isMobile ? null : (
@@ -159,7 +165,7 @@ export default function ArticleDetails({ article }) {
             })}
         </>
       )}
-      <Box component={Paper} className="comment__outer">
+      <Box component={Paper} className="comment__outer" id="comment">
         <Box p={2}>
           <h2>コメント</h2>
           {comments.map((comment, index) => {

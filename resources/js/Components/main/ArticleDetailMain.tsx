@@ -61,8 +61,8 @@ export default function ArticleDetailMain(props: Props) {
   const makeTitleStyle = () => {
     if (isMobile) {
       return {
-        padding: '0 20px',
-        fontSize: '1.8rem',
+        padding: '20px',
+        fontSize: '1.65rem',
         fontWeight: 'bold',
       };
     } else {

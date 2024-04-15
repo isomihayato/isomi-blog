@@ -21,6 +21,7 @@ li {
 }
 ul li {
   list-style: disc;
+  margin-left: 2rem;
 }
 pre {
   white-space: pre-wrap;
@@ -48,6 +49,9 @@ textarea[name='comment_body'] {
     margin: 56px 0 16px;
     padding-bottom: 4px;
     font-weight: bold;
+    border-left: solid 8px #20c200;
+    border-bottom: solid 1px #d0d0d0;
+    padding-left: 5px;
   }
   body h3 {
     font-size: 1.29em;
@@ -131,6 +135,9 @@ textarea[name='comment_body'] {
   body h2 {
     font-size: 1.4rem;
     font-weight: bold;
+    border-left: solid 8px #20c200;
+    border-bottom: solid 1px #d0d0d0;
+    padding-left: 5px;
   }
   body h3 {
     font-size: 1.2rem;
