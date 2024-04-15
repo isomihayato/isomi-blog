@@ -80,14 +80,13 @@ export default React.memo(function SnsSideBar(props: Props) {
         <Stack
           spacing={2}
           padding={'10px 30px'}
-          justifyContent="center"
+          justifyContent="flex-end"
           alignItems="center"
-          style={isMobile ? {} : { marginTop: '120px', marginRight: '-20px' }}
+          style={isMobile ? {} : { marginTop: '0px', marginRight: '0px' }}
         >
           <Item>
             <div
               style={{
-                textAlign: 'center',
                 color: '#9a9a9a',
                 fontWeight: 'bold',
               }}
@@ -95,11 +94,14 @@ export default React.memo(function SnsSideBar(props: Props) {
               {favorites}
             </div>
             {loginedMemberFavorite ? (
-              <Avatar onClick={loginedMemberFavoriteClick}>
+              <Avatar
+                onClick={loginedMemberFavoriteClick}
+                style={{ float: 'right' }}
+              >
                 <FavoriteIcon />
               </Avatar>
             ) : (
-              <Avatar onClick={favoriteClick}>
+              <Avatar onClick={favoriteClick} style={{ float: 'right' }}>
                 <FavoriteBorderIcon />
               </Avatar>
             )}

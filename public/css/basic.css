@@ -1,3 +1,27 @@
+#body {
+  background-color: #dddddd;
+}
+html {
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.7;
+}
+.font-style {
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.7;
+}
+pre p,
+li {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 1rem;
+}
+#introduce__content {
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+ul li {
+  list-style: disc;
+}
 pre {
   white-space: pre-wrap;
   word-break: break-all;
@@ -9,9 +33,6 @@ textarea[name='comment_body'] {
   text-decoration-line: underline;
 }
 @media (max-width: 2000px) and (min-width: 768px) {
-  #body {
-    background-color: #dddddd;
-  }
   body h1 {
     border-bottom: 1px solid var(--color-divider);
     font-size: 1.65em;
@@ -103,9 +124,6 @@ textarea[name='comment_body'] {
   }
 }
 @media (max-width: 767px) {
-  #body {
-    background-color: #dddddd;
-  }
   body h1 {
     font-size: 1.6rem;
     font-weight: bold;

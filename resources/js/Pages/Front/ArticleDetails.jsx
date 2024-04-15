@@ -1,12 +1,18 @@
 import * as React from 'react';
-import { Box, Paper, Grid, Breadcrumbs, Link, Typography } from '@mui/material';
+import {
+  Box,
+  Paper,
+  Breadcrumbs,
+  Link,
+  Typography,
+  Stack,
+} from '@mui/material';
 import Front from '@/Components/header/Front';
-import MainFront from '@/Components/main/Front';
+import ArticleDetailMain from '@/Components/main/ArticleDetailMain';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import Markdown from 'react-markdown';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import Tags from '@/Components/Tags';
 import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
@@ -14,88 +20,28 @@ import { postComments } from '@/Components/axios/axiosComment';
 import { getStorage } from '@/Components/common/functions';
 import { Head } from '@inertiajs/react';
 import { Helmet } from 'react-helmet';
-import SnsSideBar from '@/Components/sidebar/SnsSideBar';
 import PropTypes from 'prop-types';
-import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
-import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 import RightSideBar from '@/Components/sidebar/RightSideBar';
 import { postAdvertisement } from '@/Components/axios/axiosAdvertisement';
 import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-
-const TocStyle = {
-  width: isMobile ? '75%' : '60%',
-  margin: '0 auto',
-  border: 'solid 1px #aaaaaa',
-  backgroundColor: '#32be1630',
-  whiteSpace: 'pre-wrap',
-  wordBreak: 'break-all',
-};
+import { styled } from '@mui/material/styles';
 
 export default function ArticleDetails({ article }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments);
-  const [favorites, setFavorites] = React.useState(undefined); // お気に入り数
   const [advertisements, setAdvertisements] = React.useState([]);
-  const [loginedMemberFavorite, setLoginedMemberFavorite] =
-    React.useState(undefined); // お気に入り登録済みかどうか
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
-  let count = 1;
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
+  const Item = styled('div')(({ theme }) => ({
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+  }));
 
-  const listItems = article.body?.split('\n').map((line, index) => {
-    if (line.startsWith('# ')) {
-      const item = (
-        <li
-          key={index}
-          onClick={() =>
-            (window.location.href = `/articles/details/${article.id}#${line.replace('# ', '').replaceAll('.', '-').replaceAll(' ', '').toLowerCase()}`)
-          }
-        >
-          {line.replace('# ', `${count}. `)}
-        </li>
-      );
-      count++;
-      return item;
-    }
-    if (line.startsWith('## ')) {
-      const item = (
-        <li
-          key={index}
-          onClick={() =>
-            (window.location.href = `/articles/details/${article.id}#${line.replace('## ', '').replaceAll('.', '-').replaceAll(' ', '').toLowerCase()}`)
-          }
-        >
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          {line.replace('## ', `${count}. `)}
-        </li>
-      );
-      count++;
-      return item;
-    }
-    return null;
-  });
   const ArticleContent = () => {
     return (
       <>
-        <Box
-          id="toc__outer"
-          border={'solid 1px #aaaaaa'}
-          bgcolor={'#32be1630'}
-          style={TocStyle}
-        >
-          <Box
-            id="toc__header"
-            textAlign={'center'}
-            style={{ fontSize: '1.4rem', fontWeight: 'bold', padding: '15px' }}
-          >
-            目次
-          </Box>
-          <Box id="toc__content" style={{ padding: '0 20px 15px' }}>
-            <ul>{listItems}</ul>
-          </Box>
-        </Box>
         <pre>
           <Markdown rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}>
             {article.body}
@@ -104,23 +50,7 @@ export default function ArticleDetails({ article }) {
       </>
     );
   };
-  const makeTitleStyle = () => {
-    if (isMobile) {
-      return {
-        padding: '0 20px',
-        fontSize: '1.8rem',
-        fontWeight: 'bold',
-      };
-    } else {
-      return {
-        fontSize: '1.8rem',
-        fontWeight: 'bold',
-        marginBottom: '70px',
-        marginTop: '25px',
-        marginLeft: '6px',
-      };
-    }
-  };
+
   React.useEffect(() => {
     postAdvertisement(
       { article_id: article.id },
@@ -138,18 +68,6 @@ export default function ArticleDetails({ article }) {
     postComments({ id: article.id }, (res) => {
       setComments(res.data.comments);
     });
-    if (t_user === null || t_user === undefined) return;
-    getFavoritesCount(
-      article.id,
-      t_user.uid,
-      (res) => {
-        setFavorites(res.data.favorites);
-        setLoginedMemberFavorite(res.data.logined_member_favorite);
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
   }, [action]);
 
   return (
@@ -186,36 +104,32 @@ export default function ArticleDetails({ article }) {
           記事詳細
         </Typography>
       </Breadcrumbs>
-      <Grid container spacing={3}>
-        <Grid item md={2.5} xs={0}>
-          {isMobile ? <></> : <LeftSideBar advertisements={advertisements} />}
-        </Grid>
-        <Grid item md={0.5} xs={0}>
-          <SnsSideBar
-            article={article}
-            favorites={favorites}
-            loginedMemberFavorite={loginedMemberFavorite}
-            setOpen={setLoginOpen}
-            setAction={setAction}
-          />
-        </Grid>
-        <Grid item md={6} xs={12}>
-          <div style={makeTitleStyle()}>
-            {article.title}
-            <Tags tags={article.tags.split(',')} />
-          </div>
-          <MainFront
-            element={
-              <>
-                <ArticleContent />
-              </>
-            }
-          />
-        </Grid>
-        <Grid item md={3} xs={0}>
-          {isMobile ? <></> : <RightSideBar advertisements={advertisements} />}
-        </Grid>
-      </Grid>
+      <Box margin={'0 auto'} className="font-style">
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center"
+          alignItems="flex-start"
+        >
+          <Item>
+            <ArticleDetailMain
+              article={article}
+              element={
+                <>
+                  <ArticleContent />
+                </>
+              }
+            />
+          </Item>
+          <Item>
+            {isMobile ? (
+              <></>
+            ) : (
+              <RightSideBar advertisements={advertisements} />
+            )}
+          </Item>
+        </Stack>
+      </Box>
       {isMobile ? null : (
         <>
           {advertisements
