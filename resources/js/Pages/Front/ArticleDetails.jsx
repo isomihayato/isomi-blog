@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import {
   Box,
@@ -32,6 +33,7 @@ export default function ArticleDetails({ article }) {
   const [comments, setComments] = React.useState(article.comments);
   const [advertisements, setAdvertisements] = React.useState([]);
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
+  const [chapters, setChapters] = React.useState([]); // 記事の章リスト
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
   const Item = styled('div')(({ theme }) => ({
@@ -50,6 +52,25 @@ export default function ArticleDetails({ article }) {
       </>
     );
   };
+
+  React.useEffect(() => {
+    // article.bodyから章を抽出し、chaptersオブジェクトを作成
+    // 絵文字,記号,空白を削除し、## で始まる行を抽出
+    const cha = article.body
+      ?.split('\n')
+      .filter((b) => {
+        if (b.startsWith('## ')) {
+          return b;
+        }
+      })
+      .map((b) => {
+        return b
+          .replace('## ', '')
+          .replace(/[^0-9a-zA-Z\u3041-\u3096\u30A1-\u30FA\u4E00-\u9FA5]/g, '');
+      });
+    setChapters(cha);
+    console.log(cha);
+  }, []);
 
   React.useEffect(() => {
     postAdvertisement(
@@ -121,13 +142,7 @@ export default function ArticleDetails({ article }) {
               }
             />
           </Item>
-          <Item>
-            {isMobile ? (
-              <></>
-            ) : (
-              <RightSideBar advertisements={advertisements} />
-            )}
-          </Item>
+          <Item>{isMobile ? <></> : <RightSideBar chapters={chapters} />}</Item>
         </Stack>
       </Box>
       {isMobile ? null : (

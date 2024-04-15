@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Avatar, Box, Grid, Typography } from '@mui/material';
+import VerticalStepper from '../navigations/VerticalSteper';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -10,7 +11,36 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: '25px 16px',
   color: theme.palette.text.secondary,
 }));
-export default function RightSideBar() {
+type Props = {
+  chapters: string[];
+};
+export default function RightSideBar(props: Props) {
+  const { chapters } = props;
+  const [isSticky, setIsSticky] = useState(false);
+  const elementRef = useRef(null);
+  const stickyThreshold = 456; // positionをstaticに戻すY軸の値
+
+  const handleScroll = () => {
+    const scrolled = window.scrollY;
+    const main = document.getElementById('main');
+    if (main.clientHeight <= scrolled) {
+      setIsSticky(false);
+    } else if (scrolled >= stickyThreshold) {
+      setIsSticky(true);
+    } else {
+      setIsSticky(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log(chapters);
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   return (
     <>
       <Stack
@@ -46,6 +76,19 @@ export default function RightSideBar() {
               </Box>
             </Box>
           </Box>
+        </Item>
+        <Item
+          ref={elementRef}
+          style={{
+            position: isSticky ? 'fixed' : 'static',
+            top: isSticky ? 0 : 'auto',
+            width: '321px',
+          }}
+        >
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+            目次
+          </Typography>
+          <VerticalStepper chapters={chapters} />
         </Item>
       </Stack>
     </>
