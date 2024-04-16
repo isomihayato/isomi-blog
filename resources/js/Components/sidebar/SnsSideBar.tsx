@@ -12,6 +12,7 @@ import { ArticleType } from '../types/ArticleTypes';
 import { FavoriteType } from '../types/FavoriteType';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
 import PocketLink from '../sns/PocketLink';
+import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
 
 type Props = {
   article: ArticleType;
@@ -127,20 +128,21 @@ export default React.memo(function SnsSideBar(props: Props) {
             </Avatar>
           </Item>
           <Item>
-            <a
-              href="https://b.hatena.ne.jp/entry/"
-              className="hatena-bookmark-button"
-              data-hatena-bookmark-layout="touch-counter"
-              title="このエントリーをはてなブックマークに追加"
+            <HatenaShareButton
+              url={window.location.href}
+              title={article.title}
+              windowWidth={660}
+              windowHeight={460}
+              className="Demo__some-network__share-button"
             >
-              <img
-                src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png"
-                alt="このエントリーをはてなブックマークに追加"
-                width="20"
-                height="20"
-                style={{ border: 'none' }}
+              <HatenaIcon size={32} />
+            </HatenaShareButton>
+            <div style={{ textAlign: 'center' }}>
+              <HatenaShareCount
+                url={window.location.href}
+                className="Demo__some-network__share-count"
               />
-            </a>
+            </div>
           </Item>
           <Item>
             <PocketLink url={window.location.href} title={article.title} />

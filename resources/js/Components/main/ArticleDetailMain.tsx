@@ -2,8 +2,6 @@ import { Box, Chip, Grid, Paper, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
 import Tags from '@/Components/Tags';
-import FacebookShareButton from '../sns/FacebookShareButton';
-import PocketLinkVertical from '../sns/PocketLinkVertical';
 import { Suspense } from 'react';
 import { ArticleType } from '../types/ArticleTypes';
 import SnsSideBar from '@/Components/sidebar/SnsSideBar';
@@ -11,6 +9,24 @@ import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 import { getStorage } from '@/Components/common/functions';
 import { convertGenre, makeGenreColor } from '../filters/articleFilter';
 import CachedIcon from '@mui/icons-material/Cached';
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  HatenaShareButton,
+  HatenaShareCount,
+  HatenaIcon,
+  LineShareButton,
+  LineIcon,
+  VKIcon,
+  VKShareButton,
+  VKShareCount,
+  PocketIcon,
+  PocketShareButton,
+  TwitterShareButton,
+  XIcon,
+  WhatsappIcon,
+  WhatsappShareButton,
+} from 'react-share';
 
 type Props = {
   article: ArticleType;
@@ -156,7 +172,7 @@ export default function ArticleDetailMain(props: Props) {
                     </Typography>
                     <Box
                       sx={{
-                        width: '340px',
+                        width: '70%',
                         margin: '0 auto',
                         paddingBottom: '20px',
                       }}
@@ -164,40 +180,84 @@ export default function ArticleDetailMain(props: Props) {
                       <Grid
                         container
                         direction="row"
-                        justifyContent="center"
+                        justifyContent="flex-start"
                         alignItems="flex-end"
+                        textAlign={'center'}
                       >
                         <Grid item xs={3}>
-                          <a
-                            href="https://twitter.com/share?ref_src=twsrc%5Etfw"
-                            className="twitter-share-button"
-                            data-show-count="false"
+                          <LineShareButton
+                            url={window.location.href}
+                            title={article.title}
+                            className="Demo__some-network__share-button"
                           >
-                            Tweet
-                          </a>
+                            <LineIcon size={32} round />
+                          </LineShareButton>
                         </Grid>
                         <Grid item xs={3}>
-                          <a
-                            href="https://b.hatena.ne.jp/entry/"
-                            className="hatena-bookmark-button"
-                            data-hatena-bookmark-layout="vertical-normal"
-                            data-hatena-bookmark-lang="ja"
-                            title="このエントリーをはてなブックマークに追加"
+                          <TwitterShareButton
+                            url={window.location.href}
+                            title={article.title}
+                            className="Demo__some-network__share-button"
                           >
-                            <img
-                              src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png"
-                              alt="このエントリーをはてなブックマークに追加"
-                              width="20"
-                              height="20"
-                              style={{ border: 'none' }}
+                            <XIcon size={32} round />
+                          </TwitterShareButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <div className="Demo__some-network">
+                            <div>
+                              <HatenaShareCount
+                                url={window.location.href}
+                                className="Demo__some-network__share-count"
+                              />
+                            </div>
+                            <HatenaShareButton
+                              url={window.location.href}
+                              title={article.title}
+                              windowWidth={660}
+                              windowHeight={460}
+                              className="Demo__some-network__share-button"
+                            >
+                              <HatenaIcon size={32} round />
+                            </HatenaShareButton>
+                          </div>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <FacebookShareButton url={window.location.href}>
+                            <FacebookIcon size={32} round />
+                          </FacebookShareButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <PocketShareButton
+                            url={window.location.href}
+                            title={article.title}
+                            className="Demo__some-network__share-button"
+                          >
+                            <PocketIcon size={32} round />
+                          </PocketShareButton>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <div style={{ textAlign: 'center' }}>
+                            <VKShareCount
+                              url={window.location.href}
+                              className="Demo__some-network__share-count"
                             />
-                          </a>
+                          </div>
+                          <VKShareButton
+                            url={window.location.href}
+                            className="Demo__some-network__share-button"
+                          >
+                            <VKIcon size={32} round />
+                          </VKShareButton>
                         </Grid>
                         <Grid item xs={3}>
-                          <FacebookShareButton url={window.location.href} />
-                        </Grid>
-                        <Grid item xs={3}>
-                          <PocketLinkVertical lang="ja" />
+                          <WhatsappShareButton
+                            url={window.location.href}
+                            title={article.title}
+                            separator=":: "
+                            className="Demo__some-network__share-button"
+                          >
+                            <WhatsappIcon size={32} round />
+                          </WhatsappShareButton>
                         </Grid>
                       </Grid>
                     </Box>
