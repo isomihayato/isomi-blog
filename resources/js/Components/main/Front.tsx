@@ -7,9 +7,11 @@ import { Suspense } from 'react';
 
 type Props = {
   element: JSX.Element;
+  paper?: boolean;
 };
 export default function Front(props: Props) {
   const { element } = props;
+  const { paper } = props;
   const snsNavShow = window.location.href.includes('/articles/details/')
     ? true
     : false;
@@ -27,7 +29,7 @@ export default function Front(props: Props) {
   };
   return (
     <>
-      <Box id="main" style={makeOuterStyle()} component={Paper}>
+      <Box id="main" style={makeOuterStyle()} component={paper ? Paper : 'div'}>
         <Suspense fallback={<div>Loading...</div>}>
           <div
             style={
@@ -103,4 +105,6 @@ export default function Front(props: Props) {
     </>
   );
 }
-Front.defaultProps = {};
+Front.defaultProps = {
+  paper: true,
+};

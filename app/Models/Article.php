@@ -20,6 +20,7 @@ class Article extends Model
         'visible',
         'user_id',
         'article_ad_template_id',
+        'genre',
     ];
 
     public function comments()

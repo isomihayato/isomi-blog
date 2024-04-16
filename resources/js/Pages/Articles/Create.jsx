@@ -6,9 +6,16 @@ import BlogEditor from '@/Components/BlogEditor';
 import { postArticle } from '@/Components/axios/axiosArticle';
 import formatDate from '@/Components/common/functions';
 import PropTypes from 'prop-types';
+import BasicSelect from '@/Components/inputs/BasicSelect';
 
 export default function Create({ auth, article_ad_templates }) {
   const label = { inputProps: { name: 'visible', 'aria-label': '表示' } };
+  const genreRows = [
+    { value: 0, label: '備忘録' },
+    { value: 1, label: '読書まとめ' },
+    { value: 2, label: '便利記事系' },
+    { value: 3, label: 'ポエム' },
+  ];
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -21,6 +28,7 @@ export default function Create({ auth, article_ad_templates }) {
       visible: form.visible.checked,
       user_id: form.user_id.value,
       article_ad_template_id: form.article_ad_template_id.value,
+      genre: form.genre.value,
     };
     postArticle(data, (response) => {
       if (response.data.status === 'success') {
@@ -104,6 +112,9 @@ export default function Create({ auth, article_ad_templates }) {
                       );
                     })}
                   </Select>
+                </div>
+                <div>
+                  <BasicSelect rows={genreRows} label="ジャンル" name="genre" />
                 </div>
                 <div>
                   <Button variant="contained" type="submit">

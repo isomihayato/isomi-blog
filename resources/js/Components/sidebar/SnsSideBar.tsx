@@ -12,6 +12,7 @@ import { ArticleType } from '../types/ArticleTypes';
 import { FavoriteType } from '../types/FavoriteType';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
 import PocketLink from '../sns/PocketLink';
+import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
 
 type Props = {
   article: ArticleType;
@@ -80,14 +81,13 @@ export default React.memo(function SnsSideBar(props: Props) {
         <Stack
           spacing={2}
           padding={'10px 30px'}
-          justifyContent="center"
+          justifyContent="flex-end"
           alignItems="center"
-          style={isMobile ? {} : { marginTop: '120px', marginRight: '-20px' }}
+          style={isMobile ? {} : { marginTop: '0px', marginRight: '0px' }}
         >
           <Item>
             <div
               style={{
-                textAlign: 'center',
                 color: '#9a9a9a',
                 fontWeight: 'bold',
               }}
@@ -95,11 +95,14 @@ export default React.memo(function SnsSideBar(props: Props) {
               {favorites}
             </div>
             {loginedMemberFavorite ? (
-              <Avatar onClick={loginedMemberFavoriteClick}>
+              <Avatar
+                onClick={loginedMemberFavoriteClick}
+                style={{ float: 'right' }}
+              >
                 <FavoriteIcon />
               </Avatar>
             ) : (
-              <Avatar onClick={favoriteClick}>
+              <Avatar onClick={favoriteClick} style={{ float: 'right' }}>
                 <FavoriteBorderIcon />
               </Avatar>
             )}
@@ -125,20 +128,21 @@ export default React.memo(function SnsSideBar(props: Props) {
             </Avatar>
           </Item>
           <Item>
-            <a
-              href="https://b.hatena.ne.jp/entry/"
-              className="hatena-bookmark-button"
-              data-hatena-bookmark-layout="touch-counter"
-              title="このエントリーをはてなブックマークに追加"
+            <HatenaShareButton
+              url={window.location.href}
+              title={article.title}
+              windowWidth={660}
+              windowHeight={460}
+              className="Demo__some-network__share-button"
             >
-              <img
-                src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png"
-                alt="このエントリーをはてなブックマークに追加"
-                width="20"
-                height="20"
-                style={{ border: 'none' }}
+              <HatenaIcon size={32} />
+            </HatenaShareButton>
+            <div style={{ textAlign: 'center' }}>
+              <HatenaShareCount
+                url={window.location.href}
+                className="Demo__some-network__share-count"
               />
-            </a>
+            </div>
           </Item>
           <Item>
             <PocketLink url={window.location.href} title={article.title} />

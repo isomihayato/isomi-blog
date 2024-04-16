@@ -1,6 +1,38 @@
+#body {
+  background-color: #dddddd;
+}
+html {
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.7;
+}
+.font-style {
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.7;
+}
+pre p,
+li {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 1rem;
+}
+#introduce__content {
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+#main ul li {
+  list-style: disc;
+  margin-left: 2rem;
+}
+span.MuiStepLabel-label {
+  font-family: 'Noto Sans JP', sans-serif;
+  color: black !important;
+}
 pre {
   white-space: pre-wrap;
   word-break: break-all;
+}
+pre p {
+  color: black;
 }
 textarea[name='comment_body'] {
   width: 100%;
@@ -8,16 +40,21 @@ textarea[name='comment_body'] {
 #toc__content li {
   text-decoration-line: underline;
 }
+.visible-element {
+  transition: opacity 0.7s ease-in-out;
+  opacity: 1;
+}
+
+.hidden-element {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+}
 @media (max-width: 2000px) and (min-width: 768px) {
-  #body {
-    background-color: #dddddd;
-  }
   body h1 {
     border-bottom: 1px solid var(--color-divider);
-    font-size: 1.65em;
-    line-height: 1.4;
-    margin: 64px 0 16px;
-    padding-bottom: 4px;
+    font-size: 2rem;
+    margin-top: 5px;
     font-weight: bold;
   }
   body h2 {
@@ -27,6 +64,9 @@ textarea[name='comment_body'] {
     margin: 56px 0 16px;
     padding-bottom: 4px;
     font-weight: bold;
+    border-left: solid 8px #20c200;
+    border-bottom: solid 1px #d0d0d0;
+    padding-left: 5px;
   }
   body h3 {
     font-size: 1.29em;
@@ -60,6 +100,9 @@ textarea[name='comment_body'] {
   form {
     margin: 25px 0;
   }
+  .item--content {
+    color: black;
+  }
   .comment__outer {
     width: 50vw;
     margin: 0 auto;
@@ -70,9 +113,9 @@ textarea[name='comment_body'] {
   }
   div.cover {
     height: 437px;
+    width: 36%;
     background-color: #666666a1;
     position: absolute;
-    width: 49%;
     text-align: center;
     padding: 200px 0;
     font-size: 1.3rem;
@@ -103,9 +146,6 @@ textarea[name='comment_body'] {
   }
 }
 @media (max-width: 767px) {
-  #body {
-    background-color: #dddddd;
-  }
   body h1 {
     font-size: 1.6rem;
     font-weight: bold;
@@ -113,6 +153,10 @@ textarea[name='comment_body'] {
   body h2 {
     font-size: 1.4rem;
     font-weight: bold;
+    border-left: solid 8px #20c200;
+    border-bottom: solid 1px #d0d0d0;
+    margin-bottom: 10px;
+    padding-left: 5px;
   }
   body h3 {
     font-size: 1.2rem;
@@ -130,6 +174,9 @@ textarea[name='comment_body'] {
   }
   form {
     margin: 20px 0;
+  }
+  #advertisement img {
+    margin: 0 auto;
   }
   #footer {
     margin-top: 25px;

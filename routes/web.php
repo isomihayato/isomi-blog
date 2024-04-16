@@ -25,6 +25,9 @@ use Inertia\Inertia;
 
 Route::get('/', [FrontController::class, 'index'])->name('fronts.index');
 Route::get('/about', [FrontController::class, 'about'])->name('fronts.about');
+Route::get('/privacy_policy', [FrontController::class, 'privacy_policy'])->name('fronts.privacy_policy');
+Route::get('/contact', [FrontController::class, 'contact'])->name('fronts.contact');
+Route::post('/send_email', [FrontController::class, 'sendEmail'])->name('fronts.sendEmail');
 Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->name('fronts.infomation_list');
 Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');

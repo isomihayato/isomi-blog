@@ -54,7 +54,7 @@
     @inertiaHead
 </head>
 
-<body class="font-sans antialiased" id="body">
+<body class="antialiased" id="body">
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TCFXXTPW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
