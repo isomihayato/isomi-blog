@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import * as React from 'react';
-import {
-  Box,
-  Paper,
-  Breadcrumbs,
-  Link,
-  Typography,
-  Stack,
-} from '@mui/material';
+import React, { useEffect, useRef } from 'react';
+import { Box, Breadcrumbs, Link, Typography, Stack, Grid } from '@mui/material';
 import Front from '@/Components/header/Front';
 import ArticleDetailMain from '@/Components/main/ArticleDetailMain';
 import FrontFooter from '@/Components/footer/FrontFooter';
@@ -27,6 +20,7 @@ import { postAdvertisement } from '@/Components/axios/axiosAdvertisement';
 import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
+import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 
 export default function ArticleDetails({ article, relative_articles }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
@@ -34,6 +28,7 @@ export default function ArticleDetails({ article, relative_articles }) {
   const [advertisements, setAdvertisements] = React.useState([]);
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
   const [chapters, setChapters] = React.useState([]); // 記事の章リスト
+  const adElementRef = useRef(null);
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
   const Item = styled('div')(({ theme }) => ({
@@ -84,6 +79,7 @@ export default function ArticleDetails({ article, relative_articles }) {
       },
     );
   }, []);
+
   React.useEffect(() => {
     postComments({ id: article.id }, (res) => {
       setComments(res.data.comments);
@@ -131,6 +127,14 @@ export default function ArticleDetails({ article, relative_articles }) {
           justifyContent="center"
           alignItems="flex-start"
         >
+          {isMobile ? null : (
+            <Item>
+              <LeftSideBar
+                elementRef={adElementRef}
+                advertisements={advertisements}
+              />
+            </Item>
+          )}
           <Item>
             <ArticleDetailMain
               article={article}
@@ -140,23 +144,56 @@ export default function ArticleDetails({ article, relative_articles }) {
               ]}
               elements={[
                 <>
-                  {isMobile ? null : (
-                    <>
+                  <Box
+                    id="advertisement"
+                    sx={{
+                      minHeight: '500px',
+                      padding: isMobile ? '10px 15px' : '20px',
+                    }}
+                    ref={adElementRef}
+                  >
+                    <h2 style={{ marginTop: 0 }}>おもしろ広告エリア🔭👀</h2>
+                    <Typography variant="body1">
+                      広告は広告でも、管理者が「面白そうだな！」と感じたものをピックアップ！
+                    </Typography>
+                    <Typography variant="body1">
+                      お時間があれば、ぜひご覧ください😁
+                    </Typography>
+                    <Grid
+                      container
+                      spacing={1}
+                      mt={'20px'}
+                      justifyContent="center"
+                      alignItems="center"
+                    >
                       {advertisements
-                        .filter((ad) => ad.arrangement_name.includes('中央'))
-                        .map((ad) => {
+                        .filter((ad) =>
+                          ad.arrangement_name.includes('おもしろエリア'),
+                        )
+                        .map((advertisement, index) => {
                           return (
-                            <div
-                              key={ad.arrangement_name}
-                              dangerouslySetInnerHTML={{ __html: ad.content }}
-                            />
+                            <Grid
+                              key={index + 'advertise_omosiro'}
+                              item
+                              md={4}
+                              xs={12}
+                            >
+                              <div
+                                key={advertisement.arrangement_name}
+                                dangerouslySetInnerHTML={{
+                                  __html: advertisement.content,
+                                }}
+                              />
+                            </Grid>
                           );
                         })}
-                    </>
-                  )}
+                    </Grid>
+                  </Box>
+                </>,
+                <>
                   <Box id="comment">
                     <Box p={2}>
-                      <h2>コメント</h2>
+                      <h2 style={{ margin: 0 }}>コメント</h2>
                       {comments.map((comment, index) => {
                         return (
                           <CommentsCard
@@ -177,25 +214,6 @@ export default function ArticleDetails({ article, relative_articles }) {
                         articleId={article.id}
                         setAction={setAction}
                       />
-                      {isMobile ? null : (
-                        <>
-                          {advertisements
-                            .filter((ad) =>
-                              ad.arrangement_name.includes('コメント下'),
-                            )
-                            .map((ad) => {
-                              return (
-                                <div
-                                  key={ad.arrangement_name}
-                                  dangerouslySetInnerHTML={{
-                                    __html: ad.content,
-                                  }}
-                                  style={{ paddingTop: '2rem' }}
-                                />
-                              );
-                            })}
-                        </>
-                      )}
                     </Box>
                   </Box>
                 </>,

@@ -10,6 +10,7 @@ import SnsSideBar from '@/Components/sidebar/SnsSideBar';
 import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 import { getStorage } from '@/Components/common/functions';
 import { convertGenre, makeGenreColor } from '../filters/articleFilter';
+import CachedIcon from '@mui/icons-material/Cached';
 
 type Props = {
   article: ArticleType;
@@ -26,7 +27,6 @@ export default function ArticleDetailMain(props: Props) {
   const [loginedMemberFavorite, setLoginedMemberFavorite] =
     React.useState(undefined); // お気に入り登録済みかどうか
   const t_user = getStorage('user');
-  console.log(article);
 
   useEffect(() => {
     if (t_user === null || t_user === undefined) return;
@@ -76,6 +76,11 @@ export default function ArticleDetailMain(props: Props) {
       };
     }
   };
+  const underTitleSpanStype = {
+    fontSize: '.8rem',
+    fontWeight: '600',
+    color: '#787878',
+  };
   return (
     <>
       <Box id="main" style={makeOuterStyle()} className="font-style">
@@ -106,7 +111,18 @@ export default function ArticleDetailMain(props: Props) {
                 </span>
                 <div style={makeTitleStyle()}>
                   <h1> {article.title}</h1>
-                  <Tags tags={article.tags.split(',')} />
+                  <span style={underTitleSpanStype}>
+                    {article.published_at.slice(0, 10)}に公開
+                  </span>
+                  <CachedIcon
+                    style={{ marginLeft: '10px', color: '#787878' }}
+                  />
+                  <span style={underTitleSpanStype}>
+                    {article.updated_at.slice(0, 10)}
+                  </span>
+                  <div>
+                    <Tags tags={article.tags.split(',')} />
+                  </div>
                 </div>
 
                 <Suspense fallback={<div>Loading...</div>}>

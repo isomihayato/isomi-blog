@@ -36,8 +36,6 @@ export default function RightSideBar(props: Props) {
   };
 
   useEffect(() => {
-    console.log(relativeArticles);
-
     window.addEventListener('scroll', handleScroll);
 
     return () => {
@@ -48,7 +46,7 @@ export default function RightSideBar(props: Props) {
     <>
       <Stack
         spacing={2}
-        style={{ marginTop: '75px', width: '321px' }}
+        style={{ marginTop: '50px', width: '321px' }}
         textAlign={'left'}
       >
         <Item>
