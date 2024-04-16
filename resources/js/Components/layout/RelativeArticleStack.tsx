@@ -49,16 +49,16 @@ export default function RelativeArticleStack(props: Props) {
                   </Grid>
                 )}
                 <Grid item xs={12} md={10}>
-                  <div id="item--header" style={{ textAlign: 'left' }}>
+                  <div className="item--header" style={{ textAlign: 'left' }}>
                     <div
-                      id="item--date"
+                      className="item--date"
                       style={{ fontSize: '.8rem', overflow: 'hidden' }}
                     >
                       {article.created_at.slice(0, 10)}
                     </div>
                   </div>
                   <div
-                    id="item--content"
+                    className="item--content"
                     style={{
                       fontSize: '1rem',
                       textAlign: 'left',

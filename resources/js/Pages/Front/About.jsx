@@ -40,7 +40,12 @@ export default function InfomationList() {
       <MainFront
         element={
           <>
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              fontWeight={'bold'}
+            >
               このサイトは何？
             </Typography>
             <Box>

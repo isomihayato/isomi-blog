@@ -84,6 +84,7 @@ export default function RightSideBar(props: Props) {
           </Box>
         </Item>
         <Item
+          id="rightSideBar__mokuji"
           ref={elementRef}
           style={{
             position: isSticky ? 'fixed' : 'static',
@@ -103,6 +104,10 @@ export default function RightSideBar(props: Props) {
           style={{
             position: isSticky ? 'fixed' : 'static',
             width: '321px',
+            top: isSticky
+              ? document.getElementById('rightSideBar__mokuji').clientHeight +
+                15
+              : 'auto',
           }}
         >
           <Typography

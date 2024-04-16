@@ -11,10 +11,16 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginDialog from '../feedback/LoginDialog';
-import { Alert, Avatar, Menu, MenuItem } from '@mui/material';
+import { Alert, Avatar, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import { deleteStorage, getStorage } from '../common/functions';
 import { useEffect } from 'react';
 import InfoAlert from '../feedback/InfoAlert';
+import HomeIcon from '@mui/icons-material/Home';
+import SearchIcon from '@mui/icons-material/Search';
+import WebIcon from '@mui/icons-material/Web';
+import InfoIcon from '@mui/icons-material/Info';
+import PrivacyTipIcon from '@mui/icons-material/PrivacyTip';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 
 type Props = {
   loginOpen?: boolean;
@@ -64,22 +70,52 @@ export default function Front(props: Props) {
     >
       <List>
         <ListItem key="home" onClick={() => (window.location.href = '/')}>
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
           <ListItemText primary="ホーム" />
         </ListItem>
         <ListItem key="home" onClick={() => (window.location.href = '/about')}>
+          <ListItemIcon>
+            <WebIcon />
+          </ListItemIcon>
           <ListItemText primary="このサイトについて" />
         </ListItem>
         <ListItem
           key="search"
           onClick={() => (window.location.href = '/articles/search')}
         >
+          <ListItemIcon>
+            <SearchIcon />
+          </ListItemIcon>
           <ListItemText primary="記事検索" />
         </ListItem>
         <ListItem
-          key="search"
+          key="info-list"
           onClick={() => (window.location.href = '/infomations/list')}
         >
+          <ListItemIcon>
+            <InfoIcon />
+          </ListItemIcon>
           <ListItemText primary="お知らせ一覧" />
+        </ListItem>
+        <ListItem
+          key="privacy"
+          onClick={() => (window.location.href = '/privacy_policy')}
+        >
+          <ListItemIcon>
+            <PrivacyTipIcon />
+          </ListItemIcon>
+          <ListItemText primary="プライバシーポリシー" />
+        </ListItem>
+        <ListItem
+          key="contact"
+          onClick={() => (window.location.href = '/contact')}
+        >
+          <ListItemIcon>
+            <ContactSupportIcon />
+          </ListItemIcon>
+          <ListItemText primary="お問い合わせ" />
         </ListItem>
       </List>
     </Box>

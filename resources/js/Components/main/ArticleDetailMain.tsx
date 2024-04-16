@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Box, Chip, Grid, Paper, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
 import Tags from '@/Components/Tags';
@@ -9,6 +9,7 @@ import { ArticleType } from '../types/ArticleTypes';
 import SnsSideBar from '@/Components/sidebar/SnsSideBar';
 import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 import { getStorage } from '@/Components/common/functions';
+import { convertGenre, makeGenreColor } from '../filters/articleFilter';
 
 type Props = {
   article: ArticleType;
@@ -25,6 +26,7 @@ export default function ArticleDetailMain(props: Props) {
   const [loginedMemberFavorite, setLoginedMemberFavorite] =
     React.useState(undefined); // お気に入り登録済みかどうか
   const t_user = getStorage('user');
+  console.log(article);
 
   useEffect(() => {
     if (t_user === null || t_user === undefined) return;
@@ -68,10 +70,9 @@ export default function ArticleDetailMain(props: Props) {
       };
     } else {
       return {
-        padding: '32px 56px 0',
+        padding: '0px 56px 0',
         fontSize: '1.8rem',
         fontWeight: 'bold',
-        marginTop: '25px',
       };
     }
   };
@@ -91,9 +92,20 @@ export default function ArticleDetailMain(props: Props) {
           <Grid md={10}>
             {articleElements?.map((element, index) => (
               <Box key={index + 'main-content'} component={Paper}>
+                <span
+                  style={{ margin: '15px 0 0 20px', display: 'inline-block' }}
+                >
+                  <Chip
+                    label={convertGenre(article.genre)}
+                    style={{
+                      backgroundColor: makeGenreColor(article.genre),
+                      color: 'white',
+                      fontWeight: 'bold',
+                    }}
+                  />
+                </span>
                 <div style={makeTitleStyle()}>
-                  {article.title}
-                  <br />
+                  <h1> {article.title}</h1>
                   <Tags tags={article.tags.split(',')} />
                 </div>
 

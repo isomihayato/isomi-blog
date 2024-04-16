@@ -6,6 +6,8 @@ use Inertia\Inertia;
 use App\Models\Article;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Mail\ContactFormMail;
+use Illuminate\Support\Facades\Mail;
 
 class FrontController extends Controller
 {
@@ -24,6 +26,30 @@ class FrontController extends Controller
     public function about()
     {
         return Inertia::render('Front/About');
+    }
+
+    public function privacy_policy()
+    {
+        return Inertia::render('Front/PrivacyPolicy');
+    }
+
+    public function contact()
+    {
+        return Inertia::render('Front/Contact');
+    }
+
+    public function sendEmail(Request $request)
+    {
+        $details = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'title' => $request->title,
+            'message' => $request->message,
+        ];
+
+        Mail::to('isomihayato.blog@gmail.com')->send(new ContactFormMail($details));
+
+        return response()->json(['message' => 'メール送信が成功しました']);
     }
 
     public function article($id)

@@ -40,6 +40,7 @@ export default function Welcome({ articles_pagenation }) {
             <BlogPagination paginator={articles_pagenation} />
           </>
         }
+        paper={false}
       />
       <FrontFooter />
     </>
