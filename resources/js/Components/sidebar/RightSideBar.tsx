@@ -4,6 +4,8 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Avatar, Box, Grid, Typography } from '@mui/material';
 import VerticalStepper from '../navigations/VerticalSteper';
+import { ArticleType } from '../types/ArticleTypes';
+import RelativeArticleStack from '../layout/RelativeArticleStack';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -13,9 +15,10 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 type Props = {
   chapters: string[];
+  relativeArticles: ArticleType[];
 };
 export default function RightSideBar(props: Props) {
-  const { chapters } = props;
+  const { chapters, relativeArticles } = props;
   const [isSticky, setIsSticky] = useState(false);
   const elementRef = useRef(null);
   const stickyThreshold = 456; // positionをstaticに戻すY軸の値
@@ -33,6 +36,8 @@ export default function RightSideBar(props: Props) {
   };
 
   useEffect(() => {
+    console.log(relativeArticles);
+
     window.addEventListener('scroll', handleScroll);
 
     return () => {
@@ -93,6 +98,20 @@ export default function RightSideBar(props: Props) {
             目次
           </Typography>
           <VerticalStepper chapters={chapters} />
+        </Item>
+        <Item
+          style={{
+            position: isSticky ? 'fixed' : 'static',
+            width: '321px',
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 'bold', color: 'black' }}
+          >
+            関連記事
+            <RelativeArticleStack articles={relativeArticles} />
+          </Typography>
         </Item>
       </Stack>
     </>

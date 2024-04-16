@@ -28,7 +28,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 
-export default function ArticleDetails({ article }) {
+export default function ArticleDetails({ article, relative_articles }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments);
   const [advertisements, setAdvertisements] = React.useState([]);
@@ -206,7 +206,10 @@ export default function ArticleDetails({ article }) {
             <></>
           ) : (
             <Item>
-              <RightSideBar chapters={chapters} />
+              <RightSideBar
+                chapters={chapters}
+                relativeArticles={relative_articles}
+              />
             </Item>
           )}
         </Stack>
@@ -218,4 +221,5 @@ export default function ArticleDetails({ article }) {
 
 ArticleDetails.propTypes = {
   article: PropTypes.object.isRequired,
+  relative_articles: PropTypes.array.isRequired,
 };

@@ -29,9 +29,14 @@ class FrontController extends Controller
     public function article($id)
     {
         $article = Article::with(['comments.member'])->find($id);
+        $article_genre = $article->genre;
+        if ($article_genre !== null) {
+            $relative_articles = Article::where('genre', $article_genre)->orderBy('created_at', 'desc')->take(5)->get();
+        }
         return Inertia::render('Front/ArticleDetails', [
             'id' => $id,
-            'article' => $article
+            'article' => $article,
+            'relative_articles' => $relative_articles ?? null,
         ]);
     }
 
