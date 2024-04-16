@@ -33,8 +33,6 @@ export default function RightSideBar(props: Props) {
   };
 
   useEffect(() => {
-    console.log(chapters);
-
     window.addEventListener('scroll', handleScroll);
 
     return () => {
@@ -62,7 +60,10 @@ export default function RightSideBar(props: Props) {
                   </Grid>
                   <Grid item md={9.8} textAlign={'left'}>
                     <span>Written by</span>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ fontWeight: 'bold', color: 'black' }}
+                    >
                       磯海隼人（いそみ はやと）
                     </Typography>
                   </Grid>
@@ -85,7 +86,10 @@ export default function RightSideBar(props: Props) {
             width: '321px',
           }}
         >
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 'bold', color: 'black' }}
+          >
             目次
           </Typography>
           <VerticalStepper chapters={chapters} />

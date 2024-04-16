@@ -5,10 +5,16 @@ import { Button, Input, Select, MenuItem, Switch } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
 import { updateArticle } from '@/Components/axios/axiosArticle';
 import PropTypes from 'prop-types';
+import BasicSelect from '@/Components/inputs/BasicSelect';
 
 export default function Edit({ auth, id, article, article_ad_templates }) {
   const label = { inputProps: { name: 'visible', 'aria-label': '表示' } };
-
+  const genreRows = [
+    { value: 0, label: '備忘録' },
+    { value: 1, label: '読書まとめ' },
+    { value: 2, label: '便利記事系' },
+    { value: 3, label: 'ポエム' },
+  ];
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -21,6 +27,7 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
       visible: form.visible.checked,
       user_id: form.user_id.value,
       article_ad_template_id: form.article_ad_template_id.value,
+      genre: form.genre.value,
     };
     updateArticle(id, data, (response) => {
       if (response.data.status === 'success') {
@@ -113,6 +120,14 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
                       );
                     })}
                   </Select>
+                </div>
+                <div>
+                  <BasicSelect
+                    rows={genreRows}
+                    label="ジャンル"
+                    name="genre"
+                    value={article.genre}
+                  />
                 </div>
                 <div>
                   <Button variant="contained" type="submit">

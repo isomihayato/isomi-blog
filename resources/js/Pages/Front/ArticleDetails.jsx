@@ -69,7 +69,6 @@ export default function ArticleDetails({ article }) {
           .replace(/[^0-9a-zA-Z\u3041-\u3096\u30A1-\u30FA\u4E00-\u9FA5]/g, '');
       });
     setChapters(cha);
-    console.log(cha);
   }, []);
 
   React.useEffect(() => {
@@ -135,11 +134,72 @@ export default function ArticleDetails({ article }) {
           <Item>
             <ArticleDetailMain
               article={article}
-              element={
+              articleElements={[
+                // eslint-disable-next-line react/jsx-key
+                <ArticleContent />,
+              ]}
+              elements={[
                 <>
-                  <ArticleContent />
-                </>
-              }
+                  {isMobile ? null : (
+                    <>
+                      {advertisements
+                        .filter((ad) => ad.arrangement_name.includes('中央'))
+                        .map((ad) => {
+                          return (
+                            <div
+                              key={ad.arrangement_name}
+                              dangerouslySetInnerHTML={{ __html: ad.content }}
+                            />
+                          );
+                        })}
+                    </>
+                  )}
+                  <Box id="comment">
+                    <Box p={2}>
+                      <h2>コメント</h2>
+                      {comments.map((comment, index) => {
+                        return (
+                          <CommentsCard
+                            key={index}
+                            articleId={article.id}
+                            comment={comment}
+                            action={action}
+                            setAction={setAction}
+                          />
+                        );
+                      })}
+                      {logged ? (
+                        <></>
+                      ) : (
+                        <div className="cover">ログインしてコメントする</div>
+                      )}
+                      <CommentCard
+                        articleId={article.id}
+                        setAction={setAction}
+                      />
+                      {isMobile ? null : (
+                        <>
+                          {advertisements
+                            .filter((ad) =>
+                              ad.arrangement_name.includes('コメント下'),
+                            )
+                            .map((ad) => {
+                              return (
+                                <div
+                                  key={ad.arrangement_name}
+                                  dangerouslySetInnerHTML={{
+                                    __html: ad.content,
+                                  }}
+                                  style={{ paddingTop: '2rem' }}
+                                />
+                              );
+                            })}
+                        </>
+                      )}
+                    </Box>
+                  </Box>
+                </>,
+              ]}
             />
           </Item>
           {isMobile ? (
@@ -150,56 +210,6 @@ export default function ArticleDetails({ article }) {
             </Item>
           )}
         </Stack>
-      </Box>
-      {isMobile ? null : (
-        <>
-          {advertisements
-            .filter((ad) => ad.arrangement_name.includes('中央'))
-            .map((ad) => {
-              return (
-                <div
-                  key={ad.arrangement_name}
-                  dangerouslySetInnerHTML={{ __html: ad.content }}
-                />
-              );
-            })}
-        </>
-      )}
-      <Box component={Paper} className="comment__outer" id="comment">
-        <Box p={2}>
-          <h2>コメント</h2>
-          {comments.map((comment, index) => {
-            return (
-              <CommentsCard
-                key={index}
-                articleId={article.id}
-                comment={comment}
-                action={action}
-                setAction={setAction}
-              />
-            );
-          })}
-          {logged ? (
-            <></>
-          ) : (
-            <div className="cover">ログインしてコメントする</div>
-          )}
-          <CommentCard articleId={article.id} setAction={setAction} />
-          {isMobile ? null : (
-            <>
-              {advertisements
-                .filter((ad) => ad.arrangement_name.includes('コメント下'))
-                .map((ad) => {
-                  return (
-                    <div
-                      key={ad.arrangement_name}
-                      dangerouslySetInnerHTML={{ __html: ad.content }}
-                    />
-                  );
-                })}
-            </>
-          )}
-        </Box>
       </Box>
       <FrontFooter />
     </>

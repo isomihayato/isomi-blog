@@ -5,7 +5,7 @@ import { Stepper, Step, StepLabel, StepConnector, styled } from '@mui/material';
 const ColorlibConnector = styled(StepConnector)(() => ({
   '& .MuiStepConnector-line': {
     display: 'block',
-    borderColor: '#838383',
+    borderColor: 'black',
   },
 }));
 
@@ -19,7 +19,7 @@ const ColorlibStepIcon = styled('div')<{ ownerState: { active: boolean } }>(
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    color: '#fff',
+    color: 'black',
   }),
 );
 
@@ -44,8 +44,6 @@ function CustomizedSteppers(props: Props) {
     });
   };
   useEffect(() => {
-    console.log(chapters);
-
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);

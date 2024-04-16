@@ -12,13 +12,14 @@ import { getStorage } from '@/Components/common/functions';
 
 type Props = {
   article: ArticleType;
-  element: JSX.Element;
+  articleElements: JSX.Element[];
+  elements: JSX.Element[];
   action: string;
   setLoginOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setAction: React.Dispatch<React.SetStateAction<string>>;
 };
 export default function ArticleDetailMain(props: Props) {
-  const { action, article, element } = props;
+  const { action, article, articleElements, elements } = props;
   const { setLoginOpen, setAction } = props;
   const [favorites, setFavorites] = React.useState(undefined); // お気に入り数
   const [loginedMemberFavorite, setLoginedMemberFavorite] =
@@ -88,90 +89,113 @@ export default function ArticleDetailMain(props: Props) {
             />
           </Grid>
           <Grid md={10}>
-            <Box component={Paper}>
-              <div style={makeTitleStyle()}>
-                {article.title}
-                <br />
-                <Tags tags={article.tags.split(',')} />
-              </div>
-              <Suspense fallback={<div>Loading...</div>}>
-                <div
-                  style={
-                    isMobile
-                      ? { padding: '10px 15px' }
-                      : { padding: '0 56px 32px' }
-                  }
-                >
-                  {element}
+            {articleElements?.map((element, index) => (
+              <Box key={index + 'main-content'} component={Paper}>
+                <div style={makeTitleStyle()}>
+                  {article.title}
+                  <br />
+                  <Tags tags={article.tags.split(',')} />
                 </div>
-              </Suspense>
-              {snsNavShow && (
-                <>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    sx={{ mt: 2 }}
-                    style={{
-                      fontSize: '1.2rem',
-                      backgroundColor: '#1976d2',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      padding: '10px',
-                      marginBottom: '20px',
-                    }}
+
+                <Suspense fallback={<div>Loading...</div>}>
+                  <div
+                    style={
+                      isMobile
+                        ? { padding: '10px 15px' }
+                        : { padding: '0 56px 32px' }
+                    }
                   >
-                    励みになります！
-                  </Typography>
-                  <Box
-                    sx={{
-                      width: '340px',
-                      margin: '0 auto',
-                      paddingBottom: '20px',
-                    }}
-                  >
-                    <Grid
-                      container
-                      direction="row"
-                      justifyContent="center"
-                      alignItems="flex-end"
+                    {element}
+                  </div>
+                </Suspense>
+
+                {snsNavShow && (
+                  <>
+                    <Typography
+                      variant="h6"
+                      align="center"
+                      sx={{ mt: 2 }}
+                      style={{
+                        fontSize: '1.2rem',
+                        backgroundColor: '#1976d2',
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        padding: '10px',
+                        marginBottom: '20px',
+                      }}
                     >
-                      <Grid item xs={3}>
-                        <a
-                          href="https://twitter.com/share?ref_src=twsrc%5Etfw"
-                          className="twitter-share-button"
-                          data-show-count="false"
-                        >
-                          Tweet
-                        </a>
+                      励みになります！
+                    </Typography>
+                    <Box
+                      sx={{
+                        width: '340px',
+                        margin: '0 auto',
+                        paddingBottom: '20px',
+                      }}
+                    >
+                      <Grid
+                        container
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="flex-end"
+                      >
+                        <Grid item xs={3}>
+                          <a
+                            href="https://twitter.com/share?ref_src=twsrc%5Etfw"
+                            className="twitter-share-button"
+                            data-show-count="false"
+                          >
+                            Tweet
+                          </a>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <a
+                            href="https://b.hatena.ne.jp/entry/"
+                            className="hatena-bookmark-button"
+                            data-hatena-bookmark-layout="vertical-normal"
+                            data-hatena-bookmark-lang="ja"
+                            title="このエントリーをはてなブックマークに追加"
+                          >
+                            <img
+                              src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png"
+                              alt="このエントリーをはてなブックマークに追加"
+                              width="20"
+                              height="20"
+                              style={{ border: 'none' }}
+                            />
+                          </a>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <FacebookShareButton url={window.location.href} />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <PocketLinkVertical lang="ja" />
+                        </Grid>
                       </Grid>
-                      <Grid item xs={3}>
-                        <a
-                          href="https://b.hatena.ne.jp/entry/"
-                          className="hatena-bookmark-button"
-                          data-hatena-bookmark-layout="vertical-normal"
-                          data-hatena-bookmark-lang="ja"
-                          title="このエントリーをはてなブックマークに追加"
-                        >
-                          <img
-                            src="https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png"
-                            alt="このエントリーをはてなブックマークに追加"
-                            width="20"
-                            height="20"
-                            style={{ border: 'none' }}
-                          />
-                        </a>
-                      </Grid>
-                      <Grid item xs={3}>
-                        <FacebookShareButton url={window.location.href} />
-                      </Grid>
-                      <Grid item xs={3}>
-                        <PocketLinkVertical lang="ja" />
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </>
-              )}
-            </Box>
+                    </Box>
+                  </>
+                )}
+              </Box>
+            ))}
+            {elements.map((element, index) => (
+              <Box
+                key={index + 'main-content'}
+                component={Paper}
+                sx={{ marginTop: '30px' }}
+              >
+                <Suspense fallback={<div>Loading...</div>}>
+                  <div
+                    style={
+                      isMobile
+                        ? { paddingTop: '1rem' }
+                        : { padding: '1.5rem 2rem' }
+                    }
+                  >
+                    {element}
+                  </div>
+                </Suspense>
+              </Box>
+            ))}
           </Grid>
         </Grid>
       </Box>

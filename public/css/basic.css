@@ -23,6 +23,10 @@ ul li {
   list-style: disc;
   margin-left: 2rem;
 }
+span.MuiStepLabel-label {
+  font-family: 'Noto Sans JP', sans-serif;
+  color: black !important;
+}
 pre {
   white-space: pre-wrap;
   word-break: break-all;
@@ -95,9 +99,9 @@ textarea[name='comment_body'] {
   }
   div.cover {
     height: 437px;
+    width: 36%;
     background-color: #666666a1;
     position: absolute;
-    width: 49%;
     text-align: center;
     padding: 200px 0;
     font-size: 1.3rem;
