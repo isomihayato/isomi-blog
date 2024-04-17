@@ -74,7 +74,7 @@ export default function ArticleDetailMain(props: Props) {
         marginTop: '25px',
       };
     } else {
-      return { margin: '50px auto', width: '50vw', minHeight: '65vh' };
+      return { margin: '50px auto', width: '65vw', minHeight: '65vh' };
     }
   };
   const makeTitleStyle = () => {

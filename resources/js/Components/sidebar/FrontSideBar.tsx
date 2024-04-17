@@ -14,7 +14,7 @@ export default function FrontSideBar(props: Props) {
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    width: '280px',
+    width: window.innerWidth < 1500 ? '230px' : '280px',
     border: '1px solid #000',
     margin: '0 auto',
     fontFamily: 'Noto Sans JP, sans-serif',

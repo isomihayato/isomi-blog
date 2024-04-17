@@ -22,6 +22,7 @@ export default function RightSideBar(props: Props) {
   const [isSticky, setIsSticky] = useState(false);
   const elementRef = useRef(null);
   const stickyThreshold = 456; // positionをstaticに戻すY軸の値
+  const rightSideWidth = '300px';
 
   const handleScroll = () => {
     const scrolled = window.scrollY;
@@ -46,7 +47,7 @@ export default function RightSideBar(props: Props) {
     <>
       <Stack
         spacing={2}
-        style={{ marginTop: '50px', width: '321px' }}
+        style={{ marginTop: '50px', width: rightSideWidth }}
         textAlign={'left'}
       >
         <Item>
@@ -87,7 +88,7 @@ export default function RightSideBar(props: Props) {
           style={{
             position: isSticky ? 'fixed' : 'static',
             top: isSticky ? 0 : 'auto',
-            width: '321px',
+            width: rightSideWidth,
           }}
         >
           <Typography
@@ -101,7 +102,7 @@ export default function RightSideBar(props: Props) {
         <Item
           style={{
             position: isSticky ? 'fixed' : 'static',
-            width: '321px',
+            width: rightSideWidth,
             top: isSticky
               ? document.getElementById('rightSideBar__mokuji').clientHeight +
                 15

@@ -40,7 +40,7 @@ function LeftSideBar(props: Props) {
         className={isVisible ? 'visible-element' : 'hidden-element'}
         style={{
           position: 'fixed',
-          left: window.innerWidth < 1500 ? '15px' : '8vw',
+          left: window.innerWidth < 1500 ? '15px' : '4vw',
           top: '10px',
         }}
       >
