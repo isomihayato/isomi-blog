@@ -175,7 +175,8 @@ export default function ArticleDetails({ article, relative_articles }) {
                             <Grid
                               key={index + 'advertise_omosiro'}
                               item
-                              md={4}
+                              xd={4}
+                              md={6}
                               xs={12}
                             >
                               <div
