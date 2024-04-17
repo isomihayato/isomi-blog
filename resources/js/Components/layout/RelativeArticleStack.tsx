@@ -66,7 +66,9 @@ export default function RelativeArticleStack(props: Props) {
                       overflow: 'hidden',
                     }}
                   >
-                    {article.title}
+                    {article.title.length <= 25
+                      ? article.title
+                      : article.title.slice(0, 25) + '...'}
                   </div>
                 </Grid>
               </Grid>
