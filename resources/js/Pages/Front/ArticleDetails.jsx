@@ -31,6 +31,9 @@ export default function ArticleDetails({ article, relative_articles }) {
   const adElementRef = useRef(null);
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
+  const funAdvertises = advertisements.filter((ad) =>
+    ad.arrangement_name.includes('おもしろエリア'),
+  );
   const Item = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
     padding: theme.spacing(1),
@@ -51,18 +54,11 @@ export default function ArticleDetails({ article, relative_articles }) {
   React.useEffect(() => {
     // article.bodyから章を抽出し、chaptersオブジェクトを作成
     // 絵文字,記号,空白を削除し、## で始まる行を抽出
-    const cha = article.body
-      ?.split('\n')
-      .filter((b) => {
-        if (b.startsWith('## ')) {
-          return b;
-        }
-      })
-      .map((b) => {
-        return b
-          .replace('## ', '')
-          .replace(/[^0-9a-zA-Z\u3041-\u3096\u30A1-\u30FA\u4E00-\u9FA5]/g, '');
-      });
+    const cha = article.body?.split('\n').filter((b) => {
+      if (b.startsWith('## ') || b.startsWith('### ')) {
+        return b;
+      }
+    });
     setChapters(cha);
   }, []);
 
@@ -85,6 +81,79 @@ export default function ArticleDetails({ article, relative_articles }) {
       setComments(res.data.comments);
     });
   }, [action]);
+
+  const mainUnderElements = [
+    <>
+      {funAdvertises.length > 0 ? (
+        <Box
+          id="advertisement"
+          sx={{
+            minHeight: '500px',
+            padding: isMobile ? '10px 15px' : '20px',
+          }}
+          ref={adElementRef}
+        >
+          <h2 style={{ marginTop: 0 }}>おもしろ広告エリア🔭👀</h2>
+          <Typography variant="body1">
+            広告は広告でも、管理者が「面白そうだな！」と感じたものをピックアップ！
+          </Typography>
+          <Typography variant="body1">
+            お時間があれば、ぜひご覧ください😁
+          </Typography>
+          <Grid
+            container
+            spacing={1}
+            mt={'20px'}
+            justifyContent="center"
+            alignItems="center"
+          >
+            {funAdvertises.map((advertisement, index) => {
+              return (
+                <Grid
+                  key={index + 'advertise_omosiro'}
+                  item
+                  lg={4}
+                  md={6}
+                  xs={12}
+                >
+                  <div
+                    key={advertisement.arrangement_name}
+                    dangerouslySetInnerHTML={{
+                      __html: advertisement.content,
+                    }}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
+      ) : null}
+    </>,
+    <>
+      <Box id="comment">
+        <Box p={2}>
+          <h2 style={{ margin: 0 }}>コメント</h2>
+          {comments.map((comment, index) => {
+            return (
+              <CommentsCard
+                key={index}
+                articleId={article.id}
+                comment={comment}
+                action={action}
+                setAction={setAction}
+              />
+            );
+          })}
+          {logged ? (
+            <></>
+          ) : (
+            <div className="cover">ログインしてコメントする</div>
+          )}
+          <CommentCard articleId={article.id} setAction={setAction} />
+        </Box>
+      </Box>
+    </>,
+  ];
 
   return (
     <>
@@ -142,83 +211,11 @@ export default function ArticleDetails({ article, relative_articles }) {
                 // eslint-disable-next-line react/jsx-key
                 <ArticleContent />,
               ]}
-              elements={[
-                <>
-                  <Box
-                    id="advertisement"
-                    sx={{
-                      minHeight: '500px',
-                      padding: isMobile ? '10px 15px' : '20px',
-                    }}
-                    ref={adElementRef}
-                  >
-                    <h2 style={{ marginTop: 0 }}>おもしろ広告エリア🔭👀</h2>
-                    <Typography variant="body1">
-                      広告は広告でも、管理者が「面白そうだな！」と感じたものをピックアップ！
-                    </Typography>
-                    <Typography variant="body1">
-                      お時間があれば、ぜひご覧ください😁
-                    </Typography>
-                    <Grid
-                      container
-                      spacing={1}
-                      mt={'20px'}
-                      justifyContent="center"
-                      alignItems="center"
-                    >
-                      {advertisements
-                        .filter((ad) =>
-                          ad.arrangement_name.includes('おもしろエリア'),
-                        )
-                        .map((advertisement, index) => {
-                          return (
-                            <Grid
-                              key={index + 'advertise_omosiro'}
-                              item
-                              xd={4}
-                              md={6}
-                              xs={12}
-                            >
-                              <div
-                                key={advertisement.arrangement_name}
-                                dangerouslySetInnerHTML={{
-                                  __html: advertisement.content,
-                                }}
-                              />
-                            </Grid>
-                          );
-                        })}
-                    </Grid>
-                  </Box>
-                </>,
-                <>
-                  <Box id="comment">
-                    <Box p={2}>
-                      <h2 style={{ margin: 0 }}>コメント</h2>
-                      {comments.map((comment, index) => {
-                        return (
-                          <CommentsCard
-                            key={index}
-                            articleId={article.id}
-                            comment={comment}
-                            action={action}
-                            setAction={setAction}
-                          />
-                        );
-                      })}
-                      {logged ? (
-                        <></>
-                      ) : (
-                        <div className="cover">ログインしてコメントする</div>
-                      )}
-                      <CommentCard
-                        articleId={article.id}
-                        setAction={setAction}
-                      />
-                    </Box>
-                  </Box>
-                </>,
-              ]}
+              elements={
+                advertisements.length > 0
+                  ? mainUnderElements
+                  : mainUnderElements.slice(1)
+              }
             />
           </Item>
           {isMobile ? (
