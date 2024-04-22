@@ -20,7 +20,7 @@ export default function InfomationList() {
         <meta
           name="description"
           content={
-            '当ブログサイト、INFO BOXは、管理主、磯海隼人のプログラミングや技術系の情報を発信するためのブログサイトです'
+            '当ブログサイト、INFO BOXは、管理主、りっすんのプログラミングや技術系の情報を発信するためのブログサイトです'
           }
         />
         <meta property="og:type" content="article" />
@@ -50,7 +50,7 @@ export default function InfomationList() {
             </Typography>
             <Box>
               <Typography variant="body1" component="p" gutterBottom>
-                このサイトは、管理主、磯海隼人のプログラミングや技術系の情報を発信するためのブログサイトです♪(
+                このサイトは、管理主、りっすんのプログラミングや技術系の情報を発信するためのブログサイトです♪(
                 ´θ｀)ノ
               </Typography>
               <br />
