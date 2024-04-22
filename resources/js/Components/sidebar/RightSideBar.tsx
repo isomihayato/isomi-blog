@@ -68,7 +68,7 @@ export default function RightSideBar(props: Props) {
                       variant="subtitle1"
                       sx={{ fontWeight: 'bold', color: 'black' }}
                     >
-                      りっすん（いそみ はやと）
+                      りっすん
                     </Typography>
                   </Grid>
                 </Grid>
