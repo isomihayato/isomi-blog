@@ -68,7 +68,7 @@ export default function RightSideBar(props: Props) {
                       variant="subtitle1"
                       sx={{ fontWeight: 'bold', color: 'black' }}
                     >
-                      磯海隼人（いそみ はやと）
+                      りっすん（いそみ はやと）
                     </Typography>
                   </Grid>
                 </Grid>

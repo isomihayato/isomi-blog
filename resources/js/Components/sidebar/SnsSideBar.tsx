@@ -111,7 +111,7 @@ export default React.memo(function SnsSideBar(props: Props) {
             <Avatar
               onClick={() =>
                 (window.location.href =
-                  encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | 磯海隼人&hashtags=infobox
+                  encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | りっすん&hashtags=infobox
   `))
               }
             >

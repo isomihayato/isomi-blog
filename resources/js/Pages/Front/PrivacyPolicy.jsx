@@ -20,7 +20,7 @@ export default function InfomationList() {
         <meta
           name="description"
           content={
-            '当ブログサイト、INFO BOXは、管理主、磯海隼人のプログラミングや技術系の情報を発信するためのブログサイトです。'
+            '当ブログサイト、INFO BOXは、管理主、りっすんのプログラミングや技術系の情報を発信するためのブログサイトです。'
           }
         />
         <meta property="og:type" content="article" />
@@ -91,7 +91,7 @@ export default function InfomationList() {
               <p>
                 プライバシーポリシーに関するお問い合わせは、以下の連絡先までお願い致します。
               </p>
-              <p>isomihayato.blog@gmail.com</p>
+              <p>listen.risu.blog@gmail.com</p>
             </Box>
           </>
         }

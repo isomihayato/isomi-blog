@@ -58,7 +58,7 @@ export default function ArticleStack(props: Props) {
                       id="item--title"
                       style={{ fontSize: '.8rem', overflow: 'hidden' }}
                     >
-                      {'written by 磯海隼人'}
+                      {'written by りっすん'}
                     </div>
                     <div
                       id="item--date"
