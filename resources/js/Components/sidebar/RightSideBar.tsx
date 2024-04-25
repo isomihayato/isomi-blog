@@ -55,14 +55,14 @@ export default function RightSideBar(props: Props) {
             <Box>
               <Box id="introduce__header" style={{ marginBottom: '15px' }}>
                 <Grid container alignItems="center">
-                  <Grid item md={2.2} textAlign={'right'}>
-                    <Avatar
-                      alt="磯海 隼人"
-                      src="/static/images/avatar/1.jpg"
-                      sx={{ float: 'right', width: '60px', height: '60px' }}
+                  <Grid item md={3} textAlign={'right'}>
+                    <img
+                      src="/img/risu.webp"
+                      style={{ width: '80px' }}
+                      alt="ブログ管理人アイコン"
                     />
                   </Grid>
-                  <Grid item md={9.8} textAlign={'left'}>
+                  <Grid item md={9} textAlign={'left'} pl={'10px'}>
                     <span>Written by</span>
                     <Typography
                       variant="subtitle1"
