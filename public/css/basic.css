@@ -113,7 +113,7 @@ textarea[name='comment_body'] {
   }
   div.cover {
     height: 437px;
-    width: 36%;
+    width: 50%;
     background-color: #666666a1;
     position: absolute;
     text-align: center;

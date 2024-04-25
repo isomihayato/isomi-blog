@@ -135,8 +135,17 @@ export default function Front(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            INFO BOX
+          <img
+            src="/img/info_box.webp"
+            alt="ロゴ"
+            style={{ marginRight: '5px', width: '110px' }}
+          />
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: 'bold' }}
+          >
+            BOX
           </Typography>
           {user === undefined || user === null ? (
             <Button color="inherit" onClick={() => setOpen(true)}>
