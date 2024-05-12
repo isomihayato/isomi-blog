@@ -36,7 +36,7 @@ export default function InfomationList({ infomations_pagenation }) {
         />
         <link
           rel="canonical"
-          href="https://info-space-box.net/infomations/list"
+          href="https://mie-fishing.info/infomations/list"
         />
       </Helmet>
       <Head

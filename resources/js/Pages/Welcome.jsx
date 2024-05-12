@@ -20,10 +20,10 @@ export default function Welcome({ articles_pagenation }) {
           content="記事一覧 ${articles_pagenation.current_page}ページ目 | MIE Fishing"
         />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href="https://info-space-box.net" />
+        <link rel="canonical" href="https://mie-fishing.info" />
       </Helmet>
       <Head
-        title={`技術系記事一覧 ${articles_pagenation.current_page}ページ目`}
+        title={`釣り記事一覧 ${articles_pagenation.current_page}ページ目`}
       />
       <ResponsibleHeader
         breadcrumbsLink={

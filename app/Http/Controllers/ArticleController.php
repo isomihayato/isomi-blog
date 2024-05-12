@@ -61,14 +61,14 @@ class ArticleController extends Controller
         $sitemapContent .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
         // 固定ページのURLを追加
-        $sitemapContent .= '<url><loc>https://info-space-box.net/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>';
-        $sitemapContent .= '<url><loc>https://info-space-box.net/articles/search</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
-        $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+        $sitemapContent .= '<url><loc>https://mie-fishing.info/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>';
+        $sitemapContent .= '<url><loc>https://mie-fishing.info/articles/search</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+        $sitemapContent .= '<url><loc>https://mie-fishing.info/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
 
         // 記事のURLを動的に追加
         $articles = Article::all(); // すべての記事を取得
         foreach ($articles as $article) {
-            $sitemapContent .= '<url><loc>https://info-space-box.net/articles/details/' . $article->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
+            $sitemapContent .= '<url><loc>https://mie-fishing.info/articles/details/' . $article->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
         }
 
         // サイトマップの終了タグを追加

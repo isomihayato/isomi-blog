@@ -7,5 +7,5 @@ Disallow: /password
 Disallow: /reset
 Disallow: /email
 
-Sitemap: https://info-space-box.net/storage/sitemap.xml
-Sitemap: https://info-space-box.net/storage/sitemap_infomations.xml
+Sitemap: https://mie-fishing.info/storage/sitemap.xml
+Sitemap: https://mie-fishing.info/storage/sitemap_infomations.xml

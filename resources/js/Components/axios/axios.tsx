@@ -15,7 +15,7 @@ type AxiosType<T = unknown> = {
 };
 export default function AxiosWrapper(props: WrapperType) {
   const { method, url, data, callback, errors, contentType } = props;
-  // axios.defaults.baseURL = 'https://info-space-box.net';
+  // axios.defaults.baseURL = 'https://mie-fishing.info';
   axios.defaults.baseURL = 'http://localhost:81';
   axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
   axios({
@@ -40,7 +40,7 @@ export default function AxiosWrapper(props: WrapperType) {
 
 export async function axiosAwait(props: AxiosType) {
   const { method, url, data } = props;
-  // axios.defaults.baseURL = 'https://info-space-box.net';
+  // axios.defaults.baseURL = 'https://mie-fishing.info';
   axios.defaults.baseURL = 'http://localhost:81';
   axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
   axios.defaults.headers.common['SameSite'] = 'None';
@@ -83,6 +83,3 @@ export async function axiosAwait(props: AxiosType) {
   }
   return null;
 }
-AxiosWrapper.defaultProps = {
-  errors: () => {},
-};

@@ -174,7 +174,7 @@ export default function ArticleDetails({ article, relative_articles }) {
         <meta property="fb:app_id" content="1437461986868001" />
         <link
           rel="canonical"
-          href={`https://info-space-box.net/articles/details/${article.id}`}
+          href={`https://mie-fishing.info/articles/details/${article.id}`}
         />
       </Helmet>
       <Head title={article.title} />

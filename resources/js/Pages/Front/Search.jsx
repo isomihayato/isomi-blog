@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
-import Front from '@/Components/header/Front';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import ArticleStack from '@/Components/layout/ArticleStack';
@@ -41,7 +40,7 @@ export default function Search(articles) {
           <meta name="description" content={`記事検索${title} | MIE Fishing`} />
           <link
             rel="canonical"
-            href="https://info-space-box.net/articles/search"
+            href="https://mie-fishing.info/articles/search"
           />
         </Helmet>
         <Head title={`記事検索${title}`} />
@@ -67,6 +66,7 @@ export default function Search(articles) {
   };
   return (
     <>
+      <Head title={`釣り記事検索`} />
       <ResponsibleHeader
         breadcrumbsLink={
           <>

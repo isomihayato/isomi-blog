@@ -69,10 +69,10 @@ export default function SPBottonAppBar(props: Props) {
       );
     } else if (newValue === 1) {
       window.location.href = encodeURI(
-        `https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | コモ&トモ&hashtags=infobox`,
+        `https://twitter.com/intent/tweet?url=https://mie-fishing.info/articles/details/${article.id}&text=${article.title} | コモ&トモ&hashtags=infobox`,
       );
     } else if (newValue === 2) {
-      window.location.href = `http://www.facebook.com/sharer.php?u=https://info-space-box.net/articles/details/${article.id}`;
+      window.location.href = `http://www.facebook.com/sharer.php?u=https://mie-fishing.info/articles/details/${article.id}`;
     }
     setValue(newValue);
   };
