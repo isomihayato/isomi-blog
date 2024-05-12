@@ -11,6 +11,8 @@ import { getStorage } from '../common/functions';
 import { ArticleType } from '../types/ArticleTypes';
 import { FavoriteType } from '../types/FavoriteType';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
+import PocketLink from '../sns/PocketLink';
+import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
 
 type Props = {
   article: ArticleType;
@@ -19,7 +21,7 @@ type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setAction: React.Dispatch<React.SetStateAction<string>>;
 };
-export default function SnsSideBar(props: Props) {
+export default React.memo(function SnsSideBar(props: Props) {
   const { article, favorites, loginedMemberFavorite, setOpen, setAction } =
     props;
   const user = getStorage('user');
@@ -79,14 +81,13 @@ export default function SnsSideBar(props: Props) {
         <Stack
           spacing={2}
           padding={'10px 30px'}
-          justifyContent="center"
+          justifyContent="flex-end"
           alignItems="center"
-          style={isMobile ? {} : { marginTop: '120px', marginRight: '-20px' }}
+          style={isMobile ? {} : { marginTop: '0px', marginRight: '0px' }}
         >
           <Item>
             <div
               style={{
-                textAlign: 'center',
                 color: '#9a9a9a',
                 fontWeight: 'bold',
               }}
@@ -94,11 +95,14 @@ export default function SnsSideBar(props: Props) {
               {favorites}
             </div>
             {loginedMemberFavorite ? (
-              <Avatar onClick={loginedMemberFavoriteClick}>
+              <Avatar
+                onClick={loginedMemberFavoriteClick}
+                style={{ float: 'right' }}
+              >
                 <FavoriteIcon />
               </Avatar>
             ) : (
-              <Avatar onClick={favoriteClick}>
+              <Avatar onClick={favoriteClick} style={{ float: 'right' }}>
                 <FavoriteBorderIcon />
               </Avatar>
             )}
@@ -107,7 +111,7 @@ export default function SnsSideBar(props: Props) {
             <Avatar
               onClick={() =>
                 (window.location.href =
-                  encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | 磯海隼人&hashtags=infobox
+                  encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | コモ&トモ&hashtags=infobox
   `))
               }
             >
@@ -123,9 +127,28 @@ export default function SnsSideBar(props: Props) {
               <FacebookIcon />
             </Avatar>
           </Item>
+          <Item>
+            <HatenaShareButton
+              url={window.location.href}
+              title={article.title}
+              windowWidth={660}
+              windowHeight={460}
+              className="Demo__some-network__share-button"
+            >
+              <HatenaIcon size={32} />
+            </HatenaShareButton>
+            <div style={{ textAlign: 'center' }}>
+              <HatenaShareCount
+                url={window.location.href}
+                className="Demo__some-network__share-count"
+              />
+            </div>
+          </Item>
+          <Item>
+            <PocketLink url={window.location.href} title={article.title} />
+          </Item>
         </Stack>
       )}
     </>
   );
-}
-SnsSideBar.defaultProps = {};
+});

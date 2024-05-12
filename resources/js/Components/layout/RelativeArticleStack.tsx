@@ -5,7 +5,6 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Avatar, Grid } from '@mui/material';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
-import Tags from '@/Components/Tags';
 import { isMobile } from 'react-device-detect';
 import { ArticleType } from '../types/ArticleTypes';
 
@@ -21,7 +20,7 @@ type Props = {
   articles: ArticleType[];
 };
 
-export default function ArticleStack(props: Props) {
+export default function RelativeArticleStack(props: Props) {
   const { articles } = props;
 
   return (
@@ -38,49 +37,38 @@ export default function ArticleStack(props: Props) {
             <div>
               <Grid container spacing={2}>
                 {isMobile ? null : (
-                  <Grid item xs={12} md={1.3}>
+                  <Grid item xs={12} md={2}>
                     <div id="icon" style={{ float: 'right' }}>
                       <Avatar
                         alt="ブログアバター"
-                        sx={{ width: '60px', height: '60px' }}
+                        sx={{ width: '40px', height: '40px' }}
                       >
                         <ImageNotSupportedIcon />
                       </Avatar>
                     </div>
                   </Grid>
                 )}
-                <Grid item xs={12} md={10.7}>
-                  <div
-                    id="item--header"
-                    style={{ height: '60px', textAlign: 'left' }}
-                  >
+                <Grid item xs={12} md={10}>
+                  <div className="item--header" style={{ textAlign: 'left' }}>
                     <div
-                      id="item--title"
-                      style={{ fontSize: '.8rem', overflow: 'hidden' }}
-                    >
-                      {'written by コモ&トモ'}
-                    </div>
-                    <div
-                      id="item--date"
+                      className="item--date"
                       style={{ fontSize: '.8rem', overflow: 'hidden' }}
                     >
                       {article.created_at.slice(0, 10)}
                     </div>
                   </div>
                   <div
-                    id="item--content"
+                    className="item--content"
                     style={{
-                      fontSize: '1.5rem',
+                      fontSize: '1rem',
                       textAlign: 'left',
                       fontWeight: '600',
                       overflow: 'hidden',
-                      marginBottom: '10px',
                     }}
                   >
-                    {article.title}
-                  </div>
-                  <div id="item--tags" style={{ textAlign: 'left' }}>
-                    <Tags tags={article.tags.split(',')} />
+                    {article.title.length <= 25
+                      ? article.title
+                      : article.title.slice(0, 25) + '...'}
                   </div>
                 </Grid>
               </Grid>

@@ -20,8 +20,29 @@ type Props = {
 };
 export default function SPBottonAppBar(props: Props) {
   const [value, setValue] = React.useState(0);
+  const [show, setShow] = React.useState(true);
   const { article, favorites, loginedMemberFavorite, user, setAction } = props;
   const goods = favorites ? favorites : '';
+  const handleScroll = () => {
+    const element = document.getElementById('footer');
+    const main = document.getElementById('main');
+    const comment = document.getElementById('comment');
+    if (element) {
+      const targetY = main.clientHeight - comment.clientHeight + 300;
+      if (window.scrollY >= targetY) {
+        setShow(false);
+      }
+      if (window.scrollY < targetY) {
+        setShow(true);
+      }
+    }
+  };
+  React.useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   const handleChange = (event, newValue) => {
     if (newValue === 'favorite') {
       postFavorite(
@@ -48,7 +69,7 @@ export default function SPBottonAppBar(props: Props) {
       );
     } else if (newValue === 1) {
       window.location.href = encodeURI(
-        `https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | 磯海隼人&hashtags=infobox`,
+        `https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | コモ&トモ&hashtags=infobox`,
       );
     } else if (newValue === 2) {
       window.location.href = `http://www.facebook.com/sharer.php?u=https://info-space-box.net/articles/details/${article.id}`;
@@ -57,29 +78,33 @@ export default function SPBottonAppBar(props: Props) {
   };
 
   return (
-    <Box>
-      <Paper
-        sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }}
-        elevation={3}
-      >
-        <BottomNavigation showLabels value={value} onChange={handleChange}>
-          {loginedMemberFavorite ? (
-            <BottomNavigationAction
-              label={`${goods} いいね！`}
-              icon={<FavoriteIcon />}
-              value={'unfavorite'}
-            />
-          ) : (
-            <BottomNavigationAction
-              label={`${goods} いいね！`}
-              icon={<FavoriteBorderIcon />}
-              value={'favorite'}
-            />
-          )}
-          <BottomNavigationAction label="に投稿" icon={<XIcon />} />
-          <BottomNavigationAction label="に投稿" icon={<FacebookIcon />} />
-        </BottomNavigation>
-      </Paper>
-    </Box>
+    <>
+      {show ? (
+        <Box>
+          <Paper
+            sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }}
+            elevation={3}
+          >
+            <BottomNavigation showLabels value={value} onChange={handleChange}>
+              {loginedMemberFavorite ? (
+                <BottomNavigationAction
+                  label={`${goods} いいね！`}
+                  icon={<FavoriteIcon />}
+                  value={'unfavorite'}
+                />
+              ) : (
+                <BottomNavigationAction
+                  label={`${goods} いいね！`}
+                  icon={<FavoriteBorderIcon />}
+                  value={'favorite'}
+                />
+              )}
+              <BottomNavigationAction label="に投稿" icon={<XIcon />} />
+              <BottomNavigationAction label="に投稿" icon={<FacebookIcon />} />
+            </BottomNavigation>
+          </Paper>
+        </Box>
+      ) : null}
+    </>
   );
 }

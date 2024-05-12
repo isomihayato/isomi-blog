@@ -49,6 +49,7 @@ class ArticleController extends Controller
             'tags' => $request->input('tags'),
             'user_id' => $request->input('user_id'),
             'sort' => 1,
+            'genre' => $request->input('genre'),
             'article_ad_template_id' => $request->input('article_ad_template_id'),
             'published_at' => $request->input('published_at') ?? $now,
             'created_at' => $now,

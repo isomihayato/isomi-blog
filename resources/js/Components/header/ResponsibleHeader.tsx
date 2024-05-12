@@ -11,7 +11,14 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginDialog from '../feedback/LoginDialog';
-import { Alert, Avatar, ListItemIcon, Menu, MenuItem } from '@mui/material';
+import {
+  Alert,
+  Avatar,
+  Breadcrumbs,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import { deleteStorage, getStorage } from '../common/functions';
 import { useEffect } from 'react';
 import InfoAlert from '../feedback/InfoAlert';
@@ -21,15 +28,35 @@ import WebIcon from '@mui/icons-material/Web';
 import InfoIcon from '@mui/icons-material/Info';
 import PrivacyTipIcon from '@mui/icons-material/PrivacyTip';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import Container from '@mui/material/Container';
+import { isMobile } from 'react-device-detect';
 
+const pages = [
+  'ホーム',
+  '当サイトについて',
+  '記事検索',
+  'お知らせ一覧',
+  'プライバシーポリシー',
+  'お問い合わせ',
+];
+const links = [
+  '/',
+  '/about',
+  '/articles/search',
+  '/infomations/list',
+  '/privacy_policy',
+  '/contact',
+];
 type Props = {
   loginOpen?: boolean;
   setLoginOpen?: React.SetStateAction<boolean>;
+  breadcrumbsLink?: JSX.Element;
 };
-export default function Front(props: Props) {
-  const { loginOpen, setLoginOpen } = props;
+function ResponsibleHeader(props: Props) {
+  const { loginOpen, setLoginOpen, breadcrumbsLink } = props;
   const [open, setOpen] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = React.useState(false);
   const [drawer, setDrawer] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [status, setStatus] = React.useState('-1,');
@@ -131,56 +158,144 @@ export default function Front(props: Props) {
           color: 'black',
         }}
       >
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={() => setDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <img
-            src="/img/info_box.webp"
-            alt="ロゴ"
-            style={{ marginRight: '5px', width: '110px' }}
-          />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, fontWeight: 'bold' }}
-          >
-            BOX
-          </Typography>
-          {user === undefined || user === null ? (
-            <Button color="inherit" onClick={() => setOpen(true)}>
-              Login
-            </Button>
-          ) : (
-            <Avatar alt="メンバー画像" src={photoURL} onClick={handleClick} />
-          )}
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={menuOpen}
-            onClose={menuClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button',
-            }}
-          >
-            <MenuItem
-              onClick={() => {
-                deleteStorage('user');
-                deleteStorage('photoURL');
-                window.location.href = '/';
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            {isMobile ? null : (
+              <img
+                src="/img/fishing_header_logo.webp"
+                alt="header_fish_logo"
+                width="150"
+                style={{
+                  marginRight: '15px',
+                }}
+              />
+            )}
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
               }}
             >
-              Logout
-            </MenuItem>
-          </Menu>
-        </Toolbar>
+              MIE Fishing
+            </Typography>
+
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={() => setDrawer(true)}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                color="inherit"
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(menuOpen)}
+                onClose={menuClose}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={menuClose}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: { xs: 'flex', md: 'none' },
+                flexGrow: 1,
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              MIE Fishing
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              {pages.map((page) => (
+                <Button
+                  key={page}
+                  onClick={() => {
+                    window.location.href = links[pages.indexOf(page)];
+                  }}
+                  sx={{ my: 2, display: 'block' }}
+                  color="inherit"
+                >
+                  {page}
+                </Button>
+              ))}
+            </Box>
+
+            <Box sx={{ flexGrow: 0 }}>
+              {user === undefined || user === null ? (
+                <Button color="inherit" onClick={() => setOpen(true)}>
+                  Login
+                </Button>
+              ) : (
+                <Avatar
+                  alt="メンバー画像"
+                  src={photoURL}
+                  onClick={(e) => {
+                    setAnchorEl(e.currentTarget);
+                    setAccountMenuOpen(true);
+                  }}
+                />
+              )}
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={accountMenuOpen}
+                onClose={() => setAccountMenuOpen(false)}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    deleteStorage('user');
+                    deleteStorage('photoURL');
+                    window.location.href = '/';
+                  }}
+                >
+                  Logout
+                </MenuItem>
+              </Menu>
+            </Box>
+          </Toolbar>
+          {breadcrumbsLink}
+        </Container>
       </AppBar>
       <Drawer open={drawer} onClose={() => setDrawer(false)}>
         {DrawerList}
@@ -214,3 +329,4 @@ export default function Front(props: Props) {
     </Box>
   );
 }
+export default ResponsibleHeader;

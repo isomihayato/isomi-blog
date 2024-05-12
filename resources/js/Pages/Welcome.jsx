@@ -1,24 +1,49 @@
 import React from 'react';
-import Front from '@/Components/header/Front';
+import ResponsibleHeader from '@/Components/header/ResponsibleHeader';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import ArticleStack from '@/Components/layout/ArticleStack';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-
-export default function Welcome({ articles }) {
+import BlogPagination from '@/Components/navigations/BlogPagination';
+import { Head } from '@inertiajs/react';
+import HomeIcon from '@mui/icons-material/Home';
+import { Link, Breadcrumbs } from '@mui/material';
+export default function Welcome({ articles_pagenation }) {
+  const articles = articles_pagenation.data;
   return (
     <>
       <Helmet>
+        <meta name="keywords" content={'MIE Fishing,MIE Fishing 記事一覧'} />
         <meta
           name="description"
-          content="INFO BOXは、磯海隼人がIT関連の知識を記録・共有するためのサービスです。 プログラミングに関するTips、ノウハウ、メモを簡単に記録 &amp; 公開することができます。"
+          content="記事一覧 ${articles_pagenation.current_page}ページ目 | MIE Fishing"
         />
         <meta property="og:type" content="website" />
         <link rel="canonical" href="https://info-space-box.net" />
       </Helmet>
-      <Front />
-      <MainFront element={<ArticleStack articles={articles} />} />
+      <Head
+        title={`技術系記事一覧 ${articles_pagenation.current_page}ページ目`}
+      />
+      <ResponsibleHeader
+        breadcrumbsLink={
+          <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+            <Link underline="hover" color="inherit" href="/">
+              <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+              Top 記事一覧ページ
+            </Link>
+          </Breadcrumbs>
+        }
+      />
+      <MainFront
+        element={
+          <>
+            <ArticleStack articles={articles} />
+            <BlogPagination paginator={articles_pagenation} />
+          </>
+        }
+        paper={false}
+      />
       <FrontFooter />
     </>
   );
@@ -26,4 +51,5 @@ export default function Welcome({ articles }) {
 
 Welcome.propTypes = {
   articles: PropTypes.array,
+  articles_pagenation: PropTypes.object,
 };

@@ -6,15 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta content="telephone=no" name="format-detection">
-    <meta property="og:site_name" content="INFO BOX">
+    <meta property="og:site_name" content="MIE Fishing">
     <meta property="og:locale" content="ja">
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link href="/css/basic.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="/css/basic.css" rel="stylesheet" async />
+    <link rel="preconnect" href="https://fonts.bunny.net" async>
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="icon" href="/favicon.ico">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-S5HP2QHWW3"></script>
     <script>
@@ -28,6 +29,9 @@
         gtag('config', 'G-S5HP2QHWW3');
     </script>
     <!-- Google Tag Manager -->
+    <!-- hatena bookmarkのボタン -->
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charSet="utf-8" async="async"></script>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script>
         (function(w, d, s, l, i) {
             w[l] = w[l] || [];
@@ -51,7 +55,7 @@
     @inertiaHead
 </head>
 
-<body class="font-sans antialiased" id="body">
+<body class="antialiased" id="body">
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TCFXXTPW" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
