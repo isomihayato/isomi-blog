@@ -23,7 +23,7 @@ memoryがheapする可能性が高いため、npm runする前に、実行
 export NODE_OPTIONS="--max-old-space-size=4096"
 ```
 
-#### 6. sail artisan db:migrate --seed
+#### 6. sail artisan migrate --seed
 
 ## ローカル環境
 
