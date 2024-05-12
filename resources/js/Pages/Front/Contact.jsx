@@ -9,6 +9,7 @@ import { Helmet } from 'react-helmet';
 import { Head } from '@inertiajs/react';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import ContactForm from '@/Components/forms/ContactForm';
+import ResponsibleHeader from '@/Components/header/ResponsibleHeader';
 
 export default function InfomationList() {
   return (
@@ -16,28 +17,31 @@ export default function InfomationList() {
       <Helmet>
         <meta
           name="keywords"
-          content={'INFO BOX,INFO BOX about,INFO BOX 概要'}
+          content={'MIE Fishing,MIE Fishing about,MIE Fishing 概要'}
         />
         <meta
           name="description"
           content={
-            '当ブログサイト、INFO BOXは、管理主、りっすんのプログラミングや技術系の情報を発信するためのブログサイトです。'
+            '当ブログサイト、MIE Fishingは、管理主、コモ&トモのプログラミングや技術系の情報を発信するためのブログサイトです。'
           }
         />
         <meta property="og:type" content="article" />
       </Helmet>
       <Head title={`お問い合わせ`} />
-      <Front />
-      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
-        <Link underline="hover" color="inherit" href="/">
-          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          Top 記事一覧
-        </Link>
-        <Typography color="text.primary">
-          <ContactSupportIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          お問い合わせ
-        </Typography>
-      </Breadcrumbs>
+      <ResponsibleHeader
+        breadcrumbsLink={
+          <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+            <Link underline="hover" color="inherit" href="/">
+              <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+              Top 記事一覧
+            </Link>
+            <Typography color="text.primary">
+              <ContactSupportIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+              お問い合わせ
+            </Typography>
+          </Breadcrumbs>
+        }
+      />
       <MainFront
         element={
           <>

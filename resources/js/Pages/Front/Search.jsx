@@ -16,6 +16,7 @@ import ArticleStack from '@/Components/layout/ArticleStack';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { Head } from '@inertiajs/react';
+import ResponsibleHeader from '@/Components/header/ResponsibleHeader';
 
 export default function Search(articles) {
   const queryString = window.location.search;
@@ -35,9 +36,9 @@ export default function Search(articles) {
           <meta property="og:type" content="article" />
           <meta
             name="keywords"
-            content={'INFO BOX,INFO BOX 記事検索,記事検索'}
+            content={'MIE Fishing,MIE Fishing 記事検索,記事検索'}
           />
-          <meta name="description" content={`記事検索${title} | INFO BOX`} />
+          <meta name="description" content={`記事検索${title} | MIE Fishing`} />
           <link
             rel="canonical"
             href="https://info-space-box.net/articles/search"
@@ -66,17 +67,25 @@ export default function Search(articles) {
   };
   return (
     <>
-      <Front />
-      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
-        <Link underline="hover" color="inherit" href="/">
-          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          Top 記事一覧
-        </Link>
-        <Typography color="text.primary">
-          <FindInPageIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          記事検索
-        </Typography>
-      </Breadcrumbs>
+      <ResponsibleHeader
+        breadcrumbsLink={
+          <>
+            <Breadcrumbs
+              aria-label="breadcrumb"
+              style={{ margin: '10px 15px' }}
+            >
+              <Link underline="hover" color="inherit" href="/">
+                <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                Top 記事一覧
+              </Link>
+              <Typography color="text.primary">
+                <FindInPageIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                記事検索
+              </Typography>
+            </Breadcrumbs>
+          </>
+        }
+      />
       <MainFront element={<SearchPanel />} />
       <FrontFooter />
     </>

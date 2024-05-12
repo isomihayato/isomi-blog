@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef } from 'react';
 import { Box, Breadcrumbs, Link, Typography, Stack, Grid } from '@mui/material';
-import Front from '@/Components/header/Front';
 import ArticleDetailMain from '@/Components/main/ArticleDetailMain';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import Markdown from 'react-markdown';
@@ -21,6 +20,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
+import ResponsibleHeader from '@/Components/header/ResponsibleHeader';
 
 export default function ArticleDetails({ article, relative_articles }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
@@ -170,7 +170,7 @@ export default function ArticleDetails({ article, relative_articles }) {
         <meta property="og:url" content={window.location.href} />
         <meta property="og:image" content="/img/og_image.webp" />
         <meta property="og:description" content={article.describe} />
-        <meta property="og:site_name" content="INFO BOX" />
+        <meta property="og:site_name" content="MIE Fishing" />
         <meta property="fb:app_id" content="1437461986868001" />
         <link
           rel="canonical"
@@ -178,17 +178,27 @@ export default function ArticleDetails({ article, relative_articles }) {
         />
       </Helmet>
       <Head title={article.title} />
-      <Front loginOpen={loginOpen} setLoginOpen={setLoginOpen} />
-      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
-        <Link underline="hover" color="inherit" href="/">
-          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          Top 記事一覧
-        </Link>
-        <Typography color="text.primary">
-          <AutoStoriesIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          記事詳細
-        </Typography>
-      </Breadcrumbs>
+      <ResponsibleHeader
+        loginOpen={loginOpen}
+        setLoginOpen={setLoginOpen}
+        breadcrumbsLink={
+          <>
+            <Breadcrumbs
+              aria-label="breadcrumb"
+              style={{ margin: '10px 15px' }}
+            >
+              <Link underline="hover" color="inherit" href="/">
+                <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                Top 記事一覧
+              </Link>
+              <Typography color="text.primary">
+                <AutoStoriesIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                記事詳細
+              </Typography>
+            </Breadcrumbs>
+          </>
+        }
+      />
       <Box margin={'0 auto'} className="font-style">
         <Stack
           direction="row"

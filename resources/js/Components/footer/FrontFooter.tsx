@@ -9,9 +9,9 @@ export default function FrontFooter() {
       <div id="footer">
         <Grid container id="footer__outer" alignItems="flex-end">
           <Grid item md={3} xs={6}>
-            <Box id="logo">INFO BOX</Box>
-            <span>情報の玉手箱(成長中)</span>
-            <p id="copyright">© 2024 INFO BOX</p>
+            <Box id="logo">MIE Fishing</Box>
+            <span>三重フィッシング</span>
+            <p id="copyright">© 2024 MIE Fishing</p>
           </Grid>
           <Grid item md={9} xs={6}>
             <Box id="nav">

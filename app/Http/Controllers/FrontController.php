@@ -47,7 +47,7 @@ class FrontController extends Controller
             'message' => $request->message,
         ];
 
-        Mail::to('listen.risu.blog@gmail.com')->send(new ContactFormMail($details));
+        Mail::to('mie.fishingkomotomo@gmail.com')->send(new ContactFormMail($details));
 
         return response()->json(['message' => 'メール送信が成功しました']);
     }

@@ -8,6 +8,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import WebIcon from '@mui/icons-material/Web';
 import { Helmet } from 'react-helmet';
 import { Head } from '@inertiajs/react';
+import ResponsibleHeader from '@/Components/header/ResponsibleHeader';
 
 export default function InfomationList() {
   return (
@@ -15,28 +16,37 @@ export default function InfomationList() {
       <Helmet>
         <meta
           name="keywords"
-          content={'INFO BOX,INFO BOX about,INFO BOX 概要'}
+          content={'MIE Fishing,MIE Fishing about,MIE Fishing 概要'}
         />
         <meta
           name="description"
           content={
-            '当ブログサイト、INFO BOXは、管理主、りっすんのプログラミングや技術系の情報を発信するためのブログサイトです'
+            '当ブログサイト、MIE Fishingは、管理主、コモ&トモのプログラミングや技術系の情報を発信するためのブログサイトです'
           }
         />
         <meta property="og:type" content="article" />
       </Helmet>
-      <Head title={`INFO BOXについて`} />
-      <Front />
-      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
-        <Link underline="hover" color="inherit" href="/">
-          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          Top 記事一覧
-        </Link>
-        <Typography color="text.primary">
-          <WebIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          このサイトについて
-        </Typography>
-      </Breadcrumbs>
+      <Head title={`MIE Fishingについて`} />
+      <ResponsibleHeader
+        breadcrumbsLink={
+          <>
+            <Breadcrumbs
+              aria-label="breadcrumb"
+              style={{ margin: '10px 15px' }}
+            >
+              <Link underline="hover" color="inherit" href="/">
+                <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                Top 記事一覧
+              </Link>
+              <Typography color="text.primary">
+                <WebIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                このサイトについて
+              </Typography>
+            </Breadcrumbs>
+          </>
+        }
+      />
+
       <MainFront
         element={
           <>
@@ -50,7 +60,7 @@ export default function InfomationList() {
             </Typography>
             <Box>
               <Typography variant="body1" component="p" gutterBottom>
-                このサイトは、管理主、りっすんのプログラミングや技術系の情報を発信するためのブログサイトです♪(
+                このサイトは、管理主、コモ&トモのプログラミングや技術系の情報を発信するためのブログサイトです♪(
                 ´θ｀)ノ
               </Typography>
               <br />

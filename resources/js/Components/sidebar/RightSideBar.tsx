@@ -57,7 +57,7 @@ export default function RightSideBar(props: Props) {
                 <Grid container alignItems="center">
                   <Grid item md={3} textAlign={'right'}>
                     <img
-                      src="/img/risu.webp"
+                      src="/img/manager_logo.webp"
                       style={{ width: '80px' }}
                       alt="ブログ管理人アイコン"
                     />
@@ -68,7 +68,7 @@ export default function RightSideBar(props: Props) {
                       variant="subtitle1"
                       sx={{ fontWeight: 'bold', color: 'black' }}
                     >
-                      りっすん
+                      コモ&トモ
                     </Typography>
                   </Grid>
                 </Grid>

@@ -1,6 +1,3 @@
-#body {
-  background-color: #dddddd;
-}
 html {
   font-family: 'Noto Sans JP', sans-serif;
   line-height: 1.7;
@@ -64,7 +61,7 @@ textarea[name='comment_body'] {
     margin: 56px 0 16px;
     padding-bottom: 4px;
     font-weight: bold;
-    border-left: solid 8px #20c200;
+    border-left: solid 8px #00aac2;
     border-bottom: solid 1px #d0d0d0;
     padding-left: 5px;
   }
@@ -130,7 +127,7 @@ textarea[name='comment_body'] {
   }
 
   #footer {
-    background-color: #32be16;
+    background-color: #000;
     color: white;
     font-weight: bold;
   }
@@ -153,7 +150,7 @@ textarea[name='comment_body'] {
   body h2 {
     font-size: 1.4rem;
     font-weight: bold;
-    border-left: solid 8px #20c200;
+    border-left: solid 8px #00aac2;
     border-bottom: solid 1px #d0d0d0;
     margin-bottom: 10px;
     padding-left: 5px;
@@ -180,7 +177,7 @@ textarea[name='comment_body'] {
   }
   #footer {
     margin-top: 25px;
-    background-color: #32be16;
+    background-color: #000;
     color: white;
     font-weight: bold;
   }
