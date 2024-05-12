@@ -17,7 +17,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico">
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S5HP2QHWW3"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFKRKF9TEH"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -26,7 +26,7 @@
         }
         gtag('js', new Date());
 
-        gtag('config', 'G-S5HP2QHWW3');
+        gtag('config', 'G-QFKRKF9TEH');
     </script>
     <!-- Google Tag Manager -->
     <!-- hatena bookmarkのボタン -->
