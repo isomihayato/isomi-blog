@@ -45,11 +45,31 @@ export default function ArticleDetailMain(props: Props) {
   const t_user = getStorage('user');
 
   useEffect(() => {
-    if (t_user === null || t_user === undefined) return;
+    if (t_user === null || t_user === undefined) {
+      getFavoritesCount(
+        String(article.id),
+        '',
+        (res) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          console.log('favorites', res.data.favorites);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          setFavorites(res.data.favorites);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
+      return;
+    }
     getFavoritesCount(
       String(article.id),
       t_user.uid,
       (res) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        console.log('favorites', res.data.favorites);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         setFavorites(res.data.favorites);
