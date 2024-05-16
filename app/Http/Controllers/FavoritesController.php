@@ -11,8 +11,12 @@ class FavoritesController extends Controller
     public function index(Request $request)
     {
         $favorites = DB::table('favorites')->where(['article_id'=> $request->article_id])->get();
-        $member = DB::table('members')->where('fb_uid', $request->member_uid)->first();
-        $favorite = DB::table('favorites')->where(['member_id'=> $member->id])->first();
+        if ($request->member_uid == ''){
+            $favorite = null;
+        }else {
+            $member = DB::table('members')->where('fb_uid', $request->member_uid)->first();
+            $favorite = DB::table('favorites')->where(['member_id'=> $member->id])->first();    
+        }
         return response()->json(['favorites' => count($favorites),'logined_member_favorite' => $favorite]);
     }
 

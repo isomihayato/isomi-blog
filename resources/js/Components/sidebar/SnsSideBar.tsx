@@ -90,6 +90,7 @@ export default React.memo(function SnsSideBar(props: Props) {
               style={{
                 color: '#9a9a9a',
                 fontWeight: 'bold',
+                textAlign: 'center',
               }}
             >
               {favorites}
