@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
 use App\Models\ArticleAdTemplate;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
