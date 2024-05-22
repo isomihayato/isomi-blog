@@ -1,28 +1,60 @@
-import AxiosWrapper, { axiosAwait } from "./axios"
+import { ArticleAdType } from '../types/ArticleAdTypes';
+import { ErrFunction, ResFunction } from '../types/CommonTypes';
+import AxiosWrapper from './axios';
+import { AxiosResponse } from 'axios';
 
-export default function postArticleAd(data: any,cb: any,errors: any) {
-    AxiosWrapper({
-        method: 'post',
-        url: '/article_ad_templates',
-        data: data,
-        callback: (res: any) => { cb(res) },
-        errors: (res: any) => { errors(res) },
-    })
+export default function postArticleAd(
+  data: ArticleAdType,
+  cb: ResFunction,
+  errors: ErrFunction,
+) {
+  AxiosWrapper({
+    method: 'post',
+    url: '/article_ads',
+    data: data,
+    callback: (res) => {
+      cb(res);
+    },
+    errors: (res) => {
+      errors(res);
+    },
+  });
 }
 
-export function putArticleAd(ad_template_id: number,data: any,cb: any,errors: any) {
-    const url = '/article_ad_templates/update/' + ad_template_id;
-    AxiosWrapper({
-        method: 'post',
-        url: url,
-        data: data,
-        callback: (res: any) => { cb(res) },
-        errors: (res: any) => { errors(res) },
-    })
-    // axiosAwait({
-    //     method: 'PATCH',
-    //     url: url,
-    //     data: data
-    // }).then((res: any) => { cb(res) })
-    // .catch((res: any) => { errors(res) });
+export function putArticleAd(
+  data: ArticleAdType,
+  cb: ResFunction,
+  errors: ErrFunction,
+) {
+  const url = '/article_ads/' + data.id;
+
+  AxiosWrapper({
+    method: 'patch',
+    url: url,
+    data: data,
+    callback: (res) => {
+      cb(res);
+    },
+    errors: (res) => {
+      errors(res);
+    },
+  });
+}
+
+export function deleteArticleAd(
+  id: number,
+  cb: ResFunction,
+  errors: ErrFunction,
+) {
+  AxiosWrapper({
+    method: 'DELETE',
+    url: `/article_ads/${id}`,
+    data: null,
+    callback: (res: AxiosResponse<unknown, object>) => {
+      cb(res);
+    },
+    errors: (res: object) => {
+      errors(res);
+    },
+  });
 }
