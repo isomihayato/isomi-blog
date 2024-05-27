@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import AdTable from '@/Components/dataDispaly/AdTable';
 
 export default function ArticleAdIndex({ auth, articleAds }) {
-  console.log(articleAds);
   return (
     <AuthenticatedLayout
       user={auth.user}

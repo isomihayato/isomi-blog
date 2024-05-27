@@ -15,9 +15,9 @@ class ArticleAdTemplate extends Model
         'name'
     ];
 
-    public function article_ads()
+    public function ad_intermediates()
     {
-        return $this->hasMany(ArticleAd::class);
+        return $this->hasMany(AdIntermediate::class);
     }
 
     public static function convert_table_format($id, $arrangements)

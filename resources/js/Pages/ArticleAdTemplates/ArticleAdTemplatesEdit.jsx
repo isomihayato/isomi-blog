@@ -1,59 +1,55 @@
 import * as React from 'react';
-import HashTable from '@/Components/dataDispaly/HashTable';
-import ADialog from '@/Components/feedback/ADialog';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button } from '@mui/material';
-import { putArticleAd } from '@/Components/axios/axiosArticleAd';
+import AdForm from '@/Components/forms/AdForm';
 import PropTypes from 'prop-types';
+import { updateAdvertisements } from '@/Components/axios/axiosAdIntermediate';
 
 export default function ArticleAdTemplatesEdit({
   auth,
-  table_data,
-  template_id,
+  article_template_id,
   template_name,
+  article_ads,
+  ad_arrangements,
 }) {
-  const [form, setFrom] = React.useState(new FormData());
-  const [aData, setAData] = React.useState({ content: '', name: '' });
-  const [tableData, setTableData] = React.useState(table_data);
-  const [open, setOpen] = React.useState(undefined);
+  const [adData, setAdData] = React.useState([]);
 
-  const clickHndlr = (arrangement_id) => {
-    const tData = tableData[arrangement_id];
-    setAData({ content: tData[2], name: tData[1] });
-    setOpen(arrangement_id);
-  };
-  const adClickHndlr = (data) => {
-    const form_tmp = Object.assign({}, form);
-    const ad_data = Object.assign({}, form['ad_data']);
-    ad_data[open] = {
-      name: data['name'],
-      content: data['content'],
-      ad_template_id: open,
-    };
-    form_tmp['ad_data'] = ad_data;
-    const _tableData = { ...tableData };
-    _tableData[open] = [tableData[open][0], data['name'], data['content']];
-    setTableData(_tableData);
-    setFrom(form_tmp);
-    setOpen(undefined);
-    setAData({ content: '', name: '' });
-  };
+  React.useEffect(() => {
+    console.log('article_ads', article_ads);
+    const adData = [];
+    article_ads.map((ad) => {
+      const places = ad.ad_arrangement_ids
+        .split(',')
+        .map((p) => ad_arrangements[p]);
+
+      adData.push({
+        id: ad.id,
+        ad: ad.article_ad.id,
+        place: places,
+      });
+    });
+    setAdData(adData);
+  }, []);
 
   const submitHndlr = (event) => {
     event.preventDefault();
-    const form_tmp = { ...form };
-    form_tmp['template_name'] = event.target.template_name.value;
+    const form_tmp = {};
 
-    putArticleAd(
-      template_id,
+    form_tmp['template_name'] = event.target.template_name.value;
+    form_tmp['ad_data'] = adData;
+    form_tmp['article_template_id'] = article_template_id;
+    console.log('form_tmp', form_tmp);
+    updateAdvertisements(
       form_tmp,
       (res) => {
-        console.log(res.data);
-        // window.location.href="/article_ad_templates";
+        console.log('res', res);
+        if (res.status === 200) {
+          window.location.href = '/article_ad_templates';
+        }
       },
-      (err) => {
-        console.log(err);
+      (res) => {
+        console.log(res);
       },
     );
   };
@@ -67,7 +63,7 @@ export default function ArticleAdTemplatesEdit({
         </h2>
       }
     >
-      <Head title="広告管理" />
+      <Head title="広告テンプレート編集管理" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -85,7 +81,10 @@ export default function ArticleAdTemplatesEdit({
               </div>
               <div className="mt-8">
                 <form
-                  action={'/article_ad_templates/' + template_id}
+                  action={
+                    '/article_ad_templates/' +
+                    article_ads[0].article_ad_template_id
+                  }
                   method="post"
                   onSubmit={submitHndlr}
                 >
@@ -107,26 +106,10 @@ export default function ArticleAdTemplatesEdit({
                     </div>
                   </div>
                   <div className="mt-4">
-                    <HashTable
-                      headers={['配置場所', '広告名', '広告']}
-                      rows={tableData}
-                      clickHndlr={clickHndlr}
+                    <AdForm
+                      setSubmitFormData={setAdData}
+                      defaultData={adData}
                     />
-                  </div>
-                  <ADialog
-                    open={open}
-                    aData={aData}
-                    clickHndlr={adClickHndlr}
-                    closeHndlr={() => {
-                      setAData({ content: '', name: '' });
-                      setOpen(undefined);
-                    }}
-                    arrangement_id={0}
-                  />
-                  <div className="mt-4">
-                    <Button variant="contained" type="submit">
-                      登録
-                    </Button>
                   </div>
                 </form>
               </div>
@@ -140,7 +123,8 @@ export default function ArticleAdTemplatesEdit({
 
 ArticleAdTemplatesEdit.propTypes = {
   auth: PropTypes.object,
-  table_data: PropTypes.object,
-  template_id: PropTypes.number,
+  article_template_id: PropTypes.string,
   template_name: PropTypes.string,
+  article_ads: PropTypes.array,
+  ad_arrangements: PropTypes.object,
 };

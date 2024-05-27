@@ -6,6 +6,7 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ArticleAd;
+use App\Models\AdArrangement;
 use Inertia\Inertia;
 
 
@@ -101,5 +102,18 @@ class ArticleAdController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => "error", 'message' => $e->getMessage()]);
         }
+    }
+
+    public function getSelectData()
+    {
+        $ad = ArticleAd::all()->map(function($article) {
+            return [
+                'label' => $article->name,
+                'value' => $article->id,
+                'content' => $article->content,
+            ];
+        });
+        $arrenge = AdArrangement::all()->pluck('name');
+        return response()->json(['adSelectData' => $ad,'arrengeSelectData' => $arrenge]);
     }
 }
