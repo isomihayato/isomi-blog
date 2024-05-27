@@ -1,5 +1,4 @@
 export type AdvertiseDTO = {
-  arrangement_name: string;
-  content: string;
+  article_ad: { name: string; content: string };
   template_name: string;
 };

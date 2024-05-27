@@ -32,7 +32,7 @@ export default function ArticleDetails({ article, relative_articles }) {
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
   const funAdvertises = advertisements.filter((ad) =>
-    ad.arrangement_name.includes('おもしろエリア'),
+    ad.ad_arrangements.includes('おもしろエリア'),
   );
   const Item = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
@@ -69,6 +69,7 @@ export default function ArticleDetails({ article, relative_articles }) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         setAdvertisements(res.data.ad_templates);
+        console.log('ad_templates', res.data.ad_templates);
       },
       (err) => {
         console.log(err);
@@ -117,9 +118,9 @@ export default function ArticleDetails({ article, relative_articles }) {
                   xs={12}
                 >
                   <div
-                    key={advertisement.arrangement_name}
+                    key={advertisement.article_ad.name}
                     dangerouslySetInnerHTML={{
-                      __html: advertisement.content,
+                      __html: advertisement.article_ad.content,
                     }}
                   />
                 </Grid>
