@@ -16,13 +16,8 @@ class ArticleAd extends Model
         'ad_arrangement_id',
     ];
 
-    public function article_ad_template()
+    public function ad_intermediates()
     {
-        return $this->belongsTo(ArticleAdTemplate::class);
-    }
-
-    public function ad_arrangement()
-    {
-        return $this->belongsTo(AdArrangement::class);
+        return $this->hasMany(AdIntermediate::class);
     }
 }

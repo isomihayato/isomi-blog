@@ -1,49 +1,30 @@
 import * as React from 'react';
-import HashTable from '@/Components/dataDispaly/HashTable';
-import ADialog from '@/Components/feedback/ADialog';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button } from '@mui/material';
-import postArticleAd from '@/Components/axios/axiosArticleAd';
 import PropTypes from 'prop-types';
+import AdForm from '@/Components/forms/AdForm';
+import postAdvertisements from '@/Components/axios/axiosAdIntermediate';
 
-export default function ArticleAdTemplatesCreate({ auth, table_data }) {
-  const [form, setFrom] = React.useState(new FormData());
-  const [tableData, setTableData] = React.useState(table_data);
-  const [open, setOpen] = React.useState(undefined);
-
-  const clickHndlr = (arrangement_id) => {
-    setOpen(arrangement_id);
-  };
-  const adClickHndlr = (data) => {
-    const form_tmp = Object.assign({}, form);
-    const ad_data = Object.assign({}, form['ad_data']);
-    ad_data[open] = {
-      name: data['name'],
-      content: data['content'],
-      ad_template_id: open,
-    };
-    form_tmp['ad_data'] = ad_data;
-    const _tableData = { ...tableData };
-    _tableData[open] = [tableData[open][0], data['name'], data['content']];
-    setTableData(_tableData);
-    setFrom(form_tmp);
-    setOpen(undefined);
-  };
+export default function ArticleAdTemplatesCreate({ auth }) {
+  const [adData, setAdData] = React.useState([]);
 
   const submitHndlr = (event) => {
     event.preventDefault();
-    const form_tmp = Object.assign({}, form);
+    const form_tmp = {};
 
     form_tmp['template_name'] = event.target.template_name.value;
-    postArticleAd(
+    form_tmp['ad_data'] = adData;
+    postAdvertisements(
       form_tmp,
       (res) => {
-        console.log(res.data);
-        window.location.href = '/article_ad_templates';
+        console.log('res', res);
+        if (res.status === 200) {
+          window.location.href = '/article_ad_templates';
+        }
       },
-      (err) => {
-        console.log(err);
+      (res) => {
+        console.log(res);
       },
     );
   };
@@ -92,27 +73,12 @@ export default function ArticleAdTemplatesCreate({ auth, table_data }) {
                         name="template_name"
                         id="title"
                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        required
                       />
                     </div>
                   </div>
                   <div className="mt-4">
-                    <HashTable
-                      headers={['配置場所', '広告名', '広告']}
-                      rows={tableData}
-                      clickHndlr={clickHndlr}
-                    />
-                  </div>
-                  <ADialog
-                    open={open}
-                    clickHndlr={adClickHndlr}
-                    closeHndlr={() => {
-                      setOpen(undefined);
-                    }}
-                  />
-                  <div className="mt-4">
-                    <Button variant="contained" type="submit">
-                      登録
-                    </Button>
+                    <AdForm setSubmitFormData={setAdData} />
                   </div>
                 </form>
               </div>

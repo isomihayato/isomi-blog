@@ -58,3 +58,17 @@ export function deleteArticleAd(
     },
   });
 }
+
+export function getAdSelectData(cb: ResFunction, errors: ErrFunction) {
+  AxiosWrapper({
+    method: 'get',
+    url: '/get_ad_select',
+    data: null,
+    callback: (res) => {
+      cb(res);
+    },
+    errors: (res) => {
+      errors(res);
+    },
+  });
+}

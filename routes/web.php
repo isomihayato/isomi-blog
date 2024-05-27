@@ -8,7 +8,9 @@ use App\Http\Controllers\MembersController;
 use App\Http\Controllers\InfomationController;
 use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
+use App\Http\Controllers\AdIntermediateController;
 use App\Http\Controllers\FavoritesController;
+use App\Models\Article;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -47,8 +49,11 @@ Route::resource('articles', ArticleController::class)->middleware(['auth', 'veri
 Route::post('/articles/update/{id}', [ArticleController::class, 'update_article'])->middleware(['auth', 'verified']);
 Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->middleware(['auth', 'verified']);
 Route::resource('/article_ad_templates', ArticleAdTemplateController::class)->middleware(['auth', 'verified']);
-Route::post('/article_ad_templates/update/{id}', [ArticleAdTemplateController::class, 'update_ad'])->middleware(['auth', 'verified']);
+// Route::post('/article_ad_templates/update/{id}', [ArticleAdTemplateController::class, 'update_ad'])->middleware(['auth', 'verified']);
 Route::resource('/article_ads', ArticleAdController::class)->middleware(['auth', 'verified']);
+Route::post('/ad_intermediates/update', [AdIntermediateController::class, 'update_ad'])->middleware(['auth', 'verified']);
+Route::resource('/ad_intermediates', AdIntermediateController::class)->middleware(['auth', 'verified']);
+Route::get('/get_ad_select', [ArticleAdController::class, 'getSelectData'])->middleware(['auth', 'verified']);
 Route::resource('/infomations', InfomationController::class, ['except' => ['index', 'show']])->middleware(['auth', 'verified']);
 Route::get('/infomations', [InfomationController::class, 'index'])->name('infomations.index');
 Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('infomations.show');

@@ -8,11 +8,14 @@ import Select from '@mui/material/Select';
 type Props = {
   rows: { value: string; label: string }[];
   label: string;
-  value?: string;
   name: string;
+  value?: string;
+  callback?: any;
+  key?: string;
 };
 export default function BasicSelect(props: Props) {
-  const { rows, label, value, name } = props;
+  const { key, rows, label, value, name } = props;
+  const { callback } = props;
 
   return (
     <Box sx={{ minWidth: 120 }}>
@@ -21,9 +24,13 @@ export default function BasicSelect(props: Props) {
         <Select
           labelId={label + '-label'}
           id={name}
+          key={key}
           defaultValue={value}
           label={label}
           name={name}
+          onChange={(e) => {
+            callback(e.target.value);
+          }}
         >
           {rows.map((row, index) => {
             return (
