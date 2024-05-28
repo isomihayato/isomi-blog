@@ -28,6 +28,8 @@
 
         gtag('config', 'G-S5HP2QHWW3');
     </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9210370957298715"
+     crossorigin="anonymous"></script>
     <!-- Google Tag Manager -->
     <!-- hatena bookmarkのボタン -->
     <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charSet="utf-8" async="async"></script>
