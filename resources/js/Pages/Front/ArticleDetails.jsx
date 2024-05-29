@@ -69,7 +69,6 @@ export default function ArticleDetails({ article, relative_articles }) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         setAdvertisements(res.data.ad_templates);
-        console.log('ad_templates', res.data.ad_templates);
       },
       (err) => {
         console.log(err);
@@ -117,6 +116,7 @@ export default function ArticleDetails({ article, relative_articles }) {
                   md={6}
                   xs={12}
                 >
+                  <span>{advertisement.article_ad.comment}</span>
                   <div
                     key={advertisement.article_ad.name}
                     dangerouslySetInnerHTML={{
