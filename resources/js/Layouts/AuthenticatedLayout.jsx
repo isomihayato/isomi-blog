@@ -44,6 +44,12 @@ export default function Authenticated({ user, header, children }) {
                   広告テンプレート管理
                 </NavLink>
                 <NavLink
+                  href={route('article_ads.index')}
+                  active={route().current('article_ads.index')}
+                >
+                  広告登録
+                </NavLink>
+                <NavLink
                   href={route('infomations.index')}
                   active={route().current('infomations.index')}
                 >

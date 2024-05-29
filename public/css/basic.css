@@ -50,6 +50,10 @@ textarea[name='comment_body'] {
   pointer-events: none;
   height: 0;
 }
+
+.preview img {
+  margin: 0 auto;
+}
 @media (max-width: 2000px) and (min-width: 768px) {
   body h1 {
     border-bottom: 1px solid var(--color-divider);

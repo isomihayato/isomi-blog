@@ -12,9 +12,4 @@ class AdArrangement extends Model
     protected $fillable = [
         'name'
     ];
-
-    public function article_ads()
-    {
-        return $this->hasMany(ArticleAd::class);
-    }
 }
