@@ -25,8 +25,8 @@ export default function FrontSideBar(props: Props) {
     <>
       <Stack spacing={2} justifyContent="center" alignItems="center">
         {advertisements.map((ad) => (
-          <Item key={ad.arrangement_name}>
-            <div dangerouslySetInnerHTML={{ __html: ad.content }} />
+          <Item key={ad.article_ad.name}>
+            <div dangerouslySetInnerHTML={{ __html: ad.article_ad.content }} />
           </Item>
         ))}
       </Stack>

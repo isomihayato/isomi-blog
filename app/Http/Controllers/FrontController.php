@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Article;
+use App\Models\AdIntermediate;
+use App\Models\AdArrangement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Mail\ContactFormMail;
@@ -103,13 +105,19 @@ class FrontController extends Controller
     public function ad_list(Request $request)
     {
         $article = Article::find($request->input('article_id'));
-        // article_ad_templates、article_ads、ad_arrangementsの3つのテーブルを結合して、article_ad_templatesのname、article_adsのcontent、ad_arrangementsのnameを取得
-        $ad_templates = DB::table('article_ad_templates')
-            ->where('article_ad_templates.id', '=', $article->article_ad_template_id)
-            ->join('article_ads', 'article_ad_templates.id', '=', 'article_ads.article_ad_template_id')
-            ->join('ad_arrangements', 'article_ads.ad_arrangement_id', '=', 'ad_arrangements.id')
-            ->select('article_ad_templates.name as template_name', 'article_ads.content', 'ad_arrangements.name as arrangement_name')
+        $ad_templates = AdIntermediate::where('article_ad_template_id',$article->article_ad_template_id)
+            ->with(['article_ad_template','article_ad'])
             ->get();
+        $ad_templates = $ad_templates->map(function ($ad_template) {
+            $ad_arrangement_ids = explode(',', $ad_template->ad_arrangement_ids);
+            $ad_arrangements = [];
+            foreach ($ad_arrangement_ids as $ad_arrangement_id) {
+                $ad_arrangement = AdArrangement::find($ad_arrangement_id);
+                array_push($ad_arrangements, $ad_arrangement->name);
+            }
+            $ad_template['ad_arrangements'] = $ad_arrangements;
+            return $ad_template;
+        });
         return response()->json(['ad_templates' => $ad_templates]);
     }
 }

@@ -32,7 +32,7 @@ export default function ArticleDetails({ article, relative_articles }) {
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
   const funAdvertises = advertisements.filter((ad) =>
-    ad.arrangement_name.includes('おもしろエリア'),
+    ad.ad_arrangements.includes('おもしろエリア'),
   );
   const Item = styled('div')(({ theme }) => ({
     ...theme.typography.body2,
@@ -116,10 +116,11 @@ export default function ArticleDetails({ article, relative_articles }) {
                   md={6}
                   xs={12}
                 >
+                  <span>{advertisement.article_ad.comment}</span>
                   <div
-                    key={advertisement.arrangement_name}
+                    key={advertisement.article_ad.name}
                     dangerouslySetInnerHTML={{
-                      __html: advertisement.content,
+                      __html: advertisement.article_ad.content,
                     }}
                   />
                 </Grid>
