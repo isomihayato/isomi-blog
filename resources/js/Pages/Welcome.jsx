@@ -20,7 +20,7 @@ export default function Welcome({ articles_pagenation }) {
           content="記事一覧 ${articles_pagenation.current_page}ページ目 | MIE Fishing"
         />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href="https://mie-fishing.info" />
+        <link rel="canonical" href="https://info-space-box.net" />
       </Helmet>
       <Head
         title={`釣り記事一覧 ${articles_pagenation.current_page}ページ目`}

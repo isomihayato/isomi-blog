@@ -112,7 +112,7 @@ export default React.memo(function SnsSideBar(props: Props) {
             <Avatar
               onClick={() =>
                 (window.location.href =
-                  encodeURI(`https://twitter.com/intent/tweet?url=https://mie-fishing.info/articles/details/${article.id}&text=${article.title} | コモ&トモ&hashtags=infobox
+                  encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | コモ&トモ&hashtags=infobox
   `))
               }
             >
@@ -122,7 +122,7 @@ export default React.memo(function SnsSideBar(props: Props) {
           <Item>
             <Avatar
               onClick={() =>
-                (window.location.href = `http://www.facebook.com/sharer.php?u=https://mie-fishing.info/articles/details/${article.id}`)
+                (window.location.href = `http://www.facebook.com/sharer.php?u=https://info-space-box.net/articles/details/${article.id}`)
               }
             >
               <FacebookIcon />

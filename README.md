@@ -8,7 +8,7 @@ APP_ENVをproductionに変更。
 
 #### 2. axios.tsxファイルを編集
 
-axios.defaults.baseURL = 'https://mie-fishing.info';
+axios.defaults.baseURL = 'https://info-space-box.net';
 のコメントを外し、http://localhost:81をコメントアウトする。
 
 #### 3. composer install

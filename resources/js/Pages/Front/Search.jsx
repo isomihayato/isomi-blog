@@ -40,7 +40,7 @@ export default function Search(articles) {
           <meta name="description" content={`記事検索${title} | MIE Fishing`} />
           <link
             rel="canonical"
-            href="https://mie-fishing.info/articles/search"
+            href="https://info-space-box.net/articles/search"
           />
         </Helmet>
         <Head title={`記事検索${title}`} />

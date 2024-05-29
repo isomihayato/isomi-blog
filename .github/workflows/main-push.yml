@@ -14,10 +14,10 @@ jobs:
       - name: Deploy Server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.FISHING_SSH_HOST }}
-          username: ${{ secrets.FISHING_PROD_USERNAME }}
-          key: ${{ secrets.FISHING_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.FISHING_SSH_PORT }}
+          host: ${{ secrets.ISOMI_SSH_HOST }}
+          username: ${{ secrets.ISOMI_PROD_USERNAME }}
+          key: ${{ secrets.ISOMI_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.ISOMI_SSH_PORT }}
           script: |
             cd /var/www/html/isomi-blog
             eval $(ssh-agent)
