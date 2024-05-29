@@ -20,22 +20,10 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         \App\Models\AdArrangement::factory()->create([
-            'name' => '左sidebar広告1'
+            'name' => '左sidebar広告'
         ]);
         \App\Models\AdArrangement::factory()->create([
-            'name' => '左sidebar広告2'
-        ]);
-        \App\Models\AdArrangement::factory()->create([
-            'name' => '左sidebar広告3'
-        ]);
-        \App\Models\AdArrangement::factory()->create([
-            'name' => '右sidebar広告1'
-        ]);
-        \App\Models\AdArrangement::factory()->create([
-            'name' => '右sidebar広告2'
-        ]);
-        \App\Models\AdArrangement::factory()->create([
-            'name' => '右sidebar広告3'
+            'name' => 'おもしろ広告'
         ]);
         DB::table('categories')->insert([
             'name' => 'お知らせ'
