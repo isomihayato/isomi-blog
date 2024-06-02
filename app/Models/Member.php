@@ -21,11 +21,6 @@ class Member extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function favorites()
-    {
-        return $this->hasMany(Favorite::class);
-    }
-
     public static function makeRandStr($length) {
         $str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
         $r_str = null;

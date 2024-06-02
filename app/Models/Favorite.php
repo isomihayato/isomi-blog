@@ -10,14 +10,8 @@ class Favorite extends Model
     use HasFactory;
     
     protected $fillable = [
-        'member_id',
         'article_id'
     ];
-
-    public function member()
-    {
-        return $this->belongsTo(Member::class);
-    }
 
     public function article()
     {

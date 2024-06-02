@@ -217,6 +217,8 @@ export default function ArticleDetails({ article, relative_articles }) {
                   ? mainUnderElements
                   : mainUnderElements.slice(1)
               }
+              action={action}
+              setAction={setAction}
             />
           </Item>
           {isMobile ? (

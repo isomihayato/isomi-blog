@@ -74,10 +74,11 @@ export default function RightSideBar(props: Props) {
                 </Grid>
               </Box>
               <Box id="introduce__content">
-                開発エンジニア（Webエンジニア）
+                3年目のWeb開発エンジニアリス🐿️
                 <br />
-                3年目のエンジニアです。フロント・バックエンド開発を行っています。
-                現場で学んだことを深掘りしたり、新しい技術を学んだりしたことをアウトプットしていきます。
+                フロント・バックエンド開発を行っています。
+                <br />
+                様々な技術をほっぺに蓄え、時には発信していきます。
               </Box>
             </Box>
           </Box>

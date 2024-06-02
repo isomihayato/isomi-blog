@@ -2,26 +2,23 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; // お気に入り登録前アイコン
-import FavoriteIcon from '@mui/icons-material/Favorite'; // お気に入り登録後アイコン
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import Paper from '@mui/material/Paper';
-import { deleteFavorite, postFavorite } from '../axios/axiosFavorite';
-import { FavoriteType } from '../types/FavoriteType';
+import { postFavorite } from '../axios/axiosFavorite';
 import { ArticleType } from '../types/ArticleTypes';
 
 type Props = {
   article: ArticleType;
   favorites: number | undefined;
-  loginedMemberFavorite: FavoriteType;
   user: { uid: string };
   setAction: React.Dispatch<React.SetStateAction<string>>;
 };
 export default function SPBottonAppBar(props: Props) {
   const [value, setValue] = React.useState(0);
   const [show, setShow] = React.useState(true);
-  const { article, favorites, loginedMemberFavorite, user, setAction } = props;
+  const { article, favorites, setAction } = props;
   const goods = favorites ? favorites : '';
   const handleScroll = () => {
     const element = document.getElementById('footer');
@@ -46,22 +43,13 @@ export default function SPBottonAppBar(props: Props) {
   const handleChange = (event, newValue) => {
     if (newValue === 'favorite') {
       postFavorite(
-        { member_uid: user.uid, article_id: article.id },
+        { article_id: article.id },
         (res) => {
           console.log(res.data);
-
-          setAction('favorite');
-        },
-        (err) => {
-          console.log(err);
-        },
-      );
-    } else if (newValue === 'unfavorite') {
-      deleteFavorite(
-        loginedMemberFavorite.id,
-        (res) => {
-          console.log(res.data);
-          setAction('unfavorite');
+          document.getElementById('favorite').classList.add('jump-animation');
+          setTimeout(() => {
+            setAction(`favorites-${Math.random().toString(32).substring(2)}`);
+          }, 900);
         },
         (err) => {
           console.log(err);
@@ -86,19 +74,11 @@ export default function SPBottonAppBar(props: Props) {
             elevation={3}
           >
             <BottomNavigation showLabels value={value} onChange={handleChange}>
-              {loginedMemberFavorite ? (
-                <BottomNavigationAction
-                  label={`${goods} いいね！`}
-                  icon={<FavoriteIcon />}
-                  value={'unfavorite'}
-                />
-              ) : (
-                <BottomNavigationAction
-                  label={`${goods} いいね！`}
-                  icon={<FavoriteBorderIcon />}
-                  value={'favorite'}
-                />
-              )}
+              <BottomNavigationAction
+                label={`${goods} いいね！`}
+                icon={<FavoriteIcon id="favorite" />}
+                value={'favorite'}
+              />
               <BottomNavigationAction label="に投稿" icon={<XIcon />} />
               <BottomNavigationAction label="に投稿" icon={<FacebookIcon />} />
             </BottomNavigation>
