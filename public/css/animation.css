@@ -1,0 +1,30 @@
+.jump-animation {
+  animation: jump-animation 0.9s linear 0s 1;
+}
+@keyframes jump-animation {
+  0% {
+    transform: scale(1, 1) translate(0%, 0%);
+    color: #ff2a4f;
+  }
+  10% {
+    transform: scale(1.1, 0.9) translate(0%, 5%);
+  }
+  40% {
+    transform: scale(1.2, 0.8) translate(0%, 15%);
+  }
+  50% {
+    transform: scale(1, 1) translate(0%, 0%);
+  }
+  60% {
+    transform: scale(0.9, 1.2) translate(0%, -100%);
+  }
+  75% {
+    transform: scale(0.9, 1.2) translate(0%, -20%);
+  }
+  85% {
+    transform: scale(1.2, 0.8) translate(0%, 15%);
+  }
+  100% {
+    transform: scale(1, 1) translate(0%, 0%);
+  }
+}

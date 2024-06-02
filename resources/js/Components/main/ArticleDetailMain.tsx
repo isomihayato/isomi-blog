@@ -6,7 +6,6 @@ import { Suspense } from 'react';
 import { ArticleType } from '../types/ArticleTypes';
 import SnsSideBar from '@/Components/sidebar/SnsSideBar';
 import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
-import { getStorage } from '@/Components/common/functions';
 import { convertGenre, makeGenreColor } from '../filters/articleFilter';
 import CachedIcon from '@mui/icons-material/Cached';
 import {
@@ -33,29 +32,24 @@ type Props = {
   articleElements: JSX.Element[];
   elements: JSX.Element[];
   action: string;
-  setLoginOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setAction: React.Dispatch<React.SetStateAction<string>>;
 };
 export default function ArticleDetailMain(props: Props) {
   const { action, article, articleElements, elements } = props;
-  const { setLoginOpen, setAction } = props;
+  const { setAction } = props;
   const [favorites, setFavorites] = React.useState(undefined); // お気に入り数
-  const [loginedMemberFavorite, setLoginedMemberFavorite] =
-    React.useState(undefined); // お気に入り登録済みかどうか
-  const t_user = getStorage('user');
+  React.useState(undefined); // お気に入り登録済みかどうか
 
   useEffect(() => {
-    if (t_user === null || t_user === undefined) return;
     getFavoritesCount(
       String(article.id),
-      t_user.uid,
       (res) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        setFavorites(res.data.favorites);
+        console.log('favorites', res.data.favorites);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        setLoginedMemberFavorite(res.data.logined_member_favorite);
+        setFavorites(res.data.favorites);
       },
       (err) => {
         console.log(err);
@@ -101,16 +95,14 @@ export default function ArticleDetailMain(props: Props) {
     <>
       <Box id="main" style={makeOuterStyle()} className="font-style">
         <Grid container>
-          <Grid md={2}>
+          <Grid md={2} xs={0}>
             <SnsSideBar
               article={article}
               favorites={favorites}
-              loginedMemberFavorite={loginedMemberFavorite}
-              setOpen={setLoginOpen}
               setAction={setAction}
             />
           </Grid>
-          <Grid md={10}>
+          <Grid md={10} xs={12}>
             {articleElements?.map((element, index) => (
               <Box key={index + 'main-content'} component={Paper}>
                 <span
