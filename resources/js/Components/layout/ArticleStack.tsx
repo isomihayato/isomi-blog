@@ -7,6 +7,7 @@ import { Avatar, Grid } from '@mui/material';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import Tags from '@/Components/Tags';
 import { isMobile } from 'react-device-detect';
+import { router } from '@inertiajs/react';
 import { ArticleType } from '../types/ArticleTypes';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -31,9 +32,10 @@ export default function ArticleStack(props: Props) {
           <Item
             key={article.id}
             onClick={() => {
-              window.location.href = '/articles/details/' + article.id;
+              // フルリロードではなくInertiaのSPA遷移で記事詳細へ移動する
+              router.visit('/articles/details/' + article.id);
             }}
-            style={{ padding: '16px 24px' }}
+            style={{ padding: '16px 24px', cursor: 'pointer' }}
           >
             <div>
               <Grid container spacing={2}>
