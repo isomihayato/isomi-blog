@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { ArticleType } from '../types/ArticleTypes';
 import SnsSideBar from '@/Components/sidebar/SnsSideBar';
 import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
+import { useFavoriteClick } from '@/Components/common/favorite';
 import { convertGenre, makeGenreColor } from '../filters/articleFilter';
 import CachedIcon from '@mui/icons-material/Cached';
 import {
@@ -36,8 +37,10 @@ type Props = {
 };
 export default function ArticleDetailMain(props: Props) {
   const { action, article, articleElements, elements } = props;
-  const { setAction } = props;
-  const [favorites, setFavorites] = React.useState(undefined); // お気に入り数
+  const [favorites, setFavorites] = React.useState<number | undefined>(
+    undefined,
+  ); // お気に入り数
+  const onFavorite = useFavoriteClick(article.id, setFavorites);
   React.useState(undefined); // お気に入り登録済みかどうか
 
   useEffect(() => {
@@ -99,7 +102,7 @@ export default function ArticleDetailMain(props: Props) {
             <SnsSideBar
               article={article}
               favorites={favorites}
-              setAction={setAction}
+              onFavorite={onFavorite}
             />
           </Grid>
           <Grid md={10} xs={12}>
