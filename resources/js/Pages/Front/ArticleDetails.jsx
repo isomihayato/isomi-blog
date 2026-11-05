@@ -77,6 +77,8 @@ export default function ArticleDetails({ article, relative_articles }) {
   }, []);
 
   React.useEffect(() => {
+    // 初回表示時はサーバーから受け取ったコメントを使用し、重複リクエストを省略する
+    if (action === '') return;
     postComments({ id: article.id }, (res) => {
       setComments(res.data.comments);
     });

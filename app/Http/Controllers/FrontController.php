@@ -19,7 +19,9 @@ class FrontController extends Controller
         $from = now()->subYears(30)->startOfYear();
         // 現在の年を取得
         $to = now();
-        $articles_pagenation = Article::where('visible', true)
+        // 一覧表示に不要な本文(body)等は取得しない(ペイロード削減)
+        $articles_pagenation = Article::select(Article::LIST_COLUMNS)
+            ->where('visible', true)
             ->whereBetween('published_at', [$from, $to])
             ->paginate(5);
         return Inertia::render('Welcome', ['articles_pagenation' => $articles_pagenation]);
@@ -56,10 +58,15 @@ class FrontController extends Controller
 
     public function article($id)
     {
-        $article = Article::with(['comments.member'])->find($id);
+        $article = Article::with(['comments.member'])->findOrFail($id);
         $article_genre = $article->genre;
         if ($article_genre !== null) {
-            $relative_articles = Article::where('genre', $article_genre)->orderBy('published_at', 'desc')->take(4)->get();
+            // 関連記事は一覧表示のみのため本文(body)等は取得しない
+            $relative_articles = Article::select(Article::LIST_COLUMNS)
+                ->where('genre', $article_genre)
+                ->orderBy('published_at', 'desc')
+                ->take(4)
+                ->get();
         }
         return Inertia::render('Front/ArticleDetails', [
             'id' => $id,
@@ -108,12 +115,16 @@ class FrontController extends Controller
         $ad_templates = AdIntermediate::where('article_ad_template_id',$article->article_ad_template_id)
             ->with(['article_ad_template','article_ad'])
             ->get();
-        $ad_templates = $ad_templates->map(function ($ad_template) {
+        // 広告配置名を1クエリでまとめて取得(N+1クエリ解消)
+        $ad_arrangement_names = AdArrangement::whereIn(
+            'id',
+            $ad_templates->flatMap(fn ($ad_template) => explode(',', $ad_template->ad_arrangement_ids))->unique()->values()
+        )->pluck('name', 'id');
+        $ad_templates = $ad_templates->map(function ($ad_template) use ($ad_arrangement_names) {
             $ad_arrangement_ids = explode(',', $ad_template->ad_arrangement_ids);
             $ad_arrangements = [];
             foreach ($ad_arrangement_ids as $ad_arrangement_id) {
-                $ad_arrangement = AdArrangement::find($ad_arrangement_id);
-                array_push($ad_arrangements, $ad_arrangement->name);
+                $ad_arrangements[] = $ad_arrangement_names[$ad_arrangement_id] ?? null;
             }
             $ad_template['ad_arrangements'] = $ad_arrangements;
             return $ad_template;

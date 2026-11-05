@@ -10,6 +10,21 @@ class Article extends Model
 {
     use HasFactory;
 
+    /**
+     * 記事一覧表示で使用するカラム(本文などの重いカラムを除外)
+     */
+    public const LIST_COLUMNS = [
+        'id',
+        'title',
+        'describe',
+        'tags',
+        'genre',
+        'visible',
+        'published_at',
+        'created_at',
+        'updated_at',
+    ];
+
     protected $fillable = [
         'title',
         'body',
