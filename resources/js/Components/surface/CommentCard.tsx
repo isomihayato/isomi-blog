@@ -4,7 +4,7 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
-import { getStorage } from '../common/functions';
+import { getStorage, useStorage } from '../common/functions';
 import Button from '@mui/material/Button';
 import { TextareaAutosize } from '@mui/material';
 import Markdown from 'react-markdown';
@@ -28,9 +28,10 @@ export default function CommentCard(props: Props) {
   const [preview, setPreview] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const t_user = getStorage('user');
+  // ログイン後にコメント入力を有効化するため、ログイン状態を購読する
+  const t_user = useStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
-  const photoURL = getStorage('photoUrl');
+  const photoURL = useStorage('photoUrl');
   React.useEffect(() => {
     if (editTime) {
       setComment(defaultComment.body);
