@@ -11,7 +11,7 @@ import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
 import { postComments } from '@/Components/axios/axiosComment';
-import { getStorage } from '@/Components/common/functions';
+import { useStorage } from '@/Components/common/functions';
 import { Head } from '@inertiajs/react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
@@ -29,7 +29,8 @@ export default function ArticleDetails({ article, relative_articles }) {
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
   const [chapters, setChapters] = React.useState([]); // 記事の章リスト
   const adElementRef = useRef(null);
-  const t_user = getStorage('user');
+  // ログイン後にコメントのオーバーレイを消すため、ログイン状態を購読する
+  const t_user = useStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
   const funAdvertises = advertisements.filter((ad) =>
     ad.ad_arrangements.includes('おもしろエリア'),
