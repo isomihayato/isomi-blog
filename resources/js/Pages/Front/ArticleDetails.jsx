@@ -29,8 +29,12 @@ export default function ArticleDetails({ article, relative_articles }) {
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
   const [chapters, setChapters] = React.useState([]); // 記事の章リスト
   const adElementRef = useRef(null);
-  const t_user = getStorage('user');
-  const logged = t_user === null || t_user === undefined ? false : true;
+  const isLoggedIn = () => {
+    const t_user = getStorage('user');
+    return t_user !== null && t_user !== undefined;
+  };
+  // ログイン状態をstateで保持し、ログイン成功時に再描画してコメントのオーバーレイを消す
+  const [logged, setLogged] = React.useState(isLoggedIn);
   const funAdvertises = advertisements.filter((ad) =>
     ad.ad_arrangements.includes('おもしろエリア'),
   );
@@ -181,7 +185,11 @@ export default function ArticleDetails({ article, relative_articles }) {
         />
       </Helmet>
       <Head title={article.title} />
-      <Front loginOpen={loginOpen} setLoginOpen={setLoginOpen} />
+      <Front
+        loginOpen={loginOpen}
+        setLoginOpen={setLoginOpen}
+        onLoginSuccess={() => setLogged(isLoggedIn())}
+      />
       <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
         <Link underline="hover" color="inherit" href="/">
           <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
