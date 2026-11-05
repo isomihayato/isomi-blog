@@ -5,7 +5,6 @@ import { isMobile } from 'react-device-detect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
-import { postFavorite } from '../axios/axiosFavorite';
 import { getStorage } from '../common/functions';
 import { ArticleType } from '../types/ArticleTypes';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
@@ -15,10 +14,10 @@ import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
 type Props = {
   article: ArticleType;
   favorites: number | undefined;
-  setAction: React.Dispatch<React.SetStateAction<string>>;
+  onFavorite: () => void;
 };
 export default React.memo(function SnsSideBar(props: Props) {
-  const { article, favorites, setAction } = props;
+  const { article, favorites, onFavorite } = props;
   const user = getStorage('user');
   const Item = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff0',
@@ -28,19 +27,7 @@ export default React.memo(function SnsSideBar(props: Props) {
   }));
   const favoriteClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    postFavorite(
-      { article_id: article.id },
-      (res) => {
-        console.log(res.data);
-        document.getElementById('favorite').classList.add('jump-animation');
-        setTimeout(() => {
-          setAction(`favorites-${Math.random().toString(32).substring(2)}`);
-        }, 900);
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
+    onFavorite();
   };
 
   return (
@@ -50,7 +37,7 @@ export default React.memo(function SnsSideBar(props: Props) {
           article={article}
           favorites={favorites}
           user={user}
-          setAction={setAction}
+          onFavorite={onFavorite}
         />
       ) : (
         <Stack

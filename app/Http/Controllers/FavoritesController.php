@@ -21,11 +21,15 @@ class FavoritesController extends Controller
         $request->validate([
             'article_id' => 'required',
         ]);
-        $article = Article::find($request->article_id);
+        $article = Article::findOrFail($request->article_id);
         $article->favorites()->create([
             'article_id' => $request->article_id,
         ]);
-        return response()->json(['status' => "success"]);
+        // 登録後の件数を返却し、クライアントが再取得(GET)せずに表示を確定できるようにする
+        return response()->json([
+            'status' => "success",
+            'favorites' => $article->favorites()->count(),
+        ]);
     }
 
     public function destroy(string $id)

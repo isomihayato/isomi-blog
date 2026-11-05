@@ -6,19 +6,18 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import Paper from '@mui/material/Paper';
-import { postFavorite } from '../axios/axiosFavorite';
 import { ArticleType } from '../types/ArticleTypes';
 
 type Props = {
   article: ArticleType;
   favorites: number | undefined;
   user: { uid: string };
-  setAction: React.Dispatch<React.SetStateAction<string>>;
+  onFavorite: () => void;
 };
 export default function SPBottonAppBar(props: Props) {
   const [value, setValue] = React.useState(0);
   const [show, setShow] = React.useState(true);
-  const { article, favorites, setAction } = props;
+  const { article, favorites, onFavorite } = props;
   const goods = favorites ? favorites : '';
   const handleScroll = () => {
     const element = document.getElementById('footer');
@@ -42,19 +41,7 @@ export default function SPBottonAppBar(props: Props) {
   }, []);
   const handleChange = (event, newValue) => {
     if (newValue === 'favorite') {
-      postFavorite(
-        { article_id: article.id },
-        (res) => {
-          console.log(res.data);
-          document.getElementById('favorite').classList.add('jump-animation');
-          setTimeout(() => {
-            setAction(`favorites-${Math.random().toString(32).substring(2)}`);
-          }, 900);
-        },
-        (err) => {
-          console.log(err);
-        },
-      );
+      onFavorite();
     } else if (newValue === 1) {
       window.location.href = encodeURI(
         `https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | りっすん&hashtags=infobox`,
