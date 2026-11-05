@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Article;
+use App\Models\ArticleAdTemplate;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,9 +15,11 @@ class FavoritesTest extends TestCase
     private function createArticle(): Article
     {
         $user = User::factory()->create();
+        $template = ArticleAdTemplate::create(['name' => 'テストテンプレート']);
 
         return Article::create([
             'user_id' => $user->id,
+            'article_ad_template_id' => $template->id,
             'title' => 'テスト記事',
             'body' => '本文',
             'tags' => '',
