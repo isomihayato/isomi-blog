@@ -31,6 +31,13 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 
+// 本文の画像は、画面に近づいてから読み込む(初期表示を軽くする)
+// eslint-disable-next-line react/prop-types, no-unused-vars
+function LazyImage({ node, ...props }) {
+  // eslint-disable-next-line jsx-a11y/alt-text
+  return <img loading="lazy" decoding="async" {...props} />;
+}
+
 export default function ArticleDetails({ article, relative_articles }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments ?? []);
@@ -64,7 +71,7 @@ export default function ArticleDetails({ article, relative_articles }) {
               rehypeAutolinkHeadings,
               ...(codeHighlight ? [codeHighlight] : []),
             ]}
-            components={{ pre: CodeBlock }}
+            components={{ pre: CodeBlock, img: LazyImage }}
           >
             {article.body}
           </Markdown>

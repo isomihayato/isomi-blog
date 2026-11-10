@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Paper, Typography } from '@mui/material';
+import { Box, Chip, Grid, Paper, Skeleton, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
 import Tags from '@/Components/Tags';
@@ -136,7 +136,9 @@ export default function ArticleDetailMain(props: Props) {
                   </div>
                 </div>
 
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense
+                  fallback={<Skeleton variant="rounded" height={400} />}
+                >
                   <div
                     style={
                       isMobile
@@ -266,7 +268,9 @@ export default function ArticleDetailMain(props: Props) {
                 component={Paper}
                 sx={{ marginTop: '30px' }}
               >
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense
+                  fallback={<Skeleton variant="rounded" height={400} />}
+                >
                   <div
                     style={
                       isMobile

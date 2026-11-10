@@ -16,6 +16,7 @@ createInertiaApp({
         root.render(<App {...props} />);
     },
     progress: {
-        color: '#4B5563',
+        // テーマの青(MUI の primary)。濃いグレーだと目立たなかった
+        color: '#1976d2',
     },
 });

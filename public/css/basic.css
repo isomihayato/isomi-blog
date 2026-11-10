@@ -156,6 +156,12 @@ textarea[name='comment_body'] {
 .preview img {
   margin: 0 auto;
 }
+/* 本文の画像が画面からはみ出さないようにする(高さは縦横比を保つ) */
+#main pre img,
+.markdown-preview img {
+  max-width: 100%;
+  height: auto;
+}
 @media (max-width: 2000px) and (min-width: 768px) {
   body h1 {
     border-bottom: 1px solid var(--color-divider);

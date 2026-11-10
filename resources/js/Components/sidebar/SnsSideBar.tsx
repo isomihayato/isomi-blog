@@ -1,4 +1,4 @@
-import { Avatar, Stack, styled } from '@mui/material';
+import { Avatar, Skeleton, Stack, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import { isMobile } from 'react-device-detect';
@@ -53,9 +53,18 @@ export default React.memo(function SnsSideBar(props: Props) {
                 color: '#9a9a9a',
                 fontWeight: 'bold',
                 textAlign: 'center',
+                // 数が読み込まれても、桁が変わっても、周りがずれないように幅と高さを固定する
+                width: '40px',
+                height: '24px',
+                lineHeight: '24px',
+                margin: '0 auto',
               }}
             >
-              {favorites}
+              {favorites === undefined ? (
+                <Skeleton variant="text" width={24} sx={{ mx: 'auto' }} />
+              ) : (
+                favorites
+              )}
             </div>
             <Avatar onClick={favoriteClick} style={{ float: 'right' }}>
               <FavoriteIcon id="favorite" />

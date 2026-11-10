@@ -32,9 +32,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9210370957298715"
      crossorigin="anonymous"></script>
     <!-- Google Tag Manager -->
-    <!-- hatena bookmarkのボタン -->
-    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charSet="utf-8" async="async"></script>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <!-- X・はてなブックマークのボタン用スクリプトは、ボタンを表示するときだけ読み込む(main/Front.tsx) -->
     <script>
         (function(w, d, s, l, i) {
             w[l] = w[l] || [];
