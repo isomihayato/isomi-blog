@@ -32,16 +32,17 @@ class FrontArticleTest extends TestCase
                 ->missing('articles_pagenation.data.0.body'));
     }
 
-    public function test_top_page_is_paginated_by_five(): void
+    public function test_top_page_is_paginated(): void
     {
-        Article::factory()->count(7)->create();
+        // 1ページの件数は変わることがある(BLOG-39 で5件→10件)ので、レスポンスの per_page を使う
+        $perPage = $this->get('/')->viewData('page')['props']['articles_pagenation']['per_page'];
+        Article::factory()->count($perPage + 2)->create();
 
         $this->get('/')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->where('articles_pagenation.per_page', 5)
                 ->where('articles_pagenation.last_page', 2)
-                ->has('articles_pagenation.data', 5));
+                ->has('articles_pagenation.data', $perPage));
 
         $this->get('/?page=2')
             ->assertOk()
