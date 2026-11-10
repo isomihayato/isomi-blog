@@ -25,9 +25,10 @@ import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 type Props = {
   loginOpen?: boolean;
   setLoginOpen?: React.SetStateAction<boolean>;
+  onLoginSuccess?: () => void;
 };
 export default function Front(props: Props) {
-  const { loginOpen, setLoginOpen } = props;
+  const { loginOpen, setLoginOpen, onLoginSuccess } = props;
   const [open, setOpen] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [drawer, setDrawer] = React.useState(false);
@@ -44,8 +45,10 @@ export default function Front(props: Props) {
   const statusHndlr = (status: string) => {
     if (status === 'signin' || status === 'success') {
       setStatus('0,ログインしました。');
+      onLoginSuccess?.();
     } else if (status === 'create') {
       setStatus('0,新規登録しました。');
+      onLoginSuccess?.();
     } else if (
       status === 'error:auth/account-exists-with-different-credential'
     ) {
