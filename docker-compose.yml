@@ -27,16 +27,16 @@ services:
       # - mailpit
   mysql:
     image: 'mysql/mysql-server:8.0'
-    ports:
-      - '${FORWARD_DB_PORT:-3307}:3307'
+    # ホストにはポートを公開しない(アプリからは sail ネットワーク経由で mysql:3306 に接続する)。
+    # 手元で DB クライアントから見るときは `docker compose exec mysql mysql -u <ユーザー> -p` を使う。
+    # 下の MYSQL_* は、DB を初めて作るとき(ボリュームが空のとき)だけ使われる。
+    # MYSQL_ROOT_HOST は指定しない(既定で root はコンテナの中からだけ接続できる。'localhost' を指定すると初期化に失敗する)。
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ROOT_HOST: '%'
       MYSQL_DATABASE: '${DB_DATABASE}'
       MYSQL_USER: '${DB_USERNAME}'
       MYSQL_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
-        - TZ=Asia/Tokyo
+      TZ: 'Asia/Tokyo'
     command:
       [
         'mysqld',
