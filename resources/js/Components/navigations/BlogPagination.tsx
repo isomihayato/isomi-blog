@@ -26,6 +26,13 @@ export default function Pagination(props: Proops) {
     last_page,
   } = paginator;
 
+  // ページ番号のリンク先は、表示中の一覧のURL(first_page_url)の page だけを差し替えて作る
+  const pageUrl = (page: number): string => {
+    const url = new URL(first_page_url, window.location.origin);
+    url.searchParams.set('page', String(page));
+    return url.toString();
+  };
+
   const start_page = current_page - gap <= 0 ? 1 : current_page - gap;
   const end_page =
     current_page + gap >= last_page ? last_page : current_page + gap;
@@ -35,7 +42,7 @@ export default function Pagination(props: Proops) {
     pageNums.push(
       <a
         key={index}
-        href={`/infomations/list?page=${index}`}
+        href={pageUrl(index)}
         className={`pagination-link ${
           current_page === index ? 'current-page' : ''
         }`}
