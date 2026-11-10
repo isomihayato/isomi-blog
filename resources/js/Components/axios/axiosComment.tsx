@@ -1,23 +1,24 @@
 import AxiosWrapper from "./axios"
 
-// 記事のコメントを取得
-export function postComments(data: any, cb: any) {
+// 記事のコメントを取得(失敗時は er を呼ぶ)
+export function postComments(data: any, cb: any, er: any) {
     AxiosWrapper({
         method: 'post',
         url: '/comments/get/comments',
         data: data,
         callback: (res) => {cb(res)},
-        errors: (res) => {cb(res)},
+        errors: (res) => {er(res)},
     })
 }
 
-export default function postComment(data: any, cb: any) {
+// コメントを投稿(失敗時は er を呼ぶ)
+export default function postComment(data: any, cb: any, er: any) {
     AxiosWrapper({
         method: 'post',
         url: '/comments',
         data: data,
         callback: (res) => {cb(res)},
-        errors: (res) => {cb(res)},
+        errors: (res) => {er(res)},
     })
 }
 

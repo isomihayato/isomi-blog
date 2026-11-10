@@ -10,7 +10,7 @@ import {
 
 import { setStorage } from '@/Components/common/functions';
 import 'firebase/auth';
-import postMember from '@/Components/axios/axiosMember';
+import { registerMember } from '@/Components/axios/axiosMember';
 const firebaseConfig = {
   apiKey: 'AIzaSyCYeWqXbNz5kvbPymgWTWHSgZFYHfiIkwY',
   authDomain: 'info-box-eea0c.firebaseapp.com',
@@ -34,15 +34,11 @@ export class FBClient {
       const auth = getAuth();
       const result = await signInWithPopup(auth, provider);
       console.log({ fb_uid: result.user.uid, photo_url: result.user.photoURL });
-      postMember(
-        { fb_uid: result.user.uid, photo_url: result.user.photoURL },
-        (res: any) => {
-          console.log(res.data);
-        },
-        (err: any) => {
-          console.log(err);
-        },
-      );
+      // 会員登録が終わる前にコメントを投稿されないよう、完了を待ってからログイン状態にする
+      await registerMember({
+        fb_uid: result.user.uid,
+        photo_url: result.user.photoURL,
+      }).catch((err) => console.log(err));
       setStorage('photoUrl', result.user.photoURL);
       setStorage('user', { uid: result.user.uid });
       return 'success';
@@ -64,14 +60,9 @@ export class FBClient {
       const auth = getAuth();
       const result = await signInWithPopup(auth, provider);
       console.log(result);
-      postMember(
-        { fb_uid: result.user.uid },
-        (res: any) => {
-          console.log(res.data);
-        },
-        (err: any) => {
-          console.log(err);
-        },
+      // 会員登録が終わる前にコメントを投稿されないよう、完了を待ってからログイン状態にする
+      await registerMember({ fb_uid: result.user.uid }).catch((err) =>
+        console.log(err),
       );
       setStorage('user', { uid: result.user.uid });
       return 'success';
@@ -91,6 +82,10 @@ export class FBClient {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       console.log(result);
+      // 以前の会員登録に失敗していた場合に備えて登録し直す(登録済みなら何もしない)
+      await registerMember({ fb_uid: result.user.uid }).catch((err) =>
+        console.log(err),
+      );
       setStorage('user', { uid: result.user.uid });
       return 'signin';
     } catch (error: any) {
@@ -106,17 +101,11 @@ export class FBClient {
             email,
             password,
           );
-          setStorage('user', { uid: createResult.user.uid });
-
-          postMember(
-            { fb_uid: createResult.user.uid },
-            (res: any) => {
-              console.log(res.data);
-            },
-            (err: any) => {
-              console.log(err);
-            },
+          // 会員登録が終わる前にコメントを投稿されないよう、完了を待ってからログイン状態にする
+          await registerMember({ fb_uid: createResult.user.uid }).catch((err) =>
+            console.log(err),
           );
+          setStorage('user', { uid: createResult.user.uid });
           return 'create';
         } catch (e) {
           if (e instanceof FirebaseError) {

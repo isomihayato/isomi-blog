@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef } from 'react';
-import { Box, Breadcrumbs, Link, Typography, Stack, Grid } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Breadcrumbs,
+  Link,
+  Typography,
+  Stack,
+  Grid,
+} from '@mui/material';
 import Front from '@/Components/header/Front';
 import ArticleDetailMain from '@/Components/main/ArticleDetailMain';
 import FrontFooter from '@/Components/footer/FrontFooter';
@@ -24,7 +32,8 @@ import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 
 export default function ArticleDetails({ article, relative_articles }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
-  const [comments, setComments] = React.useState(article.comments);
+  const [comments, setComments] = React.useState(article.comments ?? []);
+  const [commentsError, setCommentsError] = React.useState(false); // コメントの取得に失敗したか
   const [advertisements, setAdvertisements] = React.useState([]);
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
   const [chapters, setChapters] = React.useState([]); // 記事の章リスト
@@ -79,9 +88,18 @@ export default function ArticleDetails({ article, relative_articles }) {
   React.useEffect(() => {
     // 初回表示時はサーバーから受け取ったコメントを使用し、重複リクエストを省略する
     if (action === '') return;
-    postComments({ id: article.id }, (res) => {
-      setComments(res.data.comments);
-    });
+    postComments(
+      { id: article.id },
+      (res) => {
+        setComments(res.data.comments ?? []);
+        setCommentsError(false);
+      },
+      () => {
+        // 取得に失敗しても画面が落ちないよう、一覧を空にしてメッセージを出す
+        setComments([]);
+        setCommentsError(true);
+      },
+    );
   }, [action]);
 
   const mainUnderElements = [
@@ -136,6 +154,11 @@ export default function ArticleDetails({ article, relative_articles }) {
       <Box id="comment">
         <Box p={2}>
           <h2 style={{ margin: 0 }}>コメント</h2>
+          {commentsError ? (
+            <Alert severity="error" sx={{ my: 1 }}>
+              コメントを読み込めませんでした。時間をおいて、ページを再読み込みしてください。
+            </Alert>
+          ) : null}
           {comments.map((comment, index) => {
             return (
               <CommentsCard

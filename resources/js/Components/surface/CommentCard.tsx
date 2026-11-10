@@ -6,7 +6,7 @@ import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import { getStorage } from '../common/functions';
 import Button from '@mui/material/Button';
-import { TextareaAutosize } from '@mui/material';
+import { Alert, TextareaAutosize } from '@mui/material';
 import Markdown from 'react-markdown';
 import postComment, { postUpdateComment } from '../axios/axiosComment';
 import { Menu, MenuItem } from '@mui/material';
@@ -28,6 +28,7 @@ export default function CommentCard(props: Props) {
   const [preview, setPreview] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [postError, setPostError] = React.useState(''); // 投稿に失敗したときのメッセージ
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
   const photoURL = getStorage('photoUrl');
@@ -49,10 +50,21 @@ export default function CommentCard(props: Props) {
       const user = getStorage('user');
       const data = { body: comment, fb_uid: user.uid, article_id: articleId };
 
-      postComment(data, (res: { data: string }) => {
-        setComment('');
-        setAction(`comment create${res.data}`);
-      });
+      setPostError('');
+      postComment(
+        data,
+        (res: { data: string }) => {
+          setComment('');
+          setAction(`comment create${res.data}`);
+        },
+        (err: { response?: { data?: { message?: string } } }) => {
+          // 失敗時は入力内容を残し、サーバーからのメッセージを表示する
+          setPostError(
+            err.response?.data?.message ??
+              'コメントを投稿できませんでした。時間をおいて、もう一度お試しください。',
+          );
+        },
+      );
     }
   };
   const editHndlr = () => {
@@ -105,6 +117,11 @@ export default function CommentCard(props: Props) {
       ) : null}
 
       <CardContent>
+        {postError ? (
+          <Alert severity="error" sx={{ mb: 1 }}>
+            {postError}
+          </Alert>
+        ) : null}
         {preview ? (
           <pre className="markdown-preview">
             <Markdown rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}>
