@@ -22,9 +22,17 @@ type Props = {
   editTime?: boolean;
   setEdit?: React.Dispatch<React.SetStateAction<boolean>>;
   defaultComment?: CommentType;
+  onLoginClick?: () => void; // 未ログイン時の「ログインしてコメントする」ボタンを押したとき
 };
 export default function CommentCard(props: Props) {
-  const { articleId, setAction, editTime, setEdit, defaultComment } = props;
+  const {
+    articleId,
+    setAction,
+    editTime,
+    setEdit,
+    defaultComment,
+    onLoginClick,
+  } = props;
   const [preview, setPreview] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -133,7 +141,10 @@ export default function CommentCard(props: Props) {
             name="comment_body"
             minRows={10}
             style={{ width: '100%' }}
-            placeholder="コメントを入力"
+            placeholder={
+              logged ? 'コメントを入力' : 'コメントするにはログインしてください'
+            }
+            disabled={!logged}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
@@ -149,9 +160,15 @@ export default function CommentCard(props: Props) {
             キャンセル
           </Button>
         ) : null}
-        <Button type="submit" variant="contained" disabled={!logged}>
-          投稿する
-        </Button>
+        {logged ? (
+          <Button type="submit" variant="contained">
+            投稿する
+          </Button>
+        ) : (
+          <Button variant="contained" onClick={onLoginClick}>
+            ログインしてコメントする
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

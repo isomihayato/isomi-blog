@@ -191,12 +191,12 @@ export default function ArticleDetails({ article, relative_articles }) {
               />
             );
           })}
-          {logged ? (
-            <></>
-          ) : (
-            <div className="cover">ログインしてコメントする</div>
-          )}
-          <CommentCard articleId={article.id} setAction={setAction} />
+          {/* 未ログイン時はフォームを無効にし、ログインダイアログを開くボタンを出す */}
+          <CommentCard
+            articleId={article.id}
+            setAction={setAction}
+            onLoginClick={() => setLoginOpen(true)}
+          />
         </Box>
       </Box>
     </>,
