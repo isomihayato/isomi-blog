@@ -1,9 +1,17 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Button } from '@mui/material';
 
 
 export default function Index({ auth, articles }) {
+    // 記事をソフトデリートする(確認のうえ DELETE /articles/{id} を送る)
+    const handleDelete = (article) => {
+        if (!window.confirm(`「${article.title}」を削除しますか?`)) {
+            return;
+        }
+        router.delete(`/articles/${article.id}`);
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -46,7 +54,7 @@ export default function Index({ auth, articles }) {
                                                             <td className="border px-4 py-2">
                                                                 <Button 
                                                                   variant='contained' 
-                                                                  onClick={()=>{window.location.href="/articles/"+article.id+"/delete"}}
+                                                                  onClick={() => handleDelete(article)}
                                                                 >
                                                                     削除
                                                                 </Button>
