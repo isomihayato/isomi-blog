@@ -6,7 +6,9 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Markdown from 'react-markdown';
-import { Alert, Menu, MenuItem } from '@mui/material';
+import { Alert, Box, Button, Menu, MenuItem } from '@mui/material';
+import ReplyIcon from '@mui/icons-material/Reply';
+import { getStorage } from '../common/functions';
 import CommentCard from './CommentCard';
 import { deleteComment } from '../axios/axiosComment';
 import rehypeSlug from 'rehype-slug';
@@ -17,9 +19,19 @@ type Props = {
   articleId: number;
   comment: CommentType;
   setAction: React.Dispatch<React.SetStateAction<string>>;
+  replies?: CommentType[]; // このコメントへの返信(返信は1段階まで)
+  isReply?: boolean; // このコメント自体が返信か
 };
 export default function CommentsCard(props: Props) {
-  const { articleId, comment, setAction } = props;
+  const {
+    articleId,
+    comment,
+    setAction,
+    replies = [],
+    isReply = false,
+  } = props;
+  const [replying, setReplying] = React.useState(false); // 返信フォームを開いているか
+  const logged = Boolean(getStorage('user'));
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [edit, setEdit] = React.useState(false);
   const [deleteError, setDeleteError] = React.useState(''); // 削除に失敗したときのメッセージ
@@ -49,7 +61,7 @@ export default function CommentsCard(props: Props) {
     setAnchorEl(null);
   };
   return (
-    <>
+    <Box sx={isReply ? { ml: { xs: 3, sm: 6 } } : undefined}>
       {edit ? (
         <CommentCard
           articleId={articleId}
@@ -59,7 +71,7 @@ export default function CommentsCard(props: Props) {
           defaultComment={comment}
         />
       ) : (
-        <Card sx={{ width: '100%', marginBottom: '20px' }}>
+        <Card sx={{ width: '100%', marginBottom: '8px' }}>
           <CardHeader
             avatar={
               <Avatar alt="メンバー画像" src={comment.member.photo_url} />
@@ -109,6 +121,40 @@ export default function CommentsCard(props: Props) {
           </CardContent>
         </Card>
       )}
-    </>
+      {isReply ? null : (
+        <Box sx={{ mb: '20px' }}>
+          {replies.map((reply) => (
+            <CommentsCard
+              key={reply.id}
+              articleId={articleId}
+              comment={reply}
+              setAction={setAction}
+              isReply
+            />
+          ))}
+          {logged && !replying ? (
+            <Box sx={{ textAlign: 'right' }}>
+              <Button
+                size="small"
+                startIcon={<ReplyIcon />}
+                onClick={() => setReplying(true)}
+              >
+                返信する
+              </Button>
+            </Box>
+          ) : null}
+          {replying ? (
+            <Box sx={{ ml: { xs: 3, sm: 6 } }}>
+              <CommentCard
+                articleId={articleId}
+                setAction={setAction}
+                parentId={comment.id}
+                onCancel={() => setReplying(false)}
+              />
+            </Box>
+          ) : null}
+        </Box>
+      )}
+    </Box>
   );
 }
