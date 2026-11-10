@@ -56,26 +56,7 @@ class ArticleController extends Controller
             'updated_at' => $now,
             'visible' => $request->input('visible') ?? true,
         ]);
-        // サイトマップのベース部分を作成
-        $sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>';
-        $sitemapContent .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-
-        // 固定ページのURLを追加
-        $sitemapContent .= '<url><loc>https://info-space-box.net/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>';
-        $sitemapContent .= '<url><loc>https://info-space-box.net/articles/search</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
-        $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
-
-        // 記事のURLを動的に追加
-        $articles = Article::all(); // すべての記事を取得
-        foreach ($articles as $article) {
-            $sitemapContent .= '<url><loc>https://info-space-box.net/articles/details/' . $article->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
-        }
-
-        // サイトマップの終了タグを追加
-        $sitemapContent .= '</urlset>';
-
-        // publicフォルダの中のsitemap.xmlに書き込む
-        Storage::disk('public')->put('sitemap.xml', $sitemapContent);
+        $this->updateSitemap();
         return response()->json(['status' => "success"]);
     }
 
@@ -107,7 +88,39 @@ class ArticleController extends Controller
 
     public function destroy($id)
     {
+        // ソフトデリート(コメント・お気に入りの行は残す)
+        Article::findOrFail($id)->delete();
+        // 削除した記事をサイトマップから外す
+        $this->updateSitemap();
+
         return redirect()->route('articles.index');
+    }
+
+    /**
+     * 公開ディスクの sitemap.xml を作り直す(削除済みの記事は含まない)
+     */
+    private function updateSitemap(): void
+    {
+        // サイトマップのベース部分を作成
+        $sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>';
+        $sitemapContent .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+        // 固定ページのURLを追加
+        $sitemapContent .= '<url><loc>https://info-space-box.net/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>';
+        $sitemapContent .= '<url><loc>https://info-space-box.net/articles/search</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+        $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+
+        // 記事のURLを動的に追加
+        $articles = Article::all(); // すべての記事を取得
+        foreach ($articles as $article) {
+            $sitemapContent .= '<url><loc>https://info-space-box.net/articles/details/' . $article->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
+        }
+
+        // サイトマップの終了タグを追加
+        $sitemapContent .= '</urlset>';
+
+        // publicフォルダの中のsitemap.xmlに書き込む
+        Storage::disk('public')->put('sitemap.xml', $sitemapContent);
     }
 
     public function uploadImg(Request $request)
