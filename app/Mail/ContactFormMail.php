@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -27,10 +28,11 @@ class ContactFormMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        // 送信元は config('mail.from')(既定値)を使う。送り先は呼び出し側の Mail::to() で指定する。
+        // 返信ボタンで問い合わせた人に返信できるよう、Reply-To に入力されたアドレスを入れる
         return new Envelope(
             subject: 'お問い合わせ受付',
-            from: config('from.address'),
-            to: config('mailers.smtp.username'),
+            replyTo: [new Address($this->details['email'], $this->details['name'])],
         );
     }
 
