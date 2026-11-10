@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net" async>
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="icon" href="/favicon.ico">
+    <link rel="alternate" type="application/rss+xml" title="INFO BOX" href="https://info-space-box.net/feed">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-S5HP2QHWW3"></script>
     <script>
