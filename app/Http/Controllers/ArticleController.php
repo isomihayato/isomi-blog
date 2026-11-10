@@ -16,17 +16,6 @@ class ArticleController extends Controller
         return Inertia::render('Articles/Index', ['articles' => $articles]);
     }
 
-    public function search(Request $request)
-    {
-        // 1990年を取得
-        $from = now()->subYears(30)->startOfYear();
-        // 現在の年を取得
-        $to = now();
-        $search_word = "%$request->search%";
-        $articles = Article::where('title', 'like', $search_word)->where('visible', true)->whereBetween('published_at', [$from, $to])->get();
-        return response()->json(['articles' => $articles]);
-    }
-
     public function show($id)
     {
         return Inertia::render('Articles/Show', ['id' => $id]);
@@ -68,11 +57,6 @@ class ArticleController extends Controller
             'Articles/Edit',
             ['id' => $id, 'article' => $article, 'article_ad_templates' => $article_ad_templates]
         );
-    }
-
-    public function update(Request $request, $id)
-    {
-        return redirect()->route('articles.show', ['id' => $id]);
     }
 
     public function update_article(Request $request, $id)
