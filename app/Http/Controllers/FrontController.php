@@ -88,11 +88,61 @@ class FrontController extends Controller
                 ->take(4)
                 ->get();
         }
+        [$prev_article, $next_article] = $this->neighborArticles($article);
         return Inertia::render('Front/ArticleDetails', [
             'id' => $id,
             'article' => $article,
             'relative_articles' => $relative_articles ?? null,
+            'prev_article' => $prev_article,
+            'next_article' => $next_article,
         ]);
+    }
+
+    /**
+     * 同じジャンルの公開済み記事のうち、公開日の順で前(古い)と次(新しい)の記事を返す。
+     * 公開日が同じときは id の順にする。ない側は null。
+     *
+     * @return array{0: ?Article, 1: ?Article}
+     */
+    private function neighborArticles(Article $article): array
+    {
+        if ($article->published_at === null) {
+            return [null, null];
+        }
+        $publishedAt = $article->published_at;
+        $base = fn () => Article::select(['id', 'title'])
+            ->where('visible', true)
+            ->where('published_at', '<=', now())
+            ->when(
+                $article->genre === null,
+                fn ($q) => $q->whereNull('genre'),
+                fn ($q) => $q->where('genre', $article->genre)
+            )
+            ->where('id', '!=', $article->id);
+
+        $prev = $base()
+            ->where(function ($q) use ($publishedAt, $article) {
+                $q->where('published_at', '<', $publishedAt)
+                    ->orWhere(function ($q) use ($publishedAt, $article) {
+                        $q->where('published_at', $publishedAt)->where('id', '<', $article->id);
+                    });
+            })
+            ->orderBy('published_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $next = $base()
+            ->where(function ($q) use ($publishedAt, $article) {
+                $q->where('published_at', '>', $publishedAt)
+                    ->orWhere(function ($q) use ($publishedAt, $article) {
+                        $q->where('published_at', $publishedAt)->where('id', '>', $article->id);
+                    });
+            })
+            ->orderBy('published_at', 'asc')
+            ->orderBy('id', 'asc')
+            ->first();
+
+        return [$prev, $next];
     }
 
     public function login()
