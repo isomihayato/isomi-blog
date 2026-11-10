@@ -12,5 +12,6 @@ export type ArticleType = {
   created_at: string;
   updated_at: string;
   published_at: string;
+  reading_minutes?: number; // 読了時間の目安(分)。記事詳細のみ
   member_uid: string;
 };

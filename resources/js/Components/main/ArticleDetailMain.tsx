@@ -9,6 +9,8 @@ import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 import { useFavoriteClick } from '@/Components/common/favorite';
 import { convertGenre, makeGenreColor } from '../filters/articleFilter';
 import CachedIcon from '@mui/icons-material/Cached';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { formatJstDate } from '../common/dateFormat';
 import {
   FacebookShareButton,
   FacebookIcon,
@@ -89,6 +91,8 @@ export default function ArticleDetailMain(props: Props) {
       };
     }
   };
+  const publishedDate = formatJstDate(article.published_at);
+  const updatedDate = formatJstDate(article.updated_at);
   const underTitleSpanStype = {
     fontSize: '.8rem',
     fontWeight: '600',
@@ -123,14 +127,31 @@ export default function ArticleDetailMain(props: Props) {
                 <div style={makeTitleStyle()}>
                   <h1> {article.title}</h1>
                   <span style={underTitleSpanStype}>
-                    {article.published_at.slice(0, 10)}に公開
+                    <time dateTime={publishedDate}>{publishedDate}</time>
+                    に公開
                   </span>
-                  <CachedIcon
-                    style={{ marginLeft: '10px', color: '#787878' }}
-                  />
-                  <span style={underTitleSpanStype}>
-                    {article.updated_at.slice(0, 10)}
-                  </span>
+                  {/* 公開日より後に更新したときだけ、最終更新日を出す */}
+                  {updatedDate > publishedDate ? (
+                    <span title="最終更新日">
+                      <CachedIcon
+                        style={{ marginLeft: '10px', color: '#787878' }}
+                      />
+                      <span style={underTitleSpanStype}>
+                        <time dateTime={updatedDate}>{updatedDate}</time>
+                        に更新
+                      </span>
+                    </span>
+                  ) : null}
+                  {article.reading_minutes ? (
+                    <span title="読了時間の目安">
+                      <AccessTimeIcon
+                        style={{ marginLeft: '10px', color: '#787878' }}
+                      />
+                      <span style={underTitleSpanStype}>
+                        約{article.reading_minutes}分で読めます
+                      </span>
+                    </span>
+                  ) : null}
                   <div>
                     <Tags tags={article.tags.split(',')} />
                   </div>

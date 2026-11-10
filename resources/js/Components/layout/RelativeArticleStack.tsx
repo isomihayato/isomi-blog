@@ -8,6 +8,7 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import { isMobile } from 'react-device-detect';
 import { router } from '@inertiajs/react';
 import { ArticleType } from '../types/ArticleTypes';
+import { formatJstDate } from '../common/dateFormat';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -56,7 +57,8 @@ export default function RelativeArticleStack(props: Props) {
                       className="item--date"
                       style={{ fontSize: '.8rem', overflow: 'hidden' }}
                     >
-                      {article.created_at.slice(0, 10)}
+                      {/* 作成日ではなく公開日を表示する */}
+                      {formatJstDate(article.published_at)}
                     </div>
                   </div>
                   <div

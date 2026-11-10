@@ -68,6 +68,8 @@ class FrontController extends Controller
                 ->take(4)
                 ->get();
         }
+        // 読了時間の目安(本文の文字数から計算)
+        $article->append('reading_minutes');
         return Inertia::render('Front/ArticleDetails', [
             'id' => $id,
             'article' => $article,

@@ -9,6 +9,7 @@ import Tags from '@/Components/Tags';
 import { isMobile } from 'react-device-detect';
 import { router } from '@inertiajs/react';
 import { ArticleType } from '../types/ArticleTypes';
+import { formatJstDate } from '../common/dateFormat';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -66,7 +67,7 @@ export default function ArticleStack(props: Props) {
                       id="item--date"
                       style={{ fontSize: '.8rem', overflow: 'hidden' }}
                     >
-                      {article.created_at.slice(0, 10)}
+                      <ArticleDates article={article} />
                     </div>
                   </div>
                   <div
@@ -91,5 +92,24 @@ export default function ArticleStack(props: Props) {
         ))}
       </Stack>
     </Box>
+  );
+}
+
+/** 公開日と、公開日より後に更新していれば最終更新日 */
+function ArticleDates(props: { article: ArticleType }) {
+  const { article } = props;
+  const published = formatJstDate(article.published_at);
+  const updated = formatJstDate(article.updated_at);
+
+  return (
+    <>
+      <time dateTime={published}>{published}</time> 公開
+      {updated > published ? (
+        <>
+          {' / '}
+          <time dateTime={updated}>{updated}</time> 更新
+        </>
+      ) : null}
+    </>
   );
 }
