@@ -82,22 +82,30 @@ class FrontController extends Controller
 
     public function search(Request $request)
     {
-        $from = now()->subYears(30)->startOfYear();
-        // 現在の年を取得
-        $to = now();
-        $search = $request->input('search');
-        if ($search == null) {
-            $articles = Article::where('visible', true)->whereBetween('published_at', [$from, $to])->get();
-            return Inertia::render('Front/Search', ['articles' => $articles]);
+        // 検索語は文字列だけ受け付け、長すぎる場合は100文字で切る(配列などは空として扱う)
+        $input = $request->query('search');
+        $search = is_string($input) ? mb_substr(trim($input), 0, 100) : '';
+
+        // 公開中の記事だけを、一覧に必要な列だけ取り出してページングする(本文や非公開の記事は取り出さない)
+        $query = Article::select(Article::LIST_COLUMNS)->published();
+        if ($search !== '') {
+            // % と _ を文字として扱う(「100%」で全件一致しないように)
+            $like = '%'.addcslashes($search, '\\%_').'%';
+            // タイトルか本文に含まれる記事。公開条件と混ざらないよう、OR はグループにまとめる
+            $query->where(fn ($q) => $q->where('title', 'like', $like)->orWhere('body', 'like', $like));
         }
-        $articles = Article::query()
-            ->where('title', 'LIKE', "%{$search}%")
-            ->orWhere('body', 'LIKE', "%{$search}%")
-            ->get()
-            ->where('visible', true)
-            ->whereBetween('published_at', [$from, $to])
-            ->values();
-        return Inertia::render('Front/Search', ['articles' => $articles]);
+
+        $articles_pagenation = $query
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->paginate(10)
+            // ページのリンクにも検索語を残す
+            ->withQueryString();
+
+        return Inertia::render('Front/Search', [
+            'articles_pagenation' => $articles_pagenation,
+            'search' => $search,
+        ]);
     }
 
     public function infomation_list()
