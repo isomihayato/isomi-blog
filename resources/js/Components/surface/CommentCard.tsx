@@ -45,33 +45,38 @@ export default function CommentCard(props: Props) {
       setComment(defaultComment.body);
     }
   }, [editTime, defaultComment]);
+  // 失敗時は入力内容を残し、サーバーからのメッセージを表示する
+  const showError = (err: { response?: { data?: { message?: string } } }) => {
+    setPostError(
+      err.response?.data?.message ??
+        'コメントを送信できませんでした。時間をおいて、もう一度お試しください。',
+    );
+  };
   const submitHndlr = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPostError('');
     if (editTime) {
       const data = { body: comment, id: defaultComment.id };
 
-      postUpdateComment(data, (res: { data: string }) => {
-        setEdit(false);
-        setAction(`comment update${res.data}`);
-      });
+      postUpdateComment(
+        data,
+        (res: { data: string }) => {
+          setEdit(false);
+          setAction(`comment update${res.data}`);
+        },
+        showError,
+      );
     } else {
-      const user = getStorage('user');
-      const data = { body: comment, fb_uid: user.uid, article_id: articleId };
+      // 投稿者はサーバーが IDトークンから特定するため、会員の識別子は送らない
+      const data = { body: comment, article_id: articleId };
 
-      setPostError('');
       postComment(
         data,
         (res: { data: string }) => {
           setComment('');
           setAction(`comment create${res.data}`);
         },
-        (err: { response?: { data?: { message?: string } } }) => {
-          // 失敗時は入力内容を残し、サーバーからのメッセージを表示する
-          setPostError(
-            err.response?.data?.message ??
-              'コメントを投稿できませんでした。時間をおいて、もう一度お試しください。',
-          );
-        },
+        showError,
       );
     }
   };

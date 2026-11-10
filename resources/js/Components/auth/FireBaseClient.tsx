@@ -24,6 +24,16 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
+/**
+ * ログイン中のユーザーの Firebase IDトークンを返す(ログインしていなければ null)。
+ * サーバーはこのトークンで本人確認をする。期限が切れていれば Firebase が自動で更新する。
+ */
+export async function getIdToken(): Promise<string | null> {
+  // ページを開いた直後は、保存されたログイン状態の読み込みが終わるまで待つ
+  await auth.authStateReady();
+  return auth.currentUser ? auth.currentUser.getIdToken() : null;
+}
+
 export class FBClient {
   async passwordSignIn(email: string, password: string) {
     return await createUserWithEmailAndPassword(auth, email, password);
