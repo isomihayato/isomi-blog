@@ -125,6 +125,9 @@ class FrontController extends Controller
         $infomations_pagenation = DB::table('infomations')
             ->join('categories', 'infomations.category_id', '=', 'categories.id')
             ->select('infomations.*', 'categories.name as category_name', 'categories.color')
+            // 公開日前のお知らせは一覧に出さない
+            ->whereNotNull('infomations.publish_at')
+            ->where('infomations.publish_at', '<=', now())
             ->paginate(10);
         return Inertia::render('Front/InfomationList', ['infomations_pagenation' => $infomations_pagenation]);
     }
