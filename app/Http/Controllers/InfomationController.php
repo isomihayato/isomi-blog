@@ -66,7 +66,13 @@ class InfomationController extends Controller
      */
     public function show(string $id)
     {
-        $infomation = DB::table('infomations')->find($id);
+        // 存在しないIDは404にする。公開日前のお知らせは、管理者がログイン中のときだけ表示する(プレビュー用)
+        $query = Infomation::query();
+        if (! auth()->check()) {
+            $query->published();
+        }
+        $infomation = $query->findOrFail($id);
+
         return Inertia::render('Infomations/Show', ['infomation' => $infomation]);
     }
 
@@ -100,7 +106,8 @@ class InfomationController extends Controller
 
     public function get_show_by_bar()
     {
-        $infomations = DB::table('infomations')->where('show_by_bar', true)->get();
+        // 公開日前のお知らせは、お知らせバーに出さない
+        $infomations = Infomation::published()->where('show_by_bar', true)->get();
         return response()->json(['infomations' => $infomations]);
     }
 }
