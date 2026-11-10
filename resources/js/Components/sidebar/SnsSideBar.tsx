@@ -50,7 +50,7 @@ export default React.memo(function SnsSideBar(props: Props) {
           <Item>
             <div
               style={{
-                color: '#9a9a9a',
+                color: '#555', // ページ背景 #dddddd の上で 5.49:1
                 fontWeight: 'bold',
                 textAlign: 'center',
               }}

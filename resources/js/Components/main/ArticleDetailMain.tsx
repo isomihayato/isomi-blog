@@ -92,7 +92,7 @@ export default function ArticleDetailMain(props: Props) {
   const underTitleSpanStype = {
     fontSize: '.8rem',
     fontWeight: '600',
-    color: '#787878',
+    color: '#666', // 白背景の上で 5.74:1
   };
   return (
     <>
@@ -125,9 +125,7 @@ export default function ArticleDetailMain(props: Props) {
                   <span style={underTitleSpanStype}>
                     {article.published_at.slice(0, 10)}に公開
                   </span>
-                  <CachedIcon
-                    style={{ marginLeft: '10px', color: '#787878' }}
-                  />
+                  <CachedIcon style={{ marginLeft: '10px', color: '#666' }} />
                   <span style={underTitleSpanStype}>
                     {article.updated_at.slice(0, 10)}
                   </span>

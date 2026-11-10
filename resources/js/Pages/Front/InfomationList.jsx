@@ -4,6 +4,7 @@ import Front from '@/Components/header/Front';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import BlogPagination from '@/Components/navigations/BlogPagination';
+import { readableTextColor } from '@/Components/common/contrast';
 import {
   Typography,
   List,
@@ -69,8 +70,11 @@ export default function InfomationList({ infomations_pagenation }) {
                         primary={
                           <>
                             <Box
-                              bgcolor={infomation.color}
-                              color="white"
+                              // 色が未設定のカテゴリは濃いグレーにする(白文字で 7.46:1)
+                              bgcolor={infomation.color || '#555'}
+                              color={readableTextColor(
+                                infomation.color || '#555',
+                              )}
                               fontWeight={'bold'}
                               style={{
                                 display: 'inline-block',
