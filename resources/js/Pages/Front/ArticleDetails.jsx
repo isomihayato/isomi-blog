@@ -16,6 +16,7 @@ import Markdown from 'react-markdown';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import CodeBlock from '@/Components/dataDispaly/CodeBlock';
+import ArticleNeighborNav from '@/Components/navigations/ArticleNeighborNav';
 import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
@@ -31,7 +32,12 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 
-export default function ArticleDetails({ article, relative_articles }) {
+export default function ArticleDetails({
+  article,
+  relative_articles,
+  prev_article,
+  next_article,
+}) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments ?? []);
   const [commentsError, setCommentsError] = React.useState(false); // コメントの取得に失敗したか
@@ -69,6 +75,10 @@ export default function ArticleDetails({ article, relative_articles }) {
             {article.body}
           </Markdown>
         </pre>
+        <ArticleNeighborNav
+          prevArticle={prev_article ?? null}
+          nextArticle={next_article ?? null}
+        />
       </>
     );
   };
@@ -291,4 +301,6 @@ export default function ArticleDetails({ article, relative_articles }) {
 ArticleDetails.propTypes = {
   article: PropTypes.object.isRequired,
   relative_articles: PropTypes.array.isRequired,
+  prev_article: PropTypes.object,
+  next_article: PropTypes.object,
 };
