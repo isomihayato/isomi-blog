@@ -12,6 +12,7 @@ import { deleteComment } from '../axios/axiosComment';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { CommentType } from '../types/CommentTypes';
+import { useMyMemberId } from '../common/useMyMemberId';
 
 type Props = {
   articleId: number;
@@ -23,6 +24,9 @@ export default function CommentsCard(props: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [edit, setEdit] = React.useState(false);
   const [deleteError, setDeleteError] = React.useState(''); // 削除に失敗したときのメッセージ
+  // 編集・削除のメニューは、自分のコメントにだけ出す(サーバー側でも本人以外は 403 にしている)
+  const myMemberId = useMyMemberId();
+  const isMine = myMemberId !== null && comment.member_id === myMemberId;
 
   const editHndlr = () => {
     setEdit(!edit);
@@ -71,16 +75,16 @@ export default function CommentsCard(props: Props) {
               comment.created_at.slice(11, 19)
             }
             action={
-              <>
+              isMine ? (
                 <IconButton
-                  aria-label="settings"
+                  aria-label="コメントの操作"
                   onClick={(e) => {
                     setAnchorEl(e.currentTarget);
                   }}
                 >
                   <MoreVertIcon />
                 </IconButton>
-              </>
+              ) : null
             }
           />
           <Menu

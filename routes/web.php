@@ -4,6 +4,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CurrentMemberController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\InfomationController;
 use App\Http\Controllers\ArticleAdTemplateController;
@@ -40,6 +41,7 @@ Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('front
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');
 // コメントの投稿・編集・削除は、Firebase の IDトークンで本人確認をする
 Route::middleware('firebase.auth')->group(function () {
+    Route::get('/members/me', CurrentMemberController::class)->name('members.me');
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::post('/comments/update', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
