@@ -16,6 +16,8 @@ import { Head } from '@inertiajs/react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import RightSideBar from '@/Components/sidebar/RightSideBar';
+import MobileToc from '@/Components/navigations/MobileToc';
+import RelativeArticleStack from '@/Components/layout/RelativeArticleStack';
 import { postAdvertisement } from '@/Components/axios/axiosAdvertisement';
 import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
@@ -44,14 +46,35 @@ export default function ArticleDetails({ article, relative_articles }) {
     padding: theme.spacing(1),
   }));
 
+  const [mobileTocOpen, setMobileTocOpen] = React.useState(false); // スマホの目次を開いているか
   const ArticleContent = () => {
     return (
       <>
+        {/* スマホはサイドバーを出さないため、本文の先頭に折りたためる目次を置く */}
+        {isMobile ? (
+          <MobileToc
+            headings={headings}
+            open={mobileTocOpen}
+            onChange={setMobileTocOpen}
+          />
+        ) : null}
         <pre>
           <Markdown rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}>
             {article.body}
           </Markdown>
         </pre>
+        {/* スマホは本文の下に関連記事を出す */}
+        {isMobile && relative_articles?.length > 0 ? (
+          <Box sx={{ mt: 4 }}>
+            <Typography
+              component="p"
+              sx={{ fontWeight: 'bold', fontSize: '1.1rem', mb: 1 }}
+            >
+              関連記事
+            </Typography>
+            <RelativeArticleStack articles={relative_articles} />
+          </Box>
+        ) : null}
       </>
     );
   };
@@ -220,7 +243,8 @@ export default function ArticleDetails({ article, relative_articles }) {
           {isMobile ? (
             <></>
           ) : (
-            <Item>
+            // 目次を sticky で追従させるため、右側の列は本文と同じ高さまで伸ばす
+            <Item style={{ alignSelf: 'stretch' }}>
               <RightSideBar
                 headings={headings}
                 relativeArticles={relative_articles}
