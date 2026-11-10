@@ -7,6 +7,7 @@ import FrontFooter from '@/Components/footer/FrontFooter';
 import Markdown from 'react-markdown';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import CodeBlock from '@/Components/dataDispaly/CodeBlock';
 import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
@@ -28,6 +29,7 @@ export default function ArticleDetails({ article, relative_articles }) {
   const [advertisements, setAdvertisements] = React.useState([]);
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
   const [chapters, setChapters] = React.useState([]); // 記事の章リスト
+  const [codeHighlight, setCodeHighlight] = React.useState(null); // コードのハイライト用 rehype プラグイン(読み込み後にセット)
   const adElementRef = useRef(null);
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
@@ -43,13 +45,28 @@ export default function ArticleDetails({ article, relative_articles }) {
     return (
       <>
         <pre>
-          <Markdown rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}>
+          <Markdown
+            rehypePlugins={[
+              rehypeSlug,
+              rehypeAutolinkHeadings,
+              ...(codeHighlight ? [codeHighlight] : []),
+            ]}
+            components={{ pre: CodeBlock }}
+          >
             {article.body}
           </Markdown>
         </pre>
       </>
     );
   };
+
+  React.useEffect(() => {
+    // コードブロックがある記事だけ、ハイライト処理を後から読み込む(初期表示の JS を増やさないため)
+    if (!article.body?.includes('```')) return;
+    import('@/Components/common/rehypeCodeHighlight')
+      .then((module) => setCodeHighlight(() => module.default))
+      .catch((e) => console.error(e));
+  }, []);
 
   React.useEffect(() => {
     // article.bodyから章を抽出し、chaptersオブジェクトを作成

@@ -29,7 +29,109 @@ span.MuiStepLabel-label {
 }
 pre {
   white-space: pre-wrap;
-  word-break: break-all;
+  /* 単語の途中では改行せず、長いURLなどが収まらないときだけ折り返す */
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+/* 文中のコード(インラインコード) */
+:not(pre) > code {
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  background-color: #eff1f3;
+  color: #24292f;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+/* コードブロック(```) */
+.code-block {
+  position: relative;
+  margin: 0; /* 本文の外側の pre(pre-wrap)の改行で余白がつくため、ここでは付けない */
+}
+.code-block__pre {
+  margin: 0;
+}
+.code-block__pre > code {
+  padding-top: 40px; /* 右上のコピーボタンとコードが重ならないようにする */
+}
+pre > code {
+  display: block;
+  overflow-x: auto; /* 折り返さずに横スクロール */
+  padding: 16px;
+  border-radius: 6px;
+  background-color: #1e1e1e;
+  color: #e6edf3;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+.code-block__copy.MuiIconButton-root {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  color: #c9d1d9;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.code-block__copy.MuiIconButton-root:hover,
+.code-block__copy.MuiIconButton-root:focus-visible {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* シンタックスハイライト(rehype-highlight / highlight.js のクラス)。背景 #1e1e1e に対してコントラスト比 4.5:1 以上の色 */
+.hljs-comment,
+.hljs-quote,
+.hljs-meta {
+  color: #8b949e;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-doctag,
+.hljs-template-tag {
+  color: #ff7b72;
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable.language_,
+.hljs-symbol {
+  color: #79c0ff;
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-section {
+  color: #d2a8ff;
+}
+.hljs-built_in,
+.hljs-type,
+.hljs-title.class_,
+.hljs-variable,
+.hljs-params {
+  color: #ffa657;
+}
+.hljs-name,
+.hljs-tag,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: #7ee787;
+}
+.hljs-addition {
+  color: #aff5b4;
+  background-color: #033a16;
+}
+.hljs-deletion {
+  color: #ffdcd7;
+  background-color: #67060c;
 }
 pre p {
   color: black;
@@ -93,13 +195,6 @@ textarea[name='comment_body'] {
     font-size: 0.84em;
     line-height: 1.8;
     margin: 32px 0 16px;
-  }
-  code {
-    display: inline-block;
-    padding: 5px; /* 余白を追加 */
-    background-color: black;
-    color: #32be16;
-    width: 100%;
   }
   form {
     margin: 25px 0;
@@ -197,13 +292,6 @@ textarea[name='comment_body'] {
   #copyright {
     font-size: 0.6rem;
     margin-top: 16px;
-  }
-  code {
-    display: inline-block;
-    padding: 5px; /* 余白を追加 */
-    background-color: black;
-    color: #32be16;
-    width: 100%;
   }
   .comment__outer {
     width: 90%;
