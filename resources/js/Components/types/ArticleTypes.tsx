@@ -5,6 +5,7 @@ export type ArticleImageType = {
 export type ArticleType = {
   id: number;
   title: string;
+  describe?: string | null; // 記事の概要
   body?: string; // 一覧取得時は含まれない
   visible: boolean;
   tags: string;
