@@ -23,6 +23,9 @@ class FrontController extends Controller
         $articles_pagenation = Article::select(Article::LIST_COLUMNS)
             ->where('visible', true)
             ->whereBetween('published_at', [$from, $to])
+            // 新しい順。公開日時が同じ記事があってもページをまたいで重複・欠落しないよう、id でも並べる
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
             ->paginate(5);
         return Inertia::render('Welcome', ['articles_pagenation' => $articles_pagenation]);
     }
@@ -105,6 +108,9 @@ class FrontController extends Controller
         $infomations_pagenation = DB::table('infomations')
             ->join('categories', 'infomations.category_id', '=', 'categories.id')
             ->select('infomations.*', 'categories.name as category_name', 'categories.color')
+            // 新しい順。公開日時が同じお知らせがあってもページをまたいで重複・欠落しないよう、id でも並べる
+            ->orderByDesc('infomations.publish_at')
+            ->orderByDesc('infomations.id')
             ->paginate(10);
         return Inertia::render('Front/InfomationList', ['infomations_pagenation' => $infomations_pagenation]);
     }
