@@ -30,6 +30,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
+import PreviewNotice from '@/Components/feedback/PreviewNotice';
 
 export default function ArticleDetails({ article, relative_articles }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
@@ -240,6 +241,7 @@ export default function ArticleDetails({ article, relative_articles }) {
           記事詳細
         </Typography>
       </Breadcrumbs>
+      <PreviewNotice article={article} />
       <Box margin={'0 auto'} className="font-style">
         <Stack
           direction="row"
