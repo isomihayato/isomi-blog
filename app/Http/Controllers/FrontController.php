@@ -44,14 +44,34 @@ class FrontController extends Controller
 
     public function sendEmail(Request $request)
     {
-        $details = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'title' => $request->title,
-            'message' => $request->message,
-        ];
+        $details = $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|max:255',
+            'title' => 'required|string|max:200',
+            'message' => 'required|string|max:5000',
+        ], [
+            // 日本語の言語ファイルがないため、メッセージをここで指定する
+            'name.required' => 'お名前を入力してください。',
+            'name.max' => 'お名前は100文字以内で入力してください。',
+            'email.required' => 'メールアドレスを入力してください。',
+            'email.email' => 'メールアドレスの形式が正しくありません。',
+            'email.max' => 'メールアドレスは255文字以内で入力してください。',
+            'title.required' => 'タイトルを入力してください。',
+            'title.max' => 'タイトルは200文字以内で入力してください。',
+            'message.required' => '内容を入力してください。',
+            'message.max' => '内容は5000文字以内で入力してください。',
+            '*.string' => '文字で入力してください。',
+        ]);
 
-        Mail::to('listen.risu.blog@gmail.com')->send(new ContactFormMail($details));
+        try {
+            Mail::to('listen.risu.blog@gmail.com')->send(new ContactFormMail($details));
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'message' => '送信できませんでした。時間をおいて、もう一度お試しください。',
+            ], 500);
+        }
 
         return response()->json(['message' => 'メール送信が成功しました']);
     }

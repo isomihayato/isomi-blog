@@ -1,40 +1,61 @@
 import React, { useState } from 'react';
-import { TextField, Box, Typography } from '@mui/material';
+import { TextField, Box, Typography, Alert } from '@mui/material';
 import BtnCircular from '../feedback/BtnCircular';
 import { postSendMail } from '../axios/axiosMail';
 
 function ContactForm() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]); // 送信に失敗したときのメッセージ
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (loading) return;
     const form = event.target;
     const data = {
-      name: form.name.value,
-      email: form.email.value,
-      title: form.title.value,
-      message: form.message.value,
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      title: form.title.value.trim(),
+      message: form.message.value.trim(),
     };
+    setErrorMessages([]);
+    setSuccess(false);
     setLoading(true);
-    // 送信後の処理（送信確認メッセージ表示など）もここに追加することができます。
     postSendMail(
       data,
-      (res) => {
-        if (res.status === 200) {
-          setLoading(false);
-          setSuccess(true);
-        }
-        console.log(res);
+      () => {
+        setLoading(false);
+        setSuccess(true);
       },
-      (err) => {
-        console.log(err);
+      (err: {
+        response?: {
+          data?: { message?: string; errors?: Record<string, string[]> };
+        };
+      }) => {
+        // 失敗したら読み込み表示を止め、入力内容は残したまま理由を表示する
+        setLoading(false);
+        const errors = err.response?.data?.errors;
+        setErrorMessages(
+          errors
+            ? Object.values(errors).flat()
+            : [
+                err.response?.data?.message ??
+                  '送信できませんでした。時間をおいて、もう一度お試しください。',
+              ],
+        );
       },
     );
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
       <Typography variant="h6">お問い合わせフォーム</Typography>
+      {errorMessages.length > 0 ? (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {errorMessages.map((m) => (
+            <div key={m}>{m}</div>
+          ))}
+        </Alert>
+      ) : null}
       <TextField
         margin="normal"
         required
@@ -52,6 +73,7 @@ function ContactForm() {
         id="email"
         label="メールアドレス"
         name="email"
+        type="email"
         autoComplete="email"
       />
       <TextField
