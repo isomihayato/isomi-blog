@@ -8,12 +8,12 @@ import { readableTextColor } from '@/Components/common/contrast';
 import {
   Typography,
   List,
-  ListItem,
   ListItemText,
   Box,
   Divider,
   Breadcrumbs,
   Link,
+  ListItemButton,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
@@ -59,12 +59,11 @@ export default function InfomationList({ infomations_pagenation }) {
             <List>
               {infomations.map((infomation) => {
                 return (
-                  <>
-                    <ListItem
-                      key={infomation.id}
-                      onClick={() =>
-                        (window.location.href = `/infomations/${infomation.id}`)
-                      }
+                  <React.Fragment key={infomation.id}>
+                    {/* お知らせの詳細へのリンク(新しいタブで開ける・Tab キーで選べる) */}
+                    <ListItemButton
+                      component="a"
+                      href={`/infomations/${infomation.id}`}
                     >
                       <ListItemText
                         primary={
@@ -90,9 +89,9 @@ export default function InfomationList({ infomations_pagenation }) {
                         secondary={infomation.publish_at}
                         secondaryTypographyProps={{ fontSize: '0.8rem' }}
                       />
-                    </ListItem>
+                    </ListItemButton>
                     <Divider />
-                  </>
+                  </React.Fragment>
                 );
               })}
             </List>
