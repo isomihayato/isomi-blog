@@ -10,6 +10,7 @@ use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
 use App\Http\Controllers\AdIntermediateController;
 use App\Http\Controllers\FavoritesController;
+use App\Http\Controllers\FeedController;
 use App\Models\Article;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,6 +34,7 @@ Route::post('/send_email', [FrontController::class, 'sendEmail'])->name('fronts.
 Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->name('fronts.infomation_list');
 Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
+Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
 Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('fronts.ad_list');
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');
