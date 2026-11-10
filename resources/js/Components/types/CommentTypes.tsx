@@ -3,6 +3,7 @@ export type CommentType = {
   body: string;
   fb_uid: string;
   article_id: number;
+  parent_id: number | null; // 返信先のコメントID(返信でなければ null)
   created_at: string;
   updated_at: string;
   user_id: number;

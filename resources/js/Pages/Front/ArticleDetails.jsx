@@ -180,17 +180,20 @@ export default function ArticleDetails({ article, relative_articles }) {
               コメントを読み込めませんでした。時間をおいて、ページを再読み込みしてください。
             </Alert>
           ) : null}
-          {comments.map((comment, index) => {
-            return (
-              <CommentsCard
-                key={index}
-                articleId={article.id}
-                comment={comment}
-                action={action}
-                setAction={setAction}
-              />
-            );
-          })}
+          {comments
+            .filter((comment) => !comment.parent_id)
+            .map((comment) => {
+              return (
+                <CommentsCard
+                  key={comment.id}
+                  articleId={article.id}
+                  comment={comment}
+                  replies={comments.filter((c) => c.parent_id === comment.id)}
+                  action={action}
+                  setAction={setAction}
+                />
+              );
+            })}
           {logged ? (
             <></>
           ) : (

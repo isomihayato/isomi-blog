@@ -8,6 +8,8 @@ use Inertia\Inertia;
 use App\Http\Middleware\VerifyFirebaseIdToken;
 use App\Models\Article;
 use App\Models\Member;
+use App\Mail\NewCommentMail;
+use Illuminate\Support\Facades\Mail;
 
 class CommentController extends Controller
 {
@@ -26,6 +28,7 @@ class CommentController extends Controller
         $validated = $request->validate([
             'body' => 'required|string|max:'.self::BODY_MAX_LENGTH,
             'article_id' => 'required|integer|exists:articles,id',
+            'parent_id' => 'nullable|integer|exists:comments,id',
         ]);
 
         // 投稿者は、検証済みの IDトークンから特定する(リクエストで送られた fb_uid は使わない)
@@ -37,11 +40,24 @@ class CommentController extends Controller
             ], 422);
         }
 
+        $parentId = null;
+        if (! empty($validated['parent_id'])) {
+            $parent = Comment::find($validated['parent_id']);
+            if ((int) $parent->article_id !== (int) $validated['article_id']) {
+                return response()->json(['message' => '返信先のコメントが見つかりません。'], 422);
+            }
+            // 返信は1段階まで。返信への返信は、元のコメントへの返信にする
+            $parentId = $parent->parent_id ?? $parent->id;
+        }
+
         $comment = Comment::create([
             'body' => $validated['body'],
             'article_id' => $validated['article_id'],
             'member_id' => $member->id,
+            'parent_id' => $parentId,
         ]);
+
+        $this->notifyAdmin($comment);
 
         return response()->json(['status' => "success{$comment->id}"]);
     }
@@ -96,6 +112,19 @@ class CommentController extends Controller
 
         $article = Article::with(['comments.member'])->findOrFail($validated['id']);
         return response()->json(['comments' => $article->comments]);
+    }
+
+    /**
+     * 新着コメントを管理者にメールで知らせる。
+     * 送信に失敗してもコメントの投稿は成功として扱う(エラーはログに残す)
+     */
+    private function notifyAdmin(Comment $comment): void
+    {
+        try {
+            Mail::to(config('mail.admin_address'))->send(new NewCommentMail($comment));
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     /**

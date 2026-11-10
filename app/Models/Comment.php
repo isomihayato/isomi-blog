@@ -15,6 +15,7 @@ class Comment extends Model
         'body',
         'article_id',
         'member_id',
+        'parent_id',
     ];
 
     public function member()
@@ -25,5 +26,16 @@ class Comment extends Model
     public function article()
     {
         return $this->belongsTo(Article::class);
+    }
+
+    // 返信先のコメント(返信でなければ null)
+    public function parent()
+    {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
     }
 }

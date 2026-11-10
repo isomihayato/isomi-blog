@@ -22,9 +22,19 @@ type Props = {
   editTime?: boolean;
   setEdit?: React.Dispatch<React.SetStateAction<boolean>>;
   defaultComment?: CommentType;
+  parentId?: number; // 返信するときの返信先コメントID
+  onCancel?: () => void; // 返信フォームを閉じる
 };
 export default function CommentCard(props: Props) {
-  const { articleId, setAction, editTime, setEdit, defaultComment } = props;
+  const {
+    articleId,
+    setAction,
+    editTime,
+    setEdit,
+    defaultComment,
+    parentId,
+    onCancel,
+  } = props;
   const [preview, setPreview] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -60,13 +70,16 @@ export default function CommentCard(props: Props) {
       );
     } else {
       // 投稿者はサーバーが IDトークンから特定するため、会員の識別子は送らない
-      const data = { body: comment, article_id: articleId };
+      const data = parentId
+        ? { body: comment, article_id: articleId, parent_id: parentId }
+        : { body: comment, article_id: articleId };
 
       postComment(
         data,
         (res: { data: string }) => {
           setComment('');
           setAction(`comment create${res.data}`);
+          onCancel?.();
         },
         showError,
       );
@@ -136,26 +149,26 @@ export default function CommentCard(props: Props) {
         ) : (
           <TextareaAutosize
             name="comment_body"
-            minRows={10}
+            minRows={parentId ? 4 : 10}
             style={{ width: '100%' }}
-            placeholder="コメントを入力"
+            placeholder={parentId ? '返信を入力' : 'コメントを入力'}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
         )}
       </CardContent>
       <CardActions disableSpacing sx={{ float: 'right' }}>
-        {editTime ? (
+        {editTime || onCancel ? (
           <Button
             variant="outlined"
-            onClick={() => setEdit(false)}
+            onClick={() => (editTime ? setEdit(false) : onCancel?.())}
             style={{ marginRight: '15px' }}
           >
             キャンセル
           </Button>
         ) : null}
         <Button type="submit" variant="contained" disabled={!logged}>
-          投稿する
+          {parentId ? '返信する' : '投稿する'}
         </Button>
       </CardActions>
     </Card>
