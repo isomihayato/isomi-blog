@@ -53,6 +53,8 @@
         })(window, document, 'script', 'dataLayer', 'GTM-TCFXXTPW');
     </script>
     <!-- End Google Tag Manager -->
+    <!-- 構造化データ(JSON-LD)。クローラーに届くようサーバー側で出力する -->
+    {{ \App\Support\StructuredData::render($page) }}
     @routes
     @viteReactRefresh
     @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
