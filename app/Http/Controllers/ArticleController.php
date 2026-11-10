@@ -109,6 +109,10 @@ class ArticleController extends Controller
         $sitemapContent .= '<url><loc>https://info-space-box.net/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>';
         $sitemapContent .= '<url><loc>https://info-space-box.net/articles/search</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
         $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+        // ジャンル別の記事一覧
+        foreach (array_keys(Article::GENRES) as $genre) {
+            $sitemapContent .= '<url><loc>https://info-space-box.net/articles/genre/' . $genre . '</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>';
+        }
 
         // 記事のURLを動的に追加
         $articles = Article::all(); // すべての記事を取得

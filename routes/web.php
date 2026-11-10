@@ -33,6 +33,8 @@ Route::post('/send_email', [FrontController::class, 'sendEmail'])->name('fronts.
 Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->name('fronts.infomation_list');
 Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
+Route::get('/articles/genre/{genre}', [FrontController::class, 'genre'])->whereNumber('genre')->name('fronts.genre');
+Route::get('/articles/tag/{tag}', [FrontController::class, 'tag'])->where('tag', '.*')->name('fronts.tag');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
 Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('fronts.ad_list');
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');

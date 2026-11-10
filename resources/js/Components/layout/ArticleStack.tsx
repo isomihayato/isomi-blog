@@ -2,10 +2,9 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { Chip } from '@mui/material';
 import { Link } from '@inertiajs/react';
 import Tags from '@/Components/Tags';
-import { convertGenre, makeGenreColor } from '../filters/articleFilter';
+import GenreChip from '@/Components/GenreChip';
 import { ArticleType } from '../types/ArticleTypes';
 import { articleCardSx, formatPublishedDate } from './articleCardStyle';
 
@@ -32,15 +31,10 @@ export default function ArticleStack(props: Props) {
                 '& > *': { whiteSpace: 'nowrap' },
               }}
             >
-              <Chip
-                label={convertGenre(article.genre)}
-                size="small"
-                sx={{
-                  backgroundColor: makeGenreColor(article.genre),
-                  color: 'white',
-                  fontWeight: 'bold',
-                }}
-              />
+              {/* カード全体のリンクより上に置いて、ジャンルの一覧へ移動できるようにする */}
+              <span className="article-card__above">
+                <GenreChip genre={article.genre} />
+              </span>
               <time dateTime={formatPublishedDate(article.published_at)}>
                 {formatPublishedDate(article.published_at)}
               </time>
