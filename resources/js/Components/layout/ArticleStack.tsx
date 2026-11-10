@@ -42,8 +42,15 @@ export default function ArticleStack(props: Props) {
                 {isMobile ? null : (
                   <Grid item xs={12} md={1.3}>
                     <div id="icon" style={{ float: 'right' }}>
+                      {/* アイキャッチ画像があればサムネイルに使う。ない(読み込めない)ときは「画像なし」アイコン */}
                       <Avatar
-                        alt="ブログアバター"
+                        alt={
+                          article.eyecatch_path
+                            ? article.title
+                            : 'ブログアバター'
+                        }
+                        src={article.eyecatch_path ?? undefined}
+                        imgProps={{ loading: 'lazy' }}
                         sx={{ width: '60px', height: '60px' }}
                       >
                         <ImageNotSupportedIcon />

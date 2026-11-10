@@ -41,8 +41,15 @@ export default function RelativeArticleStack(props: Props) {
                 {isMobile ? null : (
                   <Grid item xs={12} md={2}>
                     <div id="icon" style={{ float: 'right' }}>
+                      {/* アイキャッチ画像があればサムネイルに使う。ない(読み込めない)ときは「画像なし」アイコン */}
                       <Avatar
-                        alt="ブログアバター"
+                        alt={
+                          article.eyecatch_path
+                            ? article.title
+                            : 'ブログアバター'
+                        }
+                        src={article.eyecatch_path ?? undefined}
+                        imgProps={{ loading: 'lazy' }}
                         sx={{ width: '40px', height: '40px' }}
                       >
                         <ImageNotSupportedIcon />

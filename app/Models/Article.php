@@ -20,6 +20,7 @@ class Article extends Model
         'id',
         'title',
         'describe',
+        'eyecatch_path',
         'tags',
         'genre',
         'visible',
@@ -39,7 +40,28 @@ class Article extends Model
         'user_id',
         'article_ad_template_id',
         'genre',
+        'eyecatch_path',
     ];
+
+    /** サイトのURL(OGP の画像など、絶対URLが必要なところで使う) */
+    public const SITE_URL = 'https://info-space-box.net';
+
+    /** アイキャッチ画像がない記事の OGP 画像 */
+    public const DEFAULT_OG_IMAGE_PATH = '/img/og_image.webp';
+
+    /**
+     * アイキャッチ画像として受け付けるパス(画像アップロード uploadImg で公開ディスクに保存したものだけ)
+     */
+    public const EYECATCH_PATH_PATTERN = '#^/storage/upload/[A-Za-z0-9._-]+$#';
+
+    /**
+     * SNS でシェアされたときの画像(og:image / twitter:image)の絶対URL。
+     * アイキャッチ画像があればそれを、なければサイト共通の画像を使う。
+     */
+    public function getOgImageUrlAttribute(): string
+    {
+        return self::SITE_URL.($this->eyecatch_path ?: self::DEFAULT_OG_IMAGE_PATH);
+    }
 
     public function comments()
     {
