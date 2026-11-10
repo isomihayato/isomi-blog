@@ -131,7 +131,11 @@ class FrontController extends Controller
 
     public function ad_list(Request $request)
     {
-        $article = Article::find($request->input('article_id'));
+        $validated = $request->validate([
+            'article_id' => 'required|integer',
+        ]);
+        // 存在しない記事IDのときは500エラーではなく404を返す
+        $article = Article::findOrFail($validated['article_id']);
         $ad_templates = AdIntermediate::where('article_ad_template_id',$article->article_ad_template_id)
             ->with(['article_ad_template','article_ad'])
             ->get();
