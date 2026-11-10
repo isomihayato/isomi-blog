@@ -21,13 +21,18 @@ import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
+import { extractArticleHeadings } from '@/Components/common/articleHeadings';
 
 export default function ArticleDetails({ article, relative_articles }) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments);
   const [advertisements, setAdvertisements] = React.useState([]);
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
-  const [chapters, setChapters] = React.useState([]); // 記事の章リスト
+  // 記事の章リスト(本文の見出しと同じ id を持つ)。記事が変わったら作り直す
+  const headings = React.useMemo(
+    () => extractArticleHeadings(article.body),
+    [article.body],
+  );
   const adElementRef = useRef(null);
   const t_user = getStorage('user');
   const logged = t_user === null || t_user === undefined ? false : true;
@@ -50,17 +55,6 @@ export default function ArticleDetails({ article, relative_articles }) {
       </>
     );
   };
-
-  React.useEffect(() => {
-    // article.bodyから章を抽出し、chaptersオブジェクトを作成
-    // 絵文字,記号,空白を削除し、## で始まる行を抽出
-    const cha = article.body?.split('\n').filter((b) => {
-      if (b.startsWith('## ') || b.startsWith('### ')) {
-        return b;
-      }
-    });
-    setChapters(cha);
-  }, []);
 
   React.useEffect(() => {
     postAdvertisement(
@@ -228,7 +222,7 @@ export default function ArticleDetails({ article, relative_articles }) {
           ) : (
             <Item>
               <RightSideBar
-                chapters={chapters}
+                headings={headings}
                 relativeArticles={relative_articles}
               />
             </Item>

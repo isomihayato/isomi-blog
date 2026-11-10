@@ -6,6 +6,7 @@ import { Avatar, Box, Grid, Typography } from '@mui/material';
 import VerticalStepper from '../navigations/VerticalSteper';
 import { ArticleType } from '../types/ArticleTypes';
 import RelativeArticleStack from '../layout/RelativeArticleStack';
+import type { ArticleHeading } from '../common/articleHeadings';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -14,11 +15,11 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 type Props = {
-  chapters: string[];
+  headings: ArticleHeading[];
   relativeArticles: ArticleType[];
 };
 export default function RightSideBar(props: Props) {
-  const { chapters, relativeArticles } = props;
+  const { headings, relativeArticles } = props;
   const [isSticky, setIsSticky] = useState(false);
   const elementRef = useRef(null);
   const stickyThreshold = 456; // positionをstaticに戻すY軸の値
@@ -98,7 +99,7 @@ export default function RightSideBar(props: Props) {
           >
             目次
           </Typography>
-          <VerticalStepper chapters={chapters} />
+          <VerticalStepper headings={headings} />
         </Item>
         <Item
           style={{
