@@ -111,7 +111,8 @@ class ArticleController extends Controller
         $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
 
         // 記事のURLを動的に追加
-        $articles = Article::all(); // すべての記事を取得
+        // 公開済みの記事だけを載せる(非公開・公開予定の記事のURLを知らせない)
+        $articles = Article::published()->get();
         foreach ($articles as $article) {
             $sitemapContent .= '<url><loc>https://info-space-box.net/articles/details/' . $article->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
         }

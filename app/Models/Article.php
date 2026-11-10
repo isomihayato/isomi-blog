@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Comment;
@@ -49,5 +50,15 @@ class Article extends Model
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * 公開済みの記事だけに絞る(表示フラグがオンで、公開日時が過去のもの)
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('visible', true)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
     }
 }
