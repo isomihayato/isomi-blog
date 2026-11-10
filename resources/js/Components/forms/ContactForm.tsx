@@ -74,15 +74,6 @@ function ContactForm() {
         multiline
         rows={4}
       />
-      {/* <Button
-        type="submit"
-        id="contact-form-btn"
-        fullWidth={isMobile ? true : false}
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}
-      >
-        送信
-      </Button> */}
       <BtnCircular btnText={'送信'} loading={loading} success={success} />
     </Box>
   );

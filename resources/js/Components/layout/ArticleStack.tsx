@@ -6,7 +6,6 @@ import { styled } from '@mui/material/styles';
 import { Avatar, Grid } from '@mui/material';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import Tags from '@/Components/Tags';
-import { isMobile } from 'react-device-detect';
 import { router } from '@inertiajs/react';
 import { ArticleType } from '../types/ArticleTypes';
 
@@ -39,18 +38,22 @@ export default function ArticleStack(props: Props) {
           >
             <div>
               <Grid container spacing={2}>
-                {isMobile ? null : (
-                  <Grid item xs={12} md={1.3}>
-                    <div id="icon" style={{ float: 'right' }}>
-                      <Avatar
-                        alt="ブログアバター"
-                        sx={{ width: '60px', height: '60px' }}
-                      >
-                        <ImageNotSupportedIcon />
-                      </Avatar>
-                    </div>
-                  </Grid>
-                )}
+                <Grid
+                  item
+                  xs={12}
+                  md={1.3}
+                  // スマホ幅(md 未満)ではアバターを出さない
+                  sx={{ display: { xs: 'none', md: 'block' } }}
+                >
+                  <div id="icon" style={{ float: 'right' }}>
+                    <Avatar
+                      alt="ブログアバター"
+                      sx={{ width: '60px', height: '60px' }}
+                    >
+                      <ImageNotSupportedIcon />
+                    </Avatar>
+                  </div>
+                </Grid>
                 <Grid item xs={12} md={10.7}>
                   <div
                     id="item--header"

@@ -156,7 +156,19 @@ textarea[name='comment_body'] {
 .preview img {
   margin: 0 auto;
 }
-@media (max-width: 2000px) and (min-width: 768px) {
+/* コメント欄の「ログインしてコメントする」の覆いは、コメント欄の幅に合わせる */
+#comment {
+  position: relative;
+}
+div.cover {
+  left: 16px;
+  right: 16px;
+}
+/*
+ * 画面幅の切り替えは MUI のブレイクポイント md(900px) にそろえる。
+ * JS 側は useBreakpointUp('md') / sx の { xs, md } 指定で同じ境界を使う。
+ */
+@media (min-width: 900px) {
   body h1 {
     border-bottom: 1px solid var(--color-divider);
     font-size: 2rem;
@@ -203,7 +215,8 @@ textarea[name='comment_body'] {
     color: black;
   }
   .comment__outer {
-    width: 50vw;
+    width: 100%;
+    max-width: 800px;
     margin: 0 auto;
     margin-bottom: 40px;
   }
@@ -212,7 +225,6 @@ textarea[name='comment_body'] {
   }
   div.cover {
     height: 437px;
-    width: 50%;
     background-color: #666666a1;
     position: absolute;
     text-align: center;
@@ -244,7 +256,7 @@ textarea[name='comment_body'] {
     margin-top: 16px;
   }
 }
-@media (max-width: 767px) {
+@media (max-width: 899.98px) {
   body h1 {
     font-size: 1.6rem;
     font-weight: bold;
@@ -305,7 +317,6 @@ textarea[name='comment_body'] {
     height: 437px;
     background-color: #666666a1;
     position: absolute;
-    width: 83%;
     text-align: center;
     padding: 200px 0;
     font-size: 1.3rem;
