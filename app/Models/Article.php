@@ -50,4 +50,13 @@ class Article extends Model
     {
         return $this->hasMany(Favorite::class);
     }
+
+    /**
+     * 公開中の記事(表示が ON で、公開日時が過去30年以内〜現在)。記事一覧と同じ条件
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('visible', true)
+            ->whereBetween('published_at', [now()->subYears(30)->startOfYear(), now()]);
+    }
 }

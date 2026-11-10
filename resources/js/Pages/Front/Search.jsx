@@ -15,18 +15,17 @@ import FrontFooter from '@/Components/footer/FrontFooter';
 import ArticleStack from '@/Components/layout/ArticleStack';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import BlogPagination from '@/Components/navigations/BlogPagination';
 
-export default function Search(articles) {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-
-  const searchWord = urlParams.get('search');
-  console.log(searchWord);
+export default function Search({ articles_pagenation, search }) {
+  const searchWord = search ?? '';
   const title = searchWord ? `「${searchWord}」の検索結果` : '';
   const submitHndlr = (e) => {
     e.preventDefault();
-    window.location.href = `/articles/search?search=${e.target.search.value}`;
+    const word = e.target.search.value.trim();
+    // 検索語は Inertia にクエリとして渡す(& や # などもエンコードされる)
+    router.get('/articles/search', word ? { search: word } : {});
   };
   const SearchPanel = () => {
     return (
@@ -47,9 +46,11 @@ export default function Search(articles) {
         <Grid container component={'form'} onSubmit={submitHndlr}>
           <Grid item md={11} xs={10}>
             <TextField
-              label="記事タイトル検索"
+              label="記事検索(タイトル・本文)"
               size="small"
               name="search"
+              defaultValue={searchWord}
+              inputProps={{ maxLength: 100 }}
               fullWidth
             />
           </Grid>
@@ -60,7 +61,8 @@ export default function Search(articles) {
           </Grid>
         </Grid>
         <div style={{ margin: '30px 0 0' }}></div>
-        <ArticleStack articles={articles.articles} />
+        <ArticleStack articles={articles_pagenation.data} />
+        <BlogPagination paginator={articles_pagenation} />
       </>
     );
   };
@@ -84,5 +86,6 @@ export default function Search(articles) {
 }
 
 Search.propTypes = {
-  articles: PropTypes.array,
+  articles_pagenation: PropTypes.object.isRequired,
+  search: PropTypes.string,
 };
