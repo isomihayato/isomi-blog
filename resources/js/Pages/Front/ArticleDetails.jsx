@@ -31,7 +31,11 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 
-export default function ArticleDetails({ article, relative_articles }) {
+export default function ArticleDetails({
+  article,
+  relative_articles,
+  popular_articles,
+}) {
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments ?? []);
   const [commentsError, setCommentsError] = React.useState(false); // コメントの取得に失敗したか
@@ -278,6 +282,7 @@ export default function ArticleDetails({ article, relative_articles }) {
               <RightSideBar
                 chapters={chapters}
                 relativeArticles={relative_articles}
+                popularArticles={popular_articles ?? []}
               />
             </Item>
           )}
@@ -291,4 +296,5 @@ export default function ArticleDetails({ article, relative_articles }) {
 ArticleDetails.propTypes = {
   article: PropTypes.object.isRequired,
   relative_articles: PropTypes.array.isRequired,
+  popular_articles: PropTypes.array,
 };

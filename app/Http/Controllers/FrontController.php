@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Article;
 use App\Models\AdIntermediate;
 use App\Models\AdArrangement;
+use App\Queries\PopularArticles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Mail\ContactFormMail;
@@ -24,7 +25,10 @@ class FrontController extends Controller
             ->where('visible', true)
             ->whereBetween('published_at', [$from, $to])
             ->paginate(5);
-        return Inertia::render('Welcome', ['articles_pagenation' => $articles_pagenation]);
+        return Inertia::render('Welcome', [
+            'articles_pagenation' => $articles_pagenation,
+            'popular_articles' => PopularArticles::get(),
+        ]);
     }
 
     public function about()
@@ -72,6 +76,7 @@ class FrontController extends Controller
             'id' => $id,
             'article' => $article,
             'relative_articles' => $relative_articles ?? null,
+            'popular_articles' => PopularArticles::get(),
         ]);
     }
 

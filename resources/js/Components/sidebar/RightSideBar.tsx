@@ -6,6 +6,7 @@ import { Avatar, Box, Grid, Typography } from '@mui/material';
 import VerticalStepper from '../navigations/VerticalSteper';
 import { ArticleType } from '../types/ArticleTypes';
 import RelativeArticleStack from '../layout/RelativeArticleStack';
+import PopularArticles, { PopularArticleType } from '../layout/PopularArticles';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -16,16 +17,25 @@ const Item = styled(Paper)(({ theme }) => ({
 type Props = {
   chapters: string[];
   relativeArticles: ArticleType[];
+  popularArticles?: PopularArticleType[];
 };
 export default function RightSideBar(props: Props) {
-  const { chapters, relativeArticles } = props;
+  const { chapters, relativeArticles, popularArticles = [] } = props;
   const [isSticky, setIsSticky] = useState(false);
   const elementRef = useRef(null);
-  const stickyThreshold = 456; // positionをstaticに戻すY軸の値
+  // 目次を画面上部に固定し始めるスクロール位置。目次より上(プロフィール・人気記事)の高さで変わるので、
+  // 固定していない間に目次の位置から計算する
+  const stickyThresholdRef = useRef(456);
   const rightSideWidth = '300px';
 
   const handleScroll = () => {
     const scrolled = window.scrollY;
+    const mokuji = elementRef.current as HTMLElement | null;
+    if (mokuji && mokuji.style.position !== 'fixed') {
+      stickyThresholdRef.current =
+        mokuji.getBoundingClientRect().top + scrolled;
+    }
+    const stickyThreshold = stickyThresholdRef.current;
     const main = document.getElementById('main');
     if (main.clientHeight <= scrolled) {
       setIsSticky(false);
@@ -83,6 +93,17 @@ export default function RightSideBar(props: Props) {
             </Box>
           </Box>
         </Item>
+        {popularArticles.length > 0 ? (
+          <Item>
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: 'bold', color: 'black' }}
+            >
+              人気記事ランキング
+            </Typography>
+            <PopularArticles articles={popularArticles} />
+          </Item>
+        ) : null}
         <Item
           id="rightSideBar__mokuji"
           ref={elementRef}
