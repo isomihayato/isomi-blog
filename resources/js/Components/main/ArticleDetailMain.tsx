@@ -9,24 +9,7 @@ import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 import { useFavoriteClick } from '@/Components/common/favorite';
 import { convertGenre, makeGenreColor } from '../filters/articleFilter';
 import CachedIcon from '@mui/icons-material/Cached';
-import {
-  FacebookShareButton,
-  FacebookIcon,
-  HatenaShareButton,
-  HatenaShareCount,
-  HatenaIcon,
-  LineShareButton,
-  LineIcon,
-  VKIcon,
-  VKShareButton,
-  VKShareCount,
-  PocketIcon,
-  PocketShareButton,
-  TwitterShareButton,
-  XIcon,
-  WhatsappIcon,
-  WhatsappShareButton,
-} from 'react-share';
+import ShareButtons from '@/Components/sns/ShareButtons';
 
 type Props = {
   article: ArticleType;
@@ -165,96 +148,12 @@ export default function ArticleDetailMain(props: Props) {
                     >
                       励みになります！
                     </Typography>
-                    <Box
-                      sx={{
-                        width: '70%',
-                        margin: '0 auto',
-                        paddingBottom: '20px',
-                      }}
-                    >
-                      <Grid
-                        container
-                        direction="row"
-                        justifyContent="flex-start"
-                        alignItems="flex-end"
-                        textAlign={'center'}
-                      >
-                        <Grid item xs={3}>
-                          <LineShareButton
-                            url={window.location.href}
-                            title={article.title}
-                            className="Demo__some-network__share-button"
-                          >
-                            <LineIcon size={32} round />
-                          </LineShareButton>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <TwitterShareButton
-                            url={window.location.href}
-                            title={article.title}
-                            className="Demo__some-network__share-button"
-                          >
-                            <XIcon size={32} round />
-                          </TwitterShareButton>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <div className="Demo__some-network">
-                            <div>
-                              <HatenaShareCount
-                                url={window.location.href}
-                                className="Demo__some-network__share-count"
-                              />
-                            </div>
-                            <HatenaShareButton
-                              url={window.location.href}
-                              title={article.title}
-                              windowWidth={660}
-                              windowHeight={460}
-                              className="Demo__some-network__share-button"
-                            >
-                              <HatenaIcon size={32} round />
-                            </HatenaShareButton>
-                          </div>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <FacebookShareButton url={window.location.href}>
-                            <FacebookIcon size={32} round />
-                          </FacebookShareButton>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <PocketShareButton
-                            url={window.location.href}
-                            title={article.title}
-                            className="Demo__some-network__share-button"
-                          >
-                            <PocketIcon size={32} round />
-                          </PocketShareButton>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <div style={{ textAlign: 'center' }}>
-                            <VKShareCount
-                              url={window.location.href}
-                              className="Demo__some-network__share-count"
-                            />
-                          </div>
-                          <VKShareButton
-                            url={window.location.href}
-                            className="Demo__some-network__share-button"
-                          >
-                            <VKIcon size={32} round />
-                          </VKShareButton>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <WhatsappShareButton
-                            url={window.location.href}
-                            title={article.title}
-                            separator=":: "
-                            className="Demo__some-network__share-button"
-                          >
-                            <WhatsappIcon size={32} round />
-                          </WhatsappShareButton>
-                        </Grid>
-                      </Grid>
+                    {/* 共有ボタンは本文下と左の固定表示(スマホは下部バー)の2か所にそろえる */}
+                    <Box sx={{ paddingBottom: '20px' }}>
+                      <ShareButtons
+                        url={`https://info-space-box.net/articles/details/${article.id}`}
+                        title={article.title}
+                      />
                     </Box>
                   </>
                 )}

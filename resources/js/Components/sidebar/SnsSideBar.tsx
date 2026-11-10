@@ -8,7 +8,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import { getStorage } from '../common/functions';
 import { ArticleType } from '../types/ArticleTypes';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
-import PocketLink from '../sns/PocketLink';
+import CopyLinkButton from '../sns/CopyLinkButton';
 import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
 
 type Props = {
@@ -89,7 +89,7 @@ export default React.memo(function SnsSideBar(props: Props) {
               windowHeight={460}
               className="Demo__some-network__share-button"
             >
-              <HatenaIcon size={32} />
+              <HatenaIcon size={40} round />
             </HatenaShareButton>
             <div style={{ textAlign: 'center' }}>
               <HatenaShareCount
@@ -99,7 +99,10 @@ export default React.memo(function SnsSideBar(props: Props) {
             </div>
           </Item>
           <Item>
-            <PocketLink url={window.location.href} title={article.title} />
+            {/* Pocket は 2025年7月にサービスを終了したため、リンクのコピーに置き換え */}
+            <CopyLinkButton
+              url={`https://info-space-box.net/articles/details/${article.id}`}
+            />
           </Item>
         </Stack>
       )}
