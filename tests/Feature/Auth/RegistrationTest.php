@@ -10,6 +10,15 @@ class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // ユーザー登録は停止中(RegisteredUserController の処理がコメントアウトされている)のため、
+        // このテストは実態と合っていない。テストの扱い(作り直すか削除するか)は BLOG-36 で決める。
+        $this->markTestSkipped('ユーザー登録は停止中のためスキップ(BLOG-36 で対応)');
+    }
+
     public function test_registration_screen_can_be_rendered(): void
     {
         $response = $this->get('/register');
