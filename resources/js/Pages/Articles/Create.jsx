@@ -3,10 +3,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button, Input, Select, MenuItem, Switch } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
+import { clearDraft } from '@/Components/common/draftStorage';
 import { postArticle } from '@/Components/axios/axiosArticle';
 import formatDate from '@/Components/common/functions';
 import PropTypes from 'prop-types';
 import BasicSelect from '@/Components/inputs/BasicSelect';
+
+// 新規作成の書きかけを自動保存するキー
+const DRAFT_KEY = 'article:new';
 
 export default function Create({ auth, article_ad_templates }) {
   const label = { inputProps: { name: 'visible', 'aria-label': '表示' } };
@@ -32,6 +36,8 @@ export default function Create({ auth, article_ad_templates }) {
     };
     postArticle(data, (response) => {
       if (response.data.status === 'success') {
+        // 保存できたので、自動保存した書きかけは消す
+        clearDraft(DRAFT_KEY);
         window.location.href = '/articles';
       }
     });
@@ -84,7 +90,7 @@ export default function Create({ auth, article_ad_templates }) {
                   />
                 </div>
                 <div>
-                  <BlogEditor />
+                  <BlogEditor draftKey={DRAFT_KEY} />
                 </div>
                 <div>
                   <Input
