@@ -16,13 +16,17 @@ export default function LoginDialog(props: Props) {
   const client = new FBClient();
   const submitHndlr = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const email = e.target.email.value;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const password = e.target.password.value;
-    const result = await client.mailAndPassword(email, password);
+    const form = e.currentTarget;
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const password = (form.elements.namedItem('password') as HTMLInputElement)
+      .value;
+    // 押したボタンでログインか新規登録かを分ける(ログインに失敗しても勝手に登録しない)
+    const submitter = (e.nativeEvent as SubmitEvent)
+      .submitter as HTMLButtonElement | null;
+    const result =
+      submitter?.value === 'signup'
+        ? await client.mailSignUp(email, password)
+        : await client.mailSignIn(email, password);
 
     statusHndlr(result);
     closeHndlr();
@@ -64,11 +68,25 @@ export default function LoginDialog(props: Props) {
               <Grid item xs={12}>
                 <Button
                   type="submit"
+                  name="action"
+                  value="signin"
                   fullWidth
                   variant="contained"
                   color="primary"
                 >
                   ログイン
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  name="action"
+                  value="signup"
+                  fullWidth
+                  variant="outlined"
+                  color="primary"
+                >
+                  新規登録(パスワードは6文字以上)
                 </Button>
               </Grid>
               <Grid item md={6} xs={6} textAlign={'center'}>

@@ -229,6 +229,7 @@ export default function ArticleDetails({ article, relative_articles }) {
         loginOpen={loginOpen}
         setLoginOpen={setLoginOpen}
         onLoginSuccess={() => setLogged(isLoggedIn())}
+        onAuthChange={() => setLogged(isLoggedIn())}
       />
       <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
         <Link underline="hover" color="inherit" href="/">
