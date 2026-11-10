@@ -229,7 +229,7 @@ textarea[name='comment_body'] {
   }
 
   #footer {
-    background-color: #32be16;
+    background-color: #1e7d0c; /* 白文字で 5.26:1 */
     color: white;
     font-weight: bold;
   }
@@ -279,7 +279,7 @@ textarea[name='comment_body'] {
   }
   #footer {
     margin-top: 25px;
-    background-color: #32be16;
+    background-color: #1e7d0c; /* 白文字で 5.26:1 */
     color: white;
     font-weight: bold;
   }
