@@ -37,8 +37,8 @@ export default function ArrayTable(props: Props) {
               return (
                 <TableRow key={index}>
                   {
-                    row.map((cell, index) => {
-                      return <TableCell onClick={()=>{window.location.href=tempEditUrl}}>{cell}</TableCell>
+                    row.map((cell, cellIndex) => {
+                      return <TableCell key={cellIndex} onClick={()=>{window.location.href=tempEditUrl}}>{cell}</TableCell>
                     })
                   }
                 </TableRow>
