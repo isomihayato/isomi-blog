@@ -9,11 +9,11 @@ const ERROR_MESSAGES: Record<string, LoginMessage> = {
   // パスワード違い・未登録のメールアドレス(Firebase はどちらか区別できないコードを返すことがある)
   'auth/invalid-credential': {
     severity: 'error',
-    text: 'メールアドレスまたはパスワードが違います。はじめての方は「新規登録」を押してください。',
+    text: 'メールアドレスまたはパスワードが違います。はじめての方は「新規登録」から登録してください。',
   },
   'auth/invalid-login-credentials': {
     severity: 'error',
-    text: 'メールアドレスまたはパスワードが違います。はじめての方は「新規登録」を押してください。',
+    text: 'メールアドレスまたはパスワードが違います。はじめての方は「新規登録」から登録してください。',
   },
   'auth/wrong-password': {
     severity: 'error',
@@ -21,11 +21,11 @@ const ERROR_MESSAGES: Record<string, LoginMessage> = {
   },
   'auth/user-not-found': {
     severity: 'error',
-    text: 'このメールアドレスは登録されていません。はじめての方は「新規登録」を押してください。',
+    text: 'このメールアドレスは登録されていません。はじめての方は「新規登録」から登録してください。',
   },
   'auth/email-already-in-use': {
     severity: 'warning',
-    text: 'このメールアドレスは登録済みです。「ログイン」を押してください。',
+    text: 'このメールアドレスは登録済みです。「ログイン」からログインしてください。',
   },
   'auth/weak-password': {
     severity: 'error',
