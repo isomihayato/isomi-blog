@@ -40,8 +40,13 @@ export default function ArticleDetailMain(props: Props) {
   const [favorites, setFavorites] = React.useState<number | undefined>(
     undefined,
   ); // お気に入り数
-  const onFavorite = useFavoriteClick(article.id, setFavorites);
-  React.useState(undefined); // お気に入り登録済みかどうか
+  const [favorited, setFavorited] = React.useState(false); // この端末でお気に入り登録済みかどうか
+  const onFavorite = useFavoriteClick(
+    article.id,
+    setFavorites,
+    favorited,
+    setFavorited,
+  );
 
   useEffect(() => {
     getFavoritesCount(
@@ -53,6 +58,9 @@ export default function ArticleDetailMain(props: Props) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         setFavorites(res.data.favorites);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        setFavorited(res.data.favorited === true);
       },
       (err) => {
         console.log(err);
