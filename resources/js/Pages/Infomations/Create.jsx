@@ -4,7 +4,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button, Switch } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
+import { clearDraft } from '@/Components/common/draftStorage';
 import { postInfomation } from '@/Components/axios/axiosInfomation';
+
+// 新規作成の書きかけを自動保存するキー
+const DRAFT_KEY = 'infomation:new';
 
 export default function Create({ auth, categories }) {
   const handleSubmit = (e) => {
@@ -21,6 +25,8 @@ export default function Create({ auth, categories }) {
       data,
       (response) => {
         if (response.data.status === 'success') {
+          // 保存できたので、自動保存した書きかけは消す
+          clearDraft(DRAFT_KEY);
           window.location.href = '/infomations';
         }
       },
@@ -96,7 +102,7 @@ export default function Create({ auth, categories }) {
                     >
                       本文
                     </label>
-                    <BlogEditor />
+                    <BlogEditor draftKey={DRAFT_KEY} />
                   </div>
                   <div className="mb-4">
                     <label

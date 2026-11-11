@@ -1,30 +1,17 @@
 import React from 'react';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import LastPageIcon from '@mui/icons-material/LastPage';
-type Proops = {
+import { Pagination, PaginationItem } from '@mui/material';
+
+type Props = {
   paginator: {
     first_page_url: string;
-    last_page_url: string;
-    next_page_url: string;
-    prev_page_url: string;
     current_page: number;
     last_page: number;
   };
 };
-export default function Pagination(props: Proops) {
-  const { paginator } = props;
-  const showMaxPage = 5;
-  const gap = (showMaxPage - 1) / 2;
-  const {
-    first_page_url,
-    last_page_url,
-    next_page_url,
-    prev_page_url,
-    current_page,
-    last_page,
-  } = paginator;
+
+// 一覧のページ送り。MUI の Pagination で、押せる範囲を44px四方にし、キーボードでも操作できるようにする
+export default function BlogPagination(props: Props) {
+  const { first_page_url, current_page, last_page } = props.paginator;
 
   // ページ番号のリンク先は、表示中の一覧のURL(first_page_url)の page だけを差し替えて作る
   const pageUrl = (page: number): string => {
@@ -33,66 +20,50 @@ export default function Pagination(props: Proops) {
     return url.toString();
   };
 
-  const start_page = current_page - gap <= 0 ? 1 : current_page - gap;
-  const end_page =
-    current_page + gap >= last_page ? last_page : current_page + gap;
-
-  const pageNums: JSX.Element[] = [];
-  for (let index = start_page; index <= end_page; index++) {
-    pageNums.push(
-      <a
-        key={index}
-        href={pageUrl(index)}
-        className={`pagination-link ${
-          current_page === index ? 'current-page' : ''
-        }`}
-        style={{
-          margin: '0 5px',
-          color:
-            current_page === index
-              ? 'rgba(0, 0, 0, 0.6)'
-              : 'silver                                                                                                                                                                        ',
-        }}
-      >
-        {index}
-      </a>,
-    );
-  }
+  if (last_page <= 1) return null;
 
   return (
-    <div className="pagination" style={{ marginTop: '15px' }}>
-      <a
-        href={first_page_url}
-        className="pagination-link"
-        style={{ display: current_page === 1 ? 'none' : 'span' }}
-      >
-        <FirstPageIcon style={{ color: 'rgba(0, 0, 0, 0.6)' }} />
-      </a>
-
-      <a
-        href={prev_page_url}
-        className="pagination-link"
-        style={{ display: !prev_page_url ? 'none' : 'span' }}
-      >
-        <NavigateBeforeIcon style={{ color: 'rgba(0, 0, 0, 0.6)' }} />
-      </a>
-      {last_page !== 1 ? pageNums : null}
-
-      <a
-        href={next_page_url}
-        className="pagination-link"
-        style={{ display: !next_page_url ? 'none' : 'span' }}
-      >
-        <NavigateNextIcon style={{ color: 'rgba(0, 0, 0, 0.6)' }} />
-      </a>
-
-      <a
-        href={last_page_url}
-        className="pagination-link"
-        style={{ display: current_page === last_page ? 'none' : 'span' }}
-      >
-        <LastPageIcon style={{ color: 'rgba(0, 0, 0, 0.6)' }} />
-      </a>
-    </div>
+    <nav aria-label="ページ送り">
+      <Pagination
+        page={current_page}
+        count={last_page}
+        showFirstButton
+        showLastButton
+        siblingCount={1}
+        getItemAriaLabel={(type, page, selected) => {
+          if (type === 'page') {
+            return selected ? `${page}ページ目(表示中)` : `${page}ページ目へ`;
+          }
+          return {
+            first: '最初のページへ',
+            last: '最後のページへ',
+            next: '次のページへ',
+            previous: '前のページへ',
+          }[type];
+        }}
+        sx={{
+          marginTop: '15px',
+          '& .MuiPagination-ul': { justifyContent: 'center' },
+        }}
+        renderItem={(item) => (
+          <PaginationItem
+            component="a"
+            href={item.page ? pageUrl(item.page) : undefined}
+            {...item}
+            sx={{
+              minWidth: '44px',
+              height: '44px',
+              fontSize: '1rem',
+              // 現在のページは背景色と太字で示す(白文字 × #1e7d0c = 5.26:1、BLOG-27)
+              '&.Mui-selected, &.Mui-selected:hover': {
+                backgroundColor: 'var(--color-secondary)',
+                color: '#fff',
+                fontWeight: 'bold',
+              },
+            }}
+          />
+        )}
+      />
+    </nav>
   );
 }

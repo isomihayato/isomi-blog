@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Firebase Authentication。IDトークンの検証で、発行元のプロジェクトを確かめるために使う
+    'firebase' => [
+        'project_id' => env('FIREBASE_PROJECT_ID', 'info-box-eea0c'),
+    ],
+
 ];

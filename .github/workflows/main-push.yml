@@ -19,11 +19,28 @@ jobs:
           key: ${{ secrets.ISOMI_SSH_PRIVATE_KEY }}
           port: ${{ secrets.ISOMI_SSH_PORT }}
           script: |
+            # どこかのコマンドが失敗したら、そこで止める(途中までの状態で次へ進まない)
+            set -e
             cd /var/www/html/isomi-blog
             eval $(ssh-agent)
             ssh-add ~/.ssh/github/id_ed25519
             git pull origin main
-            docker compose down
-            docker compose up -d --build
-            ./vendor/bin/sail artisan migrate --force
-            docker exec isomi-blog-laravel.test-1 bash -c "export NODE_OPTIONS="--max-old-space-size=4096" && npm run build"
+
+            # 1. PHP の依存パッケージを composer.lock どおりに入れる(開発用パッケージは入れない)
+            #    動いているコンテナとは別の一時コンテナで実行する
+            docker compose run --rm --no-deps -T laravel.test \
+              composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+            # 2. フロントをビルドする。公開中の public/build を消さないよう、別のフォルダにビルドしてから入れ替える
+            docker compose run --rm --no-deps -T laravel.test bash -c \
+              "npm install --no-audit --no-fund && NODE_OPTIONS=--max-old-space-size=4096 npx vite build --outDir public/build-next --emptyOutDir"
+            rm -rf public/build-prev
+            if [ -d public/build ]; then mv public/build public/build-prev; fi
+            mv public/build-next public/build
+            rm -rf public/build-prev
+
+            # 3. コンテナを更新する。down はせず、イメージや設定が変わったコンテナだけを作り直す
+            docker compose up -d --build --remove-orphans
+
+            # 4. DB のマイグレーション(vendor/bin/sail は開発用パッケージなので使わない)
+            docker compose exec -T laravel.test php artisan migrate --force
