@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper, Skeleton, Typography } from '@mui/material';
 import React from 'react';
 import Tags from '@/Components/Tags';
 import { Suspense } from 'react';
@@ -90,7 +90,7 @@ export default function ArticleDetailMain(props: Props) {
                 </div>
               </Box>
 
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Skeleton variant="rounded" height={400} />}>
                 <Box sx={{ padding: { xs: '10px 15px', md: '0 56px 32px' } }}>
                   {element}
                 </Box>
@@ -130,7 +130,7 @@ export default function ArticleDetailMain(props: Props) {
               component={Paper}
               sx={{ marginTop: '30px' }}
             >
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Skeleton variant="rounded" height={400} />}>
                 <Box
                   sx={{
                     padding: { xs: '1rem 0 0', md: '1.5rem 2rem' },

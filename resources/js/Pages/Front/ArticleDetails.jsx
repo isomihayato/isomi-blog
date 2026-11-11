@@ -33,6 +33,12 @@ import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 import { convertGenre } from '@/Components/filters/articleFilter';
 import PreviewNotice from '@/Components/feedback/PreviewNotice';
 
+// 本文の画像は、画面に近づいてから読み込む(初期表示を軽くする)
+// eslint-disable-next-line react/prop-types, no-unused-vars
+function LazyImage({ node, ...props }) {
+  return <img loading="lazy" decoding="async" {...props} />;
+}
+
 const SITE_URL = 'https://info-space-box.net';
 const OG_IMAGE_URL = `${SITE_URL}/img/og_image.webp`;
 
@@ -79,7 +85,7 @@ export default function ArticleDetails({
               rehypeAutolinkHeadings,
               ...(codeHighlight ? [codeHighlight] : []),
             ]}
-            components={{ pre: CodeBlock }}
+            components={{ pre: CodeBlock, img: LazyImage }}
           >
             {article.body}
           </Markdown>

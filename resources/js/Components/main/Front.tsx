@@ -1,5 +1,6 @@
-import { Box, Grid, Paper, Typography } from '@mui/material';
-import React from 'react';
+import { Box, Grid, Paper, Skeleton, Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+import { loadScriptOnce } from '../common/loadScript';
 import FacebookShareButton from '../sns/FacebookShareButton';
 import PocketLinkVertical from '../sns/PocketLinkVertical';
 import { Suspense } from 'react';
@@ -14,6 +15,12 @@ export default function Front(props: Props) {
   const snsNavShow = window.location.href.includes('/articles/details/')
     ? true
     : false;
+  useEffect(() => {
+    // X・はてなブックマークのボタンを出すページだけ、スクリプトを後から読み込む
+    if (!snsNavShow) return;
+    loadScriptOnce('https://platform.twitter.com/widgets.js');
+    loadScriptOnce('https://b.st-hatena.com/js/bookmark_button.js');
+  }, [snsNavShow]);
   return (
     <>
       <Box
@@ -29,7 +36,7 @@ export default function Front(props: Props) {
         }}
         component={paper ? Paper : 'div'}
       >
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Skeleton variant="rounded" height={400} />}>
           <Box sx={{ padding: { xs: '10px 15px', md: '32px 56px' } }}>
             {element}
           </Box>{' '}

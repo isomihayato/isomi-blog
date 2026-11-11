@@ -122,7 +122,7 @@ export default function Front(props: Props) {
           </IconButton>
           <img
             src="/img/info_box.webp"
-            alt="ロゴ"
+            alt="INFO BOX"
             style={{ marginRight: '5px', width: '110px' }}
           />
           <Typography
@@ -132,6 +132,14 @@ export default function Front(props: Props) {
           >
             BOX
           </Typography>
+          <IconButton
+            color="inherit"
+            href="/articles/search"
+            aria-label="記事検索"
+            sx={{ mr: 1 }}
+          >
+            <SearchIcon />
+          </IconButton>
           {user === undefined || user === null ? (
             <Button color="inherit" onClick={() => setOpen(true)}>
               Login
