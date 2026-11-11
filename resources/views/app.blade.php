@@ -23,7 +23,8 @@
             $ogTitle = data_get($ogArticle, 'title');
             $ogDescription = data_get($ogArticle, 'describe');
             $ogUrl = $ogSiteUrl . '/articles/details/' . data_get($ogArticle, 'id');
-            $ogImage = $ogSiteUrl . '/img/og_image.webp';
+            // アイキャッチ画像があればそれを、なければサイト共通の画像を使う(BLOG-9)
+            $ogImage = data_get($ogArticle, 'og_image_url') ?: $ogSiteUrl . '/img/og_image.webp';
         @endphp
         <title inertia>{{ $ogTitle }} - {{ config('app.name', 'Laravel') }}</title>
         <meta inertia name="keywords" content="{{ data_get($ogArticle, 'tags') }}">
