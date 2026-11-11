@@ -31,7 +31,7 @@ Route::get('/', [FrontController::class, 'index'])->name('fronts.index');
 Route::get('/about', [FrontController::class, 'about'])->name('fronts.about');
 Route::get('/privacy_policy', [FrontController::class, 'privacy_policy'])->name('fronts.privacy_policy');
 Route::get('/contact', [FrontController::class, 'contact'])->name('fronts.contact');
-Route::post('/send_email', [FrontController::class, 'sendEmail'])->name('fronts.sendEmail');
+Route::post('/send_email', [FrontController::class, 'sendEmail'])->name('fronts.sendEmail')->middleware('throttle:contact');
 Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->name('fronts.infomation_list');
 Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
@@ -39,14 +39,14 @@ Route::get('/articles/genre/{genre}', [FrontController::class, 'genre'])->whereN
 Route::get('/articles/tag/{tag}', [FrontController::class, 'tag'])->where('tag', '.*')->name('fronts.tag');
 Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
-Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('fronts.ad_list');
-Route::post('/members', [MembersController::class, 'store'])->name('members.store');
+Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('fronts.ad_list')->middleware('throttle:advertisements');
+Route::post('/members', [MembersController::class, 'store'])->name('members.store')->middleware('throttle:members');
 // コメントの投稿・編集・削除は、Firebase の IDトークンで本人確認をする
 Route::middleware('firebase.auth')->group(function () {
     Route::get('/members/me', CurrentMemberController::class)->name('members.me');
-    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::post('/comments/update', [CommentController::class, 'update'])->name('comments.update');
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store')->middleware('throttle:comments');
+    Route::post('/comments/update', [CommentController::class, 'update'])->name('comments.update')->middleware('throttle:comments');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy')->middleware('throttle:comments');
 });
 Route::post('/comments/get/comments', [CommentController::class, 'get_comments'])->name('comments.get_comments');
 // Route::resource('/comments', CommentController::class);
@@ -68,7 +68,7 @@ Route::get('/infomations', [InfomationController::class, 'index'])->name('infoma
 Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('infomations.show');
 Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
 // お気に入りはログインなしで押せるため、端末(Cookie)ごとに1回までにする(BLOG-58)。削除の API は置かない
-Route::post('/favorites', [FavoritesController::class, 'store'])->name('favorites.store');
+Route::post('/favorites', [FavoritesController::class, 'store'])->name('favorites.store')->middleware('throttle:favorites');
 
 
 // Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show')->middleware(['auth', 'verified']);
