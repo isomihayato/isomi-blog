@@ -30,19 +30,19 @@ Route::get('/', [FrontController::class, 'index'])->name('fronts.index');
 Route::get('/about', [FrontController::class, 'about'])->name('fronts.about');
 Route::get('/privacy_policy', [FrontController::class, 'privacy_policy'])->name('fronts.privacy_policy');
 Route::get('/contact', [FrontController::class, 'contact'])->name('fronts.contact');
-Route::post('/send_email', [FrontController::class, 'sendEmail'])->name('fronts.sendEmail');
+Route::post('/send_email', [FrontController::class, 'sendEmail'])->name('fronts.sendEmail')->middleware('throttle:contact');
 Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->name('fronts.infomation_list');
 Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
 Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
-Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('fronts.ad_list');
-Route::post('/members', [MembersController::class, 'store'])->name('members.store');
+Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('fronts.ad_list')->middleware('throttle:advertisements');
+Route::post('/members', [MembersController::class, 'store'])->name('members.store')->middleware('throttle:members');
 // コメントの投稿・編集・削除は、Firebase の IDトークンで本人確認をする
 Route::middleware('firebase.auth')->group(function () {
-    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::post('/comments/update', [CommentController::class, 'update'])->name('comments.update');
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store')->middleware('throttle:comments');
+    Route::post('/comments/update', [CommentController::class, 'update'])->name('comments.update')->middleware('throttle:comments');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy')->middleware('throttle:comments');
 });
 Route::post('/comments/get/comments', [CommentController::class, 'get_comments'])->name('comments.get_comments');
 // Route::resource('/comments', CommentController::class);
@@ -66,8 +66,8 @@ Route::get('/debug-sentry', function () {
     throw new Exception('My first Sentry error!');
 });
 Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
-Route::post('/favorites', [FavoritesController::class, 'store'])->name('favorites.store');
-Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');
+Route::post('/favorites', [FavoritesController::class, 'store'])->name('favorites.store')->middleware('throttle:favorites');
+Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy')->middleware('throttle:favorites');
 
 
 // Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show')->middleware(['auth', 'verified']);
