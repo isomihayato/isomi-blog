@@ -66,7 +66,13 @@ class InfomationController extends Controller
      */
     public function show(string $id)
     {
-        $infomation = DB::table('infomations')->find($id);
+        // 存在しないIDは404にする。公開日前のお知らせは、管理者がログイン中のときだけ表示する(プレビュー用)
+        $query = Infomation::query();
+        if (! auth()->check()) {
+            $query->published();
+        }
+        $infomation = $query->findOrFail($id);
+
         return Inertia::render('Infomations/Show', ['infomation' => $infomation]);
     }
 
@@ -85,7 +91,17 @@ class InfomationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        DB::table('infomations')->where('id', $id)->update($request->all());
+        // 想定外のキー(_token など)をそのままDBに入れると500エラーになるので、受け付ける項目だけを検証して使う
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
+            'category_id' => 'required|integer|exists:categories,id',
+            'publish_at' => 'required|date',
+            'show_by_bar' => 'required|boolean',
+        ]);
+        $infomation = Infomation::findOrFail($id);
+        $infomation->update($validated);
+
         return response()->json(['status' => 'success']);
     }
 
@@ -100,7 +116,8 @@ class InfomationController extends Controller
 
     public function get_show_by_bar()
     {
-        $infomations = DB::table('infomations')->where('show_by_bar', true)->get();
+        // 公開日前のお知らせは、お知らせバーに出さない
+        $infomations = Infomation::published()->where('show_by_bar', true)->get();
         return response()->json(['infomations' => $infomations]);
     }
 }

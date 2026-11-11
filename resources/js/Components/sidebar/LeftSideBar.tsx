@@ -36,14 +36,8 @@ function LeftSideBar(props: Props) {
 
   return (
     <div>
-      <div
-        className={isVisible ? 'visible-element' : 'hidden-element'}
-        style={{
-          position: 'fixed',
-          left: window.innerWidth < 1500 ? '15px' : '4vw',
-          top: '10px',
-        }}
-      >
+      {/* 画面に固定すると本文に重なるため、置き場所(記事詳細の左の列)に合わせて表示する */}
+      <div className={isVisible ? 'visible-element' : 'hidden-element'}>
         <FrontSideBar advertisements={advertisements} />
       </div>
     </div>

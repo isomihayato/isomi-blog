@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,6 +21,20 @@ import WebIcon from '@mui/icons-material/Web';
 import InfoIcon from '@mui/icons-material/Info';
 import PrivacyTipIcon from '@mui/icons-material/PrivacyTip';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+
+/** メニュー(Drawer)の項目 */
+const MENU_ITEMS = [
+  { href: '/', label: 'ホーム', icon: <HomeIcon /> },
+  { href: '/about', label: 'このサイトについて', icon: <WebIcon /> },
+  { href: '/articles/search', label: '記事検索', icon: <SearchIcon /> },
+  { href: '/infomations/list', label: 'お知らせ一覧', icon: <InfoIcon /> },
+  {
+    href: '/privacy_policy',
+    label: 'プライバシーポリシー',
+    icon: <PrivacyTipIcon />,
+  },
+  { href: '/contact', label: 'お問い合わせ', icon: <ContactSupportIcon /> },
+];
 
 type Props = {
   loginOpen?: boolean;
@@ -57,7 +71,7 @@ export default function Front(props: Props) {
       setStatus('2,エラーが発生しました。');
     }
   };
-  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     setMenuOpen(true);
   };
@@ -72,54 +86,22 @@ export default function Front(props: Props) {
       onClick={() => setDrawer(false)}
     >
       <List>
-        <ListItem key="home" onClick={() => (window.location.href = '/')}>
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary="ホーム" />
-        </ListItem>
-        <ListItem key="home" onClick={() => (window.location.href = '/about')}>
-          <ListItemIcon>
-            <WebIcon />
-          </ListItemIcon>
-          <ListItemText primary="このサイトについて" />
-        </ListItem>
-        <ListItem
-          key="search"
-          onClick={() => (window.location.href = '/articles/search')}
-        >
-          <ListItemIcon>
-            <SearchIcon />
-          </ListItemIcon>
-          <ListItemText primary="記事検索" />
-        </ListItem>
-        <ListItem
-          key="info-list"
-          onClick={() => (window.location.href = '/infomations/list')}
-        >
-          <ListItemIcon>
-            <InfoIcon />
-          </ListItemIcon>
-          <ListItemText primary="お知らせ一覧" />
-        </ListItem>
-        <ListItem
-          key="privacy"
-          onClick={() => (window.location.href = '/privacy_policy')}
-        >
-          <ListItemIcon>
-            <PrivacyTipIcon />
-          </ListItemIcon>
-          <ListItemText primary="プライバシーポリシー" />
-        </ListItem>
-        <ListItem
-          key="contact"
-          onClick={() => (window.location.href = '/contact')}
-        >
-          <ListItemIcon>
-            <ContactSupportIcon />
-          </ListItemIcon>
-          <ListItemText primary="お問い合わせ" />
-        </ListItem>
+        {MENU_ITEMS.map((item) => {
+          const current = window.location.pathname === item.href;
+          return (
+            // 画面遷移はリンクにする(新しいタブで開ける・Tab キーで選べる・押せると分かる)
+            <ListItemButton
+              key={item.href}
+              component="a"
+              href={item.href}
+              selected={current}
+              aria-current={current ? 'page' : undefined}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          );
+        })}
       </List>
     </Box>
   );
@@ -132,7 +114,7 @@ export default function Front(props: Props) {
             size="large"
             edge="start"
             color="inherit"
-            aria-label="menu"
+            aria-label="メニューを開く"
             sx={{ mr: 2 }}
             onClick={() => setDrawer(true)}
           >
@@ -163,16 +145,23 @@ export default function Front(props: Props) {
               Login
             </Button>
           ) : (
-            <Avatar alt="メンバー画像" src={photoURL} onClick={handleClick} />
+            // アカウントのメニュー(ログアウト)を開くボタン
+            <IconButton
+              aria-label="アカウントメニューを開く"
+              aria-controls={menuOpen ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={menuOpen ? 'true' : undefined}
+              onClick={handleClick}
+              sx={{ p: 0.5 }}
+            >
+              <Avatar alt="メンバー画像" src={photoURL} />
+            </IconButton>
           )}
           <Menu
-            id="basic-menu"
+            id="account-menu"
             anchorEl={anchorEl}
             open={menuOpen}
             onClose={menuClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button',
-            }}
           >
             <MenuItem
               onClick={() => {

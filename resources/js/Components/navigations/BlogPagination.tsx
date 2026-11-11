@@ -50,7 +50,17 @@ export default function BlogPagination(props: Props) {
             component="a"
             href={item.page ? pageUrl(item.page) : undefined}
             {...item}
-            sx={{ minWidth: '44px', height: '44px', fontSize: '1rem' }}
+            sx={{
+              minWidth: '44px',
+              height: '44px',
+              fontSize: '1rem',
+              // 現在のページは背景色と太字で示す(白文字 × #1e7d0c = 5.26:1、BLOG-27)
+              '&.Mui-selected, &.Mui-selected:hover': {
+                backgroundColor: 'var(--color-secondary)',
+                color: '#fff',
+                fontWeight: 'bold',
+              },
+            }}
           />
         )}
       />
