@@ -12,6 +12,8 @@ import { deleteComment } from '../axios/axiosComment';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { CommentType } from '../types/CommentTypes';
+import PersonIcon from '@mui/icons-material/Person';
+import { formatJstDateTime } from '../common/formatJstDateTime';
 import { useMyMemberId } from '../common/useMyMemberId';
 
 type Props = {
@@ -66,14 +68,17 @@ export default function CommentsCard(props: Props) {
         <Card sx={{ width: '100%', marginBottom: '20px' }}>
           <CardHeader
             avatar={
-              <Avatar alt="メンバー画像" src={comment.member.photo_url} />
+              // プロフィール画像がない会員は、空の丸ではなく人のアイコンを出す
+              <Avatar
+                alt="メンバー画像"
+                src={comment.member.photo_url || undefined}
+              >
+                <PersonIcon />
+              </Avatar>
             }
             title={comment.member.name}
-            subheader={
-              comment.created_at.slice(0, 10) +
-              ' ' +
-              comment.created_at.slice(11, 19)
-            }
+            // 投稿日時は日本時間で分まで
+            subheader={formatJstDateTime(comment.created_at)}
             action={
               isMine ? (
                 <IconButton

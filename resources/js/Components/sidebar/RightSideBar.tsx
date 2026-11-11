@@ -6,6 +6,7 @@ import VerticalStepper from '../navigations/VerticalSteper';
 import { ArticleType } from '../types/ArticleTypes';
 import RelativeArticleStack from '../layout/RelativeArticleStack';
 import type { ArticleHeading } from '../common/articleHeadings';
+import PopularArticles, { PopularArticleType } from '../layout/PopularArticles';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -16,9 +17,10 @@ const Item = styled(Paper)(({ theme }) => ({
 type Props = {
   headings: ArticleHeading[];
   relativeArticles: ArticleType[];
+  popularArticles?: PopularArticleType[];
 };
 export default function RightSideBar(props: Props) {
-  const { headings, relativeArticles } = props;
+  const { headings, relativeArticles, popularArticles = [] } = props;
   const rightSideWidth = '300px';
 
   // 目次と関連記事は CSS の position: sticky で画面に追従させる。
@@ -66,6 +68,17 @@ export default function RightSideBar(props: Props) {
           </Box>
         </Box>
       </Item>
+      {popularArticles.length > 0 ? (
+        <Item sx={{ mt: 2 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 'bold', color: 'black' }}
+          >
+            人気記事ランキング
+          </Typography>
+          <PopularArticles articles={popularArticles} />
+        </Item>
+      ) : null}
       <Box
         sx={{
           position: 'sticky',

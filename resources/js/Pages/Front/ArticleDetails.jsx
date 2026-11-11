@@ -16,8 +16,8 @@ import Markdown from 'react-markdown';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import CodeBlock from '@/Components/dataDispaly/CodeBlock';
+import { useBreakpointUp } from '@/Components/common/useBreakpoint';
 import ArticleNeighborNav from '@/Components/navigations/ArticleNeighborNav';
-import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
 import { postComments } from '@/Components/axios/axiosComment';
@@ -33,7 +33,14 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
 import { extractArticleHeadings } from '@/Components/common/articleHeadings';
+import { convertGenre } from '@/Components/filters/articleFilter';
 import PreviewNotice from '@/Components/feedback/PreviewNotice';
+
+// 本文の画像は、画面に近づいてから読み込む(初期表示を軽くする)
+// eslint-disable-next-line react/prop-types, no-unused-vars
+function LazyImage({ node, ...props }) {
+  return <img loading="lazy" decoding="async" {...props} />;
+}
 
 const SITE_URL = 'https://info-space-box.net';
 const OG_IMAGE_URL = `${SITE_URL}/img/og_image.webp`;
@@ -43,8 +50,11 @@ export default function ArticleDetails({
   relative_articles,
   prev_article,
   next_article,
+  popular_articles,
 }) {
   const articleUrl = `${SITE_URL}/articles/details/${article.id}`;
+  // アイキャッチ画像があればそれを、なければサイト共通の画像を使う(サーバー側の app.blade.php と同じ)
+  const ogImageUrl = article.og_image_url ?? OG_IMAGE_URL;
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments ?? []);
   const [commentsError, setCommentsError] = React.useState(false); // コメントの取得に失敗したか
@@ -57,6 +67,9 @@ export default function ArticleDetails({
   );
   const [codeHighlight, setCodeHighlight] = React.useState(null); // コードのハイライト用 rehype プラグイン(読み込み後にセット)
   const adElementRef = useRef(null);
+  // 右サイドバー(目次・関連記事)は lg 以上、左の広告は本文と重ならない幅を確保できる xl 以上で表示する
+  const showRightSideBar = useBreakpointUp('lg');
+  const showLeftSideBar = useBreakpointUp('xl');
   const isLoggedIn = () => {
     const t_user = getStorage('user');
     return t_user !== null && t_user !== undefined;
@@ -75,8 +88,8 @@ export default function ArticleDetails({
   const ArticleContent = () => {
     return (
       <>
-        {/* スマホはサイドバーを出さないため、本文の先頭に折りたためる目次を置く */}
-        {isMobile ? (
+        {/* 右サイドバー(目次・関連記事)を出さない画面幅では、本文の先頭に折りたためる目次を置く */}
+        {!showRightSideBar ? (
           <MobileToc
             headings={headings}
             open={mobileTocOpen}
@@ -90,13 +103,13 @@ export default function ArticleDetails({
               rehypeAutolinkHeadings,
               ...(codeHighlight ? [codeHighlight] : []),
             ]}
-            components={{ pre: CodeBlock }}
+            components={{ pre: CodeBlock, img: LazyImage }}
           >
             {article.body}
           </Markdown>
         </pre>
-        {/* スマホは本文の下に関連記事を出す */}
-        {isMobile && relative_articles?.length > 0 ? (
+        {/* 右サイドバーを出さない画面幅では、本文の下に関連記事を出す */}
+        {!showRightSideBar && relative_articles?.length > 0 ? (
           <Box sx={{ mt: 4 }}>
             <Typography
               component="p"
@@ -161,7 +174,7 @@ export default function ArticleDetails({
           id="advertisement"
           sx={{
             minHeight: '500px',
-            padding: isMobile ? '10px 15px' : '20px',
+            padding: { xs: '10px 15px', md: '20px' },
           }}
           ref={adElementRef}
         >
@@ -243,28 +256,33 @@ export default function ArticleDetails({
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={article.describe ?? ''} />
         <meta property="og:url" content={articleUrl} />
-        <meta property="og:image" content={OG_IMAGE_URL} />
+        <meta property="og:image" content={ogImageUrl} />
         <meta property="fb:app_id" content="1437461986868001" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@info_space_box" />
         <meta name="twitter:title" content={article.title} />
         <meta name="twitter:description" content={article.describe ?? ''} />
-        <meta name="twitter:image" content={OG_IMAGE_URL} />
+        <meta name="twitter:image" content={ogImageUrl} />
         <link rel="canonical" href={articleUrl} />
       </Head>
       <Front
         loginOpen={loginOpen}
         setLoginOpen={setLoginOpen}
         onLoginSuccess={() => setLogged(isLoggedIn())}
+        onAuthChange={() => setLogged(isLoggedIn())}
       />
-      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+      {/* パンくず:トップ > ジャンル名 > 記事タイトル(ジャンル別の一覧ページはないため、ジャンル名は文字だけ) */}
+      <Breadcrumbs aria-label="パンくずリスト" style={{ margin: '10px 15px' }}>
         <Link underline="hover" color="inherit" href="/">
           <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
           Top 記事一覧
         </Link>
-        <Typography color="text.primary">
+        <Typography color="text.secondary">
+          {convertGenre(article.genre)}
+        </Typography>
+        <Typography color="text.primary" aria-current="page">
           <AutoStoriesIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          記事詳細
+          {article.title}
         </Typography>
       </Breadcrumbs>
       <PreviewNotice article={article} />
@@ -274,16 +292,19 @@ export default function ArticleDetails({
           spacing={2}
           justifyContent="center"
           alignItems="flex-start"
+          sx={{ px: { xs: 1, md: 2 } }}
         >
-          {isMobile ? null : (
-            <Item>
+          {showLeftSideBar ? (
+            // 画面に固定せず本文の左の列に置き、スクロールしても見える位置に留める(本文に重ならないようにする)
+            <Item sx={{ position: 'sticky', top: '10px', flexShrink: 0 }}>
               <LeftSideBar
                 elementRef={adElementRef}
                 advertisements={advertisements}
               />
             </Item>
-          )}
-          <Item>
+          ) : null}
+          {/* 本文の列(SNSボタン 100px + 本文 最大800px)。サイドバーの分だけ縮む */}
+          <Item sx={{ flex: '1 1 auto', minWidth: 0, maxWidth: '916px' }}>
             <ArticleDetailMain
               article={article}
               articleElements={[
@@ -299,17 +320,16 @@ export default function ArticleDetails({
               setAction={setAction}
             />
           </Item>
-          {isMobile ? (
-            <></>
-          ) : (
+          {showRightSideBar ? (
             // 目次を sticky で追従させるため、右側の列は本文と同じ高さまで伸ばす
-            <Item style={{ alignSelf: 'stretch' }}>
+            <Item sx={{ flexShrink: 0, alignSelf: 'stretch' }}>
               <RightSideBar
                 headings={headings}
                 relativeArticles={relative_articles}
+                popularArticles={popular_articles ?? []}
               />
             </Item>
-          )}
+          ) : null}
         </Stack>
       </Box>
       <FrontFooter />
@@ -320,6 +340,7 @@ export default function ArticleDetails({
 ArticleDetails.propTypes = {
   article: PropTypes.object.isRequired,
   relative_articles: PropTypes.array.isRequired,
+  popular_articles: PropTypes.array,
   prev_article: PropTypes.object,
   next_article: PropTypes.object,
 };

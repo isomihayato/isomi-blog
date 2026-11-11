@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button, Input, Select, MenuItem, Switch } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
+import EyecatchInput from '@/Components/inputs/EyecatchInput';
 import { clearDraft } from '@/Components/common/draftStorage';
 import { postArticle } from '@/Components/axios/axiosArticle';
 import formatDate from '@/Components/common/functions';
@@ -33,6 +34,7 @@ export default function Create({ auth, article_ad_templates }) {
       user_id: form.user_id.value,
       article_ad_template_id: form.article_ad_template_id.value,
       genre: form.genre.value,
+      eyecatch_path: form.eyecatch_path.value,
     };
     postArticle(data, (response) => {
       if (response.data.status === 'success') {
@@ -88,6 +90,9 @@ export default function Create({ auth, article_ad_templates }) {
                     rows="3"
                     style={{ width: '100%' }}
                   />
+                </div>
+                <div>
+                  <EyecatchInput />
                 </div>
                 <div>
                   <BlogEditor draftKey={DRAFT_KEY} />
