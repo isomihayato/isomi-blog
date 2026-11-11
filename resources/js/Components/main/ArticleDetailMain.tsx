@@ -1,6 +1,5 @@
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import React from 'react';
-import { isMobile } from 'react-device-detect';
 import Tags from '@/Components/Tags';
 import { Suspense } from 'react';
 import { ArticleType } from '../types/ArticleTypes';
@@ -23,38 +22,18 @@ export default function ArticleDetailMain(props: Props) {
   const [favorites, setFavorites] = React.useState<number | undefined>(
     article.favorites_count,
   );
-  const onFavorite = useFavoriteClick(article.id, setFavorites);
+  // この端末でお気に入り登録済みかどうか(BLOG-58。件数と同じくページ表示時に受け取る)
+  const [favorited, setFavorited] = React.useState(article.favorited === true);
+  const onFavorite = useFavoriteClick(
+    article.id,
+    setFavorites,
+    favorited,
+    setFavorited,
+  );
 
   const snsNavShow = window.location.href.includes('/articles/details/')
     ? true
     : false;
-  const makeOuterStyle = () => {
-    if (isMobile) {
-      return {
-        width: '90vw',
-        margin: '0 auto',
-        minHeight: '66vh',
-        marginTop: '25px',
-      };
-    } else {
-      return { margin: '50px auto', width: '65vw', minHeight: '65vh' };
-    }
-  };
-  const makeTitleStyle = () => {
-    if (isMobile) {
-      return {
-        padding: '5px 20px',
-        fontSize: '1.65rem',
-        fontWeight: 'bold',
-      };
-    } else {
-      return {
-        padding: '0px 56px 0',
-        fontSize: '1.8rem',
-        fontWeight: 'bold',
-      };
-    }
-  };
   const underTitleSpanStype = {
     fontSize: '.8rem',
     fontWeight: '600',
@@ -62,98 +41,107 @@ export default function ArticleDetailMain(props: Props) {
   };
   return (
     <>
-      <Box id="main" style={makeOuterStyle()} className="font-style">
-        <Grid container>
-          <Grid md={2} xs={0}>
-            <SnsSideBar
-              article={article}
-              favorites={favorites}
-              onFavorite={onFavorite}
-            />
-          </Grid>
-          <Grid md={10} xs={12}>
-            {articleElements?.map((element, index) => (
-              <Box key={index + 'main-content'} component={Paper}>
-                <span
-                  style={{ margin: '15px 0 0 20px', display: 'inline-block' }}
-                >
-                  <GenreChip genre={article.genre} size="medium" />
-                </span>
-                <div style={makeTitleStyle()}>
-                  <h1> {article.title}</h1>
-                  <span style={underTitleSpanStype}>
-                    {article.published_at.slice(0, 10)}に公開
-                  </span>
-                  <CachedIcon style={{ marginLeft: '10px', color: '#666' }} />
-                  <span style={underTitleSpanStype}>
-                    {article.updated_at.slice(0, 10)}
-                  </span>
-                  <div>
-                    <Tags tags={article.tags.split(',')} />
-                  </div>
-                </div>
-
-                <Suspense fallback={<div>Loading...</div>}>
-                  <div
-                    style={
-                      isMobile
-                        ? { padding: '10px 15px' }
-                        : { padding: '0 56px 32px' }
-                    }
-                  >
-                    {element}
-                  </div>
-                </Suspense>
-
-                {snsNavShow && (
-                  <>
-                    <Typography
-                      variant="h6"
-                      align="center"
-                      sx={{ mt: 2 }}
-                      style={{
-                        fontSize: '1.2rem',
-                        backgroundColor: '#1976d2',
-                        color: '#fff',
-                        fontWeight: 'bold',
-                        padding: '10px',
-                        marginBottom: '20px',
-                      }}
-                    >
-                      励みになります！
-                    </Typography>
-                    {/* 共有ボタンは本文下と左の固定表示(スマホは下部バー)の2か所にそろえる */}
-                    <Box sx={{ paddingBottom: '20px' }}>
-                      <ShareButtons
-                        url={`https://info-space-box.net/articles/details/${article.id}`}
-                        title={article.title}
-                      />
-                    </Box>
-                  </>
-                )}
-              </Box>
-            ))}
-            {elements.map((element, index) => (
-              <Box
-                key={index + 'main-content'}
-                component={Paper}
-                sx={{ marginTop: '30px' }}
+      <Box
+        id="main"
+        className="font-style"
+        sx={{
+          display: 'flex',
+          width: '100%',
+          mx: 'auto',
+          mt: { xs: '25px', md: '50px' },
+          mb: { md: '50px' },
+          minHeight: '65vh',
+        }}
+      >
+        {/* SNSボタンの列。スマホ幅では画面下に固定したバーになるため、幅を取らない */}
+        <Box sx={{ flexShrink: 0, width: { md: '100px' } }}>
+          <SnsSideBar
+            article={article}
+            favorites={favorites}
+            onFavorite={onFavorite}
+          />
+        </Box>
+        {/* 本文は最大 800px にして、大きな画面でも1行が長くなりすぎないようにする */}
+        <Box sx={{ flex: '1 1 auto', minWidth: 0, maxWidth: '800px' }}>
+          {articleElements?.map((element, index) => (
+            <Box key={index + 'main-content'} component={Paper}>
+              <span
+                style={{ margin: '15px 0 0 20px', display: 'inline-block' }}
               >
-                <Suspense fallback={<div>Loading...</div>}>
-                  <div
-                    style={
-                      isMobile
-                        ? { paddingTop: '1rem' }
-                        : { padding: '1.5rem 2rem' }
-                    }
-                  >
-                    {element}
-                  </div>
-                </Suspense>
+                <GenreChip genre={article.genre} size="medium" />
+              </span>
+              <Box
+                sx={{
+                  padding: { xs: '5px 20px', md: '0px 56px 0' },
+                  fontSize: { xs: '1.65rem', md: '1.8rem' },
+                  fontWeight: 'bold',
+                }}
+              >
+                <h1> {article.title}</h1>
+                <span style={underTitleSpanStype}>
+                  {article.published_at.slice(0, 10)}に公開
+                </span>
+                <CachedIcon style={{ marginLeft: '10px', color: '#666' }} />
+                <span style={underTitleSpanStype}>
+                  {article.updated_at.slice(0, 10)}
+                </span>
+                <div>
+                  <Tags tags={article.tags.split(',')} />
+                </div>
               </Box>
-            ))}
-          </Grid>
-        </Grid>
+
+              <Suspense fallback={<div>Loading...</div>}>
+                <Box sx={{ padding: { xs: '10px 15px', md: '0 56px 32px' } }}>
+                  {element}
+                </Box>
+              </Suspense>
+
+              {snsNavShow && (
+                <>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    sx={{ mt: 2 }}
+                    style={{
+                      fontSize: '1.2rem',
+                      backgroundColor: '#1976d2',
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      padding: '10px',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    励みになります！
+                  </Typography>
+                  {/* 共有ボタンは本文下と左の固定表示(スマホは下部バー)の2か所にそろえる */}
+                  <Box sx={{ paddingBottom: '20px' }}>
+                    <ShareButtons
+                      url={`https://info-space-box.net/articles/details/${article.id}`}
+                      title={article.title}
+                    />
+                  </Box>
+                </>
+              )}
+            </Box>
+          ))}
+          {elements.map((element, index) => (
+            <Box
+              key={index + 'main-content'}
+              component={Paper}
+              sx={{ marginTop: '30px' }}
+            >
+              <Suspense fallback={<div>Loading...</div>}>
+                <Box
+                  sx={{
+                    padding: { xs: '1rem 0 0', md: '1.5rem 2rem' },
+                  }}
+                >
+                  {element}
+                </Box>
+              </Suspense>
+            </Box>
+          ))}
+        </Box>
       </Box>
     </>
   );
