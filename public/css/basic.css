@@ -20,7 +20,9 @@ li {
   line-height: 1.7;
   font-size: 0.9rem;
 }
-#main ul li {
+/* 本文などのリストに黒丸と字下げを付ける。MUI のコンポーネントのリスト(ページ送り・お知らせ一覧など。
+   ul に Mui... のクラスが付く)には付けない(ページ送りのボタンの間に黒丸が出ていた) */
+#main ul:not([class*='Mui']) li {
   list-style: disc;
   margin-left: 2rem;
 }
