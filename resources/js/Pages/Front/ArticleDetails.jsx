@@ -47,6 +47,7 @@ export default function ArticleDetails({
   relative_articles,
   prev_article,
   next_article,
+  popular_articles,
 }) {
   const articleUrl = `${SITE_URL}/articles/details/${article.id}`;
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
@@ -304,6 +305,7 @@ export default function ArticleDetails({
               <RightSideBar
                 chapters={chapters}
                 relativeArticles={relative_articles}
+                popularArticles={popular_articles ?? []}
               />
             </Item>
           ) : null}
@@ -317,6 +319,7 @@ export default function ArticleDetails({
 ArticleDetails.propTypes = {
   article: PropTypes.object.isRequired,
   relative_articles: PropTypes.array.isRequired,
+  popular_articles: PropTypes.array,
   prev_article: PropTypes.object,
   next_article: PropTypes.object,
 };
