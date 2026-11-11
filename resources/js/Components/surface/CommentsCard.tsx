@@ -12,6 +12,9 @@ import { deleteComment } from '../axios/axiosComment';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { CommentType } from '../types/CommentTypes';
+import PersonIcon from '@mui/icons-material/Person';
+import { formatJstDateTime } from '../common/formatJstDateTime';
+import { useMyMemberId } from '../common/useMyMemberId';
 
 type Props = {
   articleId: number;
@@ -23,6 +26,9 @@ export default function CommentsCard(props: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [edit, setEdit] = React.useState(false);
   const [deleteError, setDeleteError] = React.useState(''); // 削除に失敗したときのメッセージ
+  // 編集・削除のメニューは、自分のコメントにだけ出す(サーバー側でも本人以外は 403 にしている)
+  const myMemberId = useMyMemberId();
+  const isMine = myMemberId !== null && comment.member_id === myMemberId;
 
   const editHndlr = () => {
     setEdit(!edit);
@@ -62,25 +68,28 @@ export default function CommentsCard(props: Props) {
         <Card sx={{ width: '100%', marginBottom: '20px' }}>
           <CardHeader
             avatar={
-              <Avatar alt="メンバー画像" src={comment.member.photo_url} />
+              // プロフィール画像がない会員は、空の丸ではなく人のアイコンを出す
+              <Avatar
+                alt="メンバー画像"
+                src={comment.member.photo_url || undefined}
+              >
+                <PersonIcon />
+              </Avatar>
             }
             title={comment.member.name}
-            subheader={
-              comment.created_at.slice(0, 10) +
-              ' ' +
-              comment.created_at.slice(11, 19)
-            }
+            // 投稿日時は日本時間で分まで
+            subheader={formatJstDateTime(comment.created_at)}
             action={
-              <>
+              isMine ? (
                 <IconButton
-                  aria-label="settings"
+                  aria-label="コメントの操作"
                   onClick={(e) => {
                     setAnchorEl(e.currentTarget);
                   }}
                 >
                   <MoreVertIcon />
                 </IconButton>
-              </>
+              ) : null
             }
           />
           <Menu
