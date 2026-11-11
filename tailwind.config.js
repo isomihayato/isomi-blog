@@ -13,7 +13,8 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                // 公開側(MUI のテーマ)と同じフォントにする
+                sans: ['"Noto Sans JP"', ...defaultTheme.fontFamily.sans],
             },
         },
     },

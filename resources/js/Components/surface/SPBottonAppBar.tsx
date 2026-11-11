@@ -8,6 +8,9 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import Paper from '@mui/material/Paper';
 import { ArticleType } from '../types/ArticleTypes';
 
+// 固定バーの高さ(BottomNavigation の 56px + iPhone などのホームバー部分)
+const BAR_SPACE = 'calc(56px + env(safe-area-inset-bottom, 0px))';
+
 type Props = {
   article: ArticleType;
   favorites: number | undefined;
@@ -33,6 +36,15 @@ export default function SPBottonAppBar(props: Props) {
       }
     }
   };
+  // バーを表示している間は、ページの下にバーの高さ分の余白を入れて、本文やフォームの最後が隠れないようにする
+  React.useEffect(() => {
+    if (!show) return;
+    const previous = document.body.style.paddingBottom;
+    document.body.style.paddingBottom = BAR_SPACE;
+    return () => {
+      document.body.style.paddingBottom = previous;
+    };
+  }, [show]);
   React.useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => {
@@ -57,7 +69,14 @@ export default function SPBottonAppBar(props: Props) {
       {show ? (
         <Box>
           <Paper
-            sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }}
+            sx={{
+              position: 'fixed',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              zIndex: 1,
+              paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+            }}
             elevation={3}
           >
             <BottomNavigation showLabels value={value} onChange={handleChange}>
