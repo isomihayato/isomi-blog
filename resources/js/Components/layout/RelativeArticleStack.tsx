@@ -2,20 +2,11 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
-import { Avatar, Grid } from '@mui/material';
-import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
-import { isMobile } from 'react-device-detect';
-import { router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { ArticleType } from '../types/ArticleTypes';
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
+import { articleCardSx } from './articleCardStyle';
+import { formatJstDate } from '../common/dateFormat';
+import EyecatchThumbnail from './EyecatchThumbnail';
 
 type Props = {
   articles: ArticleType[];
@@ -28,54 +19,46 @@ export default function RelativeArticleStack(props: Props) {
     <Box sx={{ width: '100%' }}>
       <Stack spacing={2}>
         {articles?.map((article: ArticleType) => (
-          <Item
+          <Paper
             key={article.id}
-            onClick={() => {
-              // フルリロードではなくInertiaのSPA遷移で記事詳細へ移動する
-              router.visit('/articles/details/' + article.id);
+            component="article"
+            sx={{
+              ...articleCardSx,
+              padding: '12px 16px',
+              display: 'flex',
+              gap: 1.5,
             }}
-            style={{ padding: '16px 24px', cursor: 'pointer' }}
           >
-            <div>
-              <Grid container spacing={2}>
-                {isMobile ? null : (
-                  <Grid item xs={12} md={2}>
-                    <div id="icon" style={{ float: 'right' }}>
-                      <Avatar
-                        alt="ブログアバター"
-                        sx={{ width: '40px', height: '40px' }}
-                      >
-                        <ImageNotSupportedIcon />
-                      </Avatar>
-                    </div>
-                  </Grid>
-                )}
-                <Grid item xs={12} md={10}>
-                  <div className="item--header" style={{ textAlign: 'left' }}>
-                    <div
-                      className="item--date"
-                      style={{ fontSize: '.8rem', overflow: 'hidden' }}
-                    >
-                      {article.created_at.slice(0, 10)}
-                    </div>
-                  </div>
-                  <div
-                    className="item--content"
-                    style={{
-                      fontSize: '1rem',
-                      textAlign: 'left',
-                      fontWeight: '600',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {article.title.length <= 25
-                      ? article.title
-                      : article.title.slice(0, 25) + '...'}
-                  </div>
-                </Grid>
-              </Grid>
-            </div>
-          </Item>
+            {/* アイキャッチ画像があればサムネイルを表示する(BLOG-9) */}
+            <EyecatchThumbnail
+              src={article.eyecatch_path}
+              height={{ xs: 48, md: 48 }}
+            />
+            <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
+              <Box component="time" sx={{ fontSize: '.8rem' }}>
+                {formatJstDate(article.published_at)}
+              </Box>
+              <Box
+                sx={{
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* フルリロードではなくInertiaのSPA遷移で記事詳細へ移動する */}
+                <Link
+                  href={'/articles/details/' + article.id}
+                  className="article-card__link"
+                  title={article.title}
+                >
+                  {article.title}
+                </Link>
+              </Box>
+            </Box>
+          </Paper>
         ))}
       </Stack>
     </Box>

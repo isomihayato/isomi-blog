@@ -10,6 +10,7 @@ use Tests\TestCase;
 /**
  * 記事のフロント画面(トップ・検索・記事詳細)
  * 関連記事・記事詳細の公開条件・検索の作り直しは、それぞれ BLOG-30・BLOG-57・BLOG-31 でテストを追加する
+ * (検索は BLOG-31 でページング付きの articles_pagenation を返すようになった)
  */
 class FrontArticleTest extends TestCase
 {
@@ -63,7 +64,7 @@ class FrontArticleTest extends TestCase
             ->assertOk()
             ->assertInertia(function (Assert $page) {
                 $page->component('Front/Search');
-                $titles = collect($page->toArray()['props']['articles'])->pluck('title')->sort()->values()->all();
+                $titles = collect($page->toArray()['props']['articles_pagenation']['data'])->pluck('title')->sort()->values()->all();
                 $this->assertSame(['Laravelの入門', '別の記事'], $titles);
             });
     }
@@ -77,7 +78,7 @@ class FrontArticleTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Front/Search')
-                ->has('articles', 2));
+                ->where('articles_pagenation.total', 2));
     }
 
     public function test_article_details_page(): void

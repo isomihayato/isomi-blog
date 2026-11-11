@@ -43,6 +43,7 @@ function BlogEditor(props: Props) {
     return draft && draft.body !== (body ?? '') ? draft : null;
   });
   const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState(''); // 画像のアップロードに失敗したときのメッセージ
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -75,6 +76,10 @@ function BlogEditor(props: Props) {
   const handleImageUpload = async (event) => {
     event.preventDefault();
     const file = event.target.files[0];
+    // 同じファイルを選び直しても onChange が呼ばれるように、選択を空にしておく
+    event.target.value = '';
+    if (!file) return;
+    setUploadError('');
     const options = {
       maxSizeMB: 1,
       maxWidthOrHeight: 1920,
@@ -84,15 +89,35 @@ function BlogEditor(props: Props) {
     try {
       const compressedFile = await imageCompression(file, options);
       if (compressedFile) {
-        postArticleImg({ file: compressedFile }, (res) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          //@ts-ignore
-          const imageUrl = res.data.url;
-          setMarkdown((current) => current + `![${file.name}](${imageUrl})\n`);
-        });
+        postArticleImg(
+          { file: compressedFile },
+          (res) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            const imageUrl = res.data.url;
+            setMarkdown(
+              (current) => current + `![${file.name}](${imageUrl})\n`,
+            );
+          },
+          (err: {
+            response?: {
+              data?: { message?: string; errors?: { file?: string[] } };
+            };
+          }) => {
+            setUploadError(
+              err.response?.data?.errors?.file?.[0] ??
+                err.response?.data?.message ??
+                '画像をアップロードできませんでした。',
+            );
+          },
+        );
       }
     } catch (error) {
+      // 画像として読み込めないファイル(圧縮に失敗)
       console.error(error);
+      setUploadError(
+        'アップロードできるのは画像(JPEG・PNG・GIF・WebP)だけです。',
+      );
     }
   };
   const onEmojiSelectHndl = (emoji) => {
@@ -134,8 +159,20 @@ function BlogEditor(props: Props) {
         onChange={handleImageUpload}
       >
         Upload file
-        <VisuallyHiddenInput type="file" />
+        <VisuallyHiddenInput
+          type="file"
+          accept="image/jpeg,image/png,image/gif,image/webp"
+        />
       </Button>
+      {uploadError ? (
+        <Alert
+          severity="error"
+          sx={{ mt: 1 }}
+          onClose={() => setUploadError('')}
+        >
+          {uploadError}
+        </Alert>
+      ) : null}
 
       <Grid container>
         <Grid item xs={6}>

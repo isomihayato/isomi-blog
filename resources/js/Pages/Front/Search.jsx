@@ -1,12 +1,16 @@
 import React from 'react';
 import {
   Typography,
+  Box,
   Button,
-  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
   TextField,
   Breadcrumbs,
   Link,
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import Front from '@/Components/header/Front';
@@ -27,6 +31,7 @@ export default function Search({ articles_pagenation, search }) {
     // 検索語は Inertia にクエリとして渡す(& や # などもエンコードされる)
     router.get('/articles/search', word ? { search: word } : {});
   };
+  const total = articles_pagenation.total ?? 0;
   const SearchPanel = () => {
     return (
       <>
@@ -43,26 +48,64 @@ export default function Search({ articles_pagenation, search }) {
           />
         </Helmet>
         <Head title={`記事検索${title}`} />
-        <Grid container component={'form'} onSubmit={submitHndlr}>
-          <Grid item md={11} xs={10}>
-            <TextField
-              label="記事検索(タイトル・本文)"
-              size="small"
-              name="search"
-              defaultValue={searchWord}
-              inputProps={{ maxLength: 100 }}
-              fullWidth
-            />
-          </Grid>
-          <Grid item md={1} xs={2}>
-            <Button type="submit" variant="contained">
-              検索
+        <Typography
+          variant="h5"
+          component="h1"
+          sx={{ fontWeight: 'bold', mb: 2 }}
+        >
+          記事検索
+        </Typography>
+        <Box component="form" role="search" onSubmit={submitHndlr}>
+          {/* Enter キーでも、右端の虫眼鏡ボタンでも検索できる */}
+          <TextField
+            label="記事を検索"
+            placeholder="タイトルや本文に含まれる言葉"
+            name="search"
+            defaultValue={searchWord}
+            inputProps={{ maxLength: 100 }}
+            fullWidth
+            sx={{ bgcolor: 'background.paper' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton type="submit" aria-label="検索する" edge="end">
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        {/* 検索結果の件数(検索語があるときだけ) */}
+        {searchWord ? (
+          <Typography sx={{ mt: 3, mb: 1 }} role="status" aria-live="polite">
+            「{searchWord}」の検索結果 {total}件
+          </Typography>
+        ) : (
+          <div style={{ margin: '24px 0 0' }}></div>
+        )}
+        {total === 0 ? (
+          <Paper sx={{ p: 3, textAlign: 'center' }}>
+            <Typography sx={{ fontWeight: 'bold', mb: 1 }}>
+              {searchWord
+                ? `「${searchWord}」に一致する記事は見つかりませんでした。`
+                : '公開中の記事はまだありません。'}
+            </Typography>
+            {searchWord ? (
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                別のキーワードや、短い言葉で試してください。
+              </Typography>
+            ) : null}
+            <Button variant="outlined" href="/">
+              最新の記事を見る
             </Button>
-          </Grid>
-        </Grid>
-        <div style={{ margin: '30px 0 0' }}></div>
-        <ArticleStack articles={articles_pagenation.data} />
-        <BlogPagination paginator={articles_pagenation} />
+          </Paper>
+        ) : (
+          <>
+            <ArticleStack articles={articles_pagenation.data} />
+            <BlogPagination paginator={articles_pagenation} />
+          </>
+        )}
       </>
     );
   };
@@ -79,7 +122,8 @@ export default function Search({ articles_pagenation, search }) {
           記事検索
         </Typography>
       </Breadcrumbs>
-      <MainFront element={<SearchPanel />} />
+      {/* トップと同じく、白い枠を付けずに表示する */}
+      <MainFront element={<SearchPanel />} paper={false} />
       <FrontFooter />
     </>
   );

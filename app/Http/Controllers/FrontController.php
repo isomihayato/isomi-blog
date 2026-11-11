@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Article;
 use App\Models\AdIntermediate;
 use App\Models\AdArrangement;
+use App\Queries\PopularArticles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Mail\ContactFormMail;
@@ -15,16 +16,18 @@ class FrontController extends Controller
 {
     public function index()
     {
-        // 1990年を取得
-        $from = now()->subYears(30)->startOfYear();
-        // 現在の年を取得
-        $to = now();
         // 一覧表示に不要な本文(body)等は取得しない(ペイロード削減)
         $articles_pagenation = Article::select(Article::LIST_COLUMNS)
-            ->where('visible', true)
-            ->whereBetween('published_at', [$from, $to])
-            ->paginate(5);
-        return Inertia::render('Welcome', ['articles_pagenation' => $articles_pagenation]);
+            ->published()
+            // 新しい順。公開日時が同じ記事があってもページをまたいで重複・欠落しないよう、id でも並べる
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            // PCで余白が多くならないよう、1ページ10件にする
+            ->paginate(10);
+        return Inertia::render('Welcome', [
+            'articles_pagenation' => $articles_pagenation,
+            'popular_articles' => PopularArticles::get(),
+        ]);
     }
 
     public function about()
@@ -78,23 +81,80 @@ class FrontController extends Controller
 
     public function article($id)
     {
-        $article = Article::with(['comments.member'])->findOrFail($id);
+        // 非公開・公開予定の記事は404にする。管理画面にログイン中のときだけ、プレビューのため表示する(BLOG-19)
+        // コメントとお気に入り数もページ表示時に渡す(画面から取り直さない)
+        $article = Article::with(['comments.member'])
+            ->withCount('favorites')
+            ->when(!auth()->check(), fn ($query) => $query->published())
+            ->findOrFail($id);
+        // この端末(Cookie)でお気に入り登録済みかどうか(BLOG-58)
+        $article->setAttribute('favorited', FavoritesController::isFavoritedByVisitor(request(), $article->id));
+        // SNS でシェアされたときの画像(アイキャッチ画像、なければサイト共通の画像)
+        $article->append('og_image_url');
         $article_genre = $article->genre;
         if ($article_genre !== null) {
             // 関連記事は一覧表示のみのため本文(body)等は取得しない
+            // 非公開・公開予定の記事と、表示中の記事自身は出さない
             $relative_articles = Article::select(Article::LIST_COLUMNS)
+                ->published()
                 ->where('genre', $article_genre)
+                ->where('id', '!=', $article->id)
                 ->orderBy('published_at', 'desc')
                 ->take(4)
                 ->get();
         }
+        // 読了時間の目安(本文の文字数から計算)
+        $article->append('reading_minutes');
         [$prev_article, $next_article] = $this->neighborArticles($article);
         return Inertia::render('Front/ArticleDetails', [
             'id' => $id,
             'article' => $article,
             'relative_articles' => $relative_articles ?? null,
+            'popular_articles' => PopularArticles::get(),
             'prev_article' => $prev_article,
             'next_article' => $next_article,
+        ]);
+    }
+
+    /**
+     * ジャンル別の記事一覧(公開済みの記事を新しい順)
+     */
+    public function genre(int $genre)
+    {
+        abort_unless(array_key_exists($genre, Article::GENRES), 404);
+
+        $articles_pagenation = Article::select(Article::LIST_COLUMNS)
+            ->published()
+            ->where('genre', $genre)
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Front/ArticleList', [
+            'list_type' => 'genre',
+            'genre' => $genre,
+            'name' => Article::GENRES[$genre],
+            'articles_pagenation' => $articles_pagenation,
+        ]);
+    }
+
+    /**
+     * タグ別の記事一覧(公開済みの記事を新しい順)
+     */
+    public function tag(string $tag)
+    {
+        $tag = trim($tag);
+        abort_if($tag === '', 404);
+
+        $articles_pagenation = Article::select(Article::LIST_COLUMNS)
+            ->published()
+            ->withTag($tag)
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Front/ArticleList', [
+            'list_type' => 'tag',
+            'name' => $tag,
+            'articles_pagenation' => $articles_pagenation,
         ]);
     }
 
@@ -186,6 +246,9 @@ class FrontController extends Controller
             // 公開日前のお知らせは一覧に出さない
             ->whereNotNull('infomations.publish_at')
             ->where('infomations.publish_at', '<=', now())
+            // 新しい順。公開日時が同じお知らせがあってもページをまたいで重複・欠落しないよう、id でも並べる
+            ->orderByDesc('infomations.publish_at')
+            ->orderByDesc('infomations.id')
             ->paginate(10);
         return Inertia::render('Front/InfomationList', ['infomations_pagenation' => $infomations_pagenation]);
     }

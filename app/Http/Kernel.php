@@ -38,6 +38,8 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            // CSP・nosniff などのセキュリティヘッダー(BLOG-67)
+            \App\Http\Middleware\AddSecurityHeaders::class,
         ],
 
         'api' => [
