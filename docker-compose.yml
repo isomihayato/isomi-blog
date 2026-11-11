@@ -10,7 +10,9 @@ services:
       - 'host.docker.internal:host-gateway'
     ports:
       - '${APP_PORT:-80}:80'
-      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+      # Vite の開発サーバーのポートは公開しない(本番でも使うファイルのため。BLOG-66)。
+      # ローカルで npm run dev を使うときは docker-compose.override.example.yml を
+      # docker-compose.override.yml にコピーする(docker compose が自動で読み込む)
     environment:
       WWWUSER: '${WWWUSER}'
       LARAVEL_SAIL: 1
