@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Box, Typography, Alert, Link, Button } from '@mui/material';
-import { isMobile } from 'react-device-detect';
+import { useBreakpointUp } from '@/Components/common/useBreakpoint';
 import BtnCircular from '../feedback/BtnCircular';
 import { postSendMail } from '../axios/axiosMail';
 
@@ -43,6 +43,7 @@ function validate(values: Values): Errors {
 }
 
 function ContactForm() {
+  const isDesktop = useBreakpointUp('md');
   const [values, setValues] = useState<Values>(EMPTY);
   // 入力し終えた(フォーカスを外した)項目だけエラーを出す。開いた直後は赤くしない
   const [touched, setTouched] = useState<Partial<Record<Field, boolean>>>({});
@@ -171,8 +172,8 @@ function ContactForm() {
       <TextField
         {...fieldProps('name')}
         autoComplete="name"
-        // スマホでは開いた直後にキーボードが出て説明が隠れるため、自動でフォーカスしない
-        autoFocus={!isMobile}
+        // スマホ幅では開いた直後にキーボードが出て説明が隠れるため、自動でフォーカスしない
+        autoFocus={isDesktop}
       />
       <TextField {...fieldProps('email')} type="email" autoComplete="email" />
       <TextField {...fieldProps('title')} autoComplete="off" />

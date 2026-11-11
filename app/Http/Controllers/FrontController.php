@@ -84,6 +84,8 @@ class FrontController extends Controller
             ->withCount('favorites')
             ->when(!auth()->check(), fn ($query) => $query->published())
             ->findOrFail($id);
+        // この端末(Cookie)でお気に入り登録済みかどうか(BLOG-58)
+        $article->setAttribute('favorited', FavoritesController::isFavoritedByVisitor(request(), $article->id));
         $article_genre = $article->genre;
         if ($article_genre !== null) {
             // 関連記事は一覧表示のみのため本文(body)等は取得しない

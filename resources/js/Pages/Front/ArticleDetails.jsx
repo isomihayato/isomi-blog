@@ -16,8 +16,8 @@ import Markdown from 'react-markdown';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import CodeBlock from '@/Components/dataDispaly/CodeBlock';
+import { useBreakpointUp } from '@/Components/common/useBreakpoint';
 import ArticleNeighborNav from '@/Components/navigations/ArticleNeighborNav';
-import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
 import { postComments } from '@/Components/axios/axiosComment';
@@ -50,6 +50,9 @@ export default function ArticleDetails({
   const [chapters, setChapters] = React.useState([]); // 記事の章リスト
   const [codeHighlight, setCodeHighlight] = React.useState(null); // コードのハイライト用 rehype プラグイン(読み込み後にセット)
   const adElementRef = useRef(null);
+  // 右サイドバー(目次・関連記事)は lg 以上、左の広告は本文と重ならない幅を確保できる xl 以上で表示する
+  const showRightSideBar = useBreakpointUp('lg');
+  const showLeftSideBar = useBreakpointUp('xl');
   const isLoggedIn = () => {
     const t_user = getStorage('user');
     return t_user !== null && t_user !== undefined;
@@ -144,7 +147,7 @@ export default function ArticleDetails({
           id="advertisement"
           sx={{
             minHeight: '500px',
-            padding: isMobile ? '10px 15px' : '20px',
+            padding: { xs: '10px 15px', md: '20px' },
           }}
           ref={adElementRef}
         >
@@ -257,16 +260,19 @@ export default function ArticleDetails({
           spacing={2}
           justifyContent="center"
           alignItems="flex-start"
+          sx={{ px: { xs: 1, md: 2 } }}
         >
-          {isMobile ? null : (
-            <Item>
+          {showLeftSideBar ? (
+            // 画面に固定せず本文の左の列に置き、スクロールしても見える位置に留める(本文に重ならないようにする)
+            <Item sx={{ position: 'sticky', top: '10px', flexShrink: 0 }}>
               <LeftSideBar
                 elementRef={adElementRef}
                 advertisements={advertisements}
               />
             </Item>
-          )}
-          <Item>
+          ) : null}
+          {/* 本文の列(SNSボタン 100px + 本文 最大800px)。サイドバーの分だけ縮む */}
+          <Item sx={{ flex: '1 1 auto', minWidth: 0, maxWidth: '916px' }}>
             <ArticleDetailMain
               article={article}
               articleElements={[
@@ -282,16 +288,14 @@ export default function ArticleDetails({
               setAction={setAction}
             />
           </Item>
-          {isMobile ? (
-            <></>
-          ) : (
-            <Item>
+          {showRightSideBar ? (
+            <Item sx={{ flexShrink: 0 }}>
               <RightSideBar
                 chapters={chapters}
                 relativeArticles={relative_articles}
               />
             </Item>
-          )}
+          ) : null}
         </Stack>
       </Box>
       <FrontFooter />

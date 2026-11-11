@@ -15,4 +15,5 @@ export type ArticleType = {
   published_at: string;
   member_uid: string;
   favorites_count?: number; // お気に入り数(記事詳細のみ)
+  favorited?: boolean; // この端末でお気に入り登録済みか(記事詳細のみ)
 };
