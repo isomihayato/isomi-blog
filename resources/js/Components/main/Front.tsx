@@ -1,7 +1,6 @@
 import { Box, Grid, Paper, Skeleton, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { loadScriptOnce } from '../common/loadScript';
-import { isMobile } from 'react-device-detect';
 import FacebookShareButton from '../sns/FacebookShareButton';
 import PocketLinkVertical from '../sns/PocketLinkVertical';
 import { Suspense } from 'react';
@@ -22,29 +21,25 @@ export default function Front(props: Props) {
     loadScriptOnce('https://platform.twitter.com/widgets.js');
     loadScriptOnce('https://b.st-hatena.com/js/bookmark_button.js');
   }, [snsNavShow]);
-  const makeOuterStyle = () => {
-    if (isMobile) {
-      return {
-        width: '90vw',
-        margin: '0 auto',
-        minHeight: '66vh',
-        marginTop: '25px',
-      };
-    } else {
-      return { margin: '50px auto', width: '50vw', minHeight: '65vh' };
-    }
-  };
   return (
     <>
-      <Box id="main" style={makeOuterStyle()} component={paper ? Paper : 'div'}>
+      <Box
+        id="main"
+        // 本文は最大 800px で中央寄せ(大きな画面で1行が長くなりすぎないようにする)
+        sx={{
+          width: { xs: 'calc(100% - 32px)', md: 'calc(100% - 64px)' },
+          maxWidth: '800px',
+          mx: 'auto',
+          mt: { xs: '25px', md: '50px' },
+          mb: { md: '50px' },
+          minHeight: '65vh',
+        }}
+        component={paper ? Paper : 'div'}
+      >
         <Suspense fallback={<Skeleton variant="rounded" height={400} />}>
-          <div
-            style={
-              isMobile ? { padding: '10px 15px' } : { padding: '32px 56px' }
-            }
-          >
+          <Box sx={{ padding: { xs: '10px 15px', md: '32px 56px' } }}>
             {element}
-          </div>{' '}
+          </Box>{' '}
         </Suspense>
         {snsNavShow && (
           <>

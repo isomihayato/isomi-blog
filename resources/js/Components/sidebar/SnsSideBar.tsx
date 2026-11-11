@@ -1,14 +1,14 @@
 import { Avatar, IconButton, Skeleton, Stack, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
-import { isMobile } from 'react-device-detect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { getStorage } from '../common/functions';
+import { useBreakpointUp } from '../common/useBreakpoint';
 import { ArticleType } from '../types/ArticleTypes';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
-import PocketLink from '../sns/PocketLink';
+import CopyLinkButton from '../sns/CopyLinkButton';
 import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
 
 /** SNSボタン:マウスを乗せたとき・キーボードで選んだときに分かるようにする */
@@ -28,6 +28,8 @@ type Props = {
 export default React.memo(function SnsSideBar(props: Props) {
   const { article, favorites, onFavorite } = props;
   const user = getStorage('user');
+  // スマホ幅(md 未満)では画面下のバー、それより広い画面では本文横の縦並びにする
+  const isDesktop = useBreakpointUp('md');
   const Item = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff0',
     ...theme.typography.body2,
@@ -52,7 +54,7 @@ export default React.memo(function SnsSideBar(props: Props) {
 
   return (
     <>
-      {isMobile ? (
+      {!isDesktop ? (
         <SPBottonAppBar
           article={article}
           favorites={favorites}
@@ -65,7 +67,7 @@ export default React.memo(function SnsSideBar(props: Props) {
           padding={'10px 30px'}
           justifyContent="flex-end"
           alignItems="center"
-          style={isMobile ? {} : { marginTop: '0px', marginRight: '0px' }}
+          style={{ marginTop: '0px', marginRight: '0px' }}
         >
           <Item>
             <div
@@ -134,7 +136,7 @@ export default React.memo(function SnsSideBar(props: Props) {
               windowHeight={460}
               className="Demo__some-network__share-button"
             >
-              <HatenaIcon size={32} />
+              <HatenaIcon size={40} round />
             </HatenaShareButton>
             <div style={{ textAlign: 'center' }}>
               <HatenaShareCount
@@ -144,7 +146,10 @@ export default React.memo(function SnsSideBar(props: Props) {
             </div>
           </Item>
           <Item>
-            <PocketLink url={window.location.href} title={article.title} />
+            {/* Pocket は 2025年7月にサービスを終了したため、リンクのコピーに置き換え */}
+            <CopyLinkButton
+              url={`https://info-space-box.net/articles/details/${article.id}`}
+            />
           </Item>
         </Stack>
       )}
