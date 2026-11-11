@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button, Input, Select, MenuItem, Switch } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
+import EyecatchInput from '@/Components/inputs/EyecatchInput';
 import { clearDraft } from '@/Components/common/draftStorage';
 import { updateArticle } from '@/Components/axios/axiosArticle';
 import PropTypes from 'prop-types';
@@ -30,6 +31,7 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
       user_id: form.user_id.value,
       article_ad_template_id: form.article_ad_template_id.value,
       genre: form.genre.value,
+      eyecatch_path: form.eyecatch_path.value,
     };
     updateArticle(id, data, (response) => {
       if (response.data.status === 'success') {
@@ -88,6 +90,9 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
                     style={{ width: '100%' }}
                     defaultValue={article.describe}
                   />
+                </div>
+                <div>
+                  <EyecatchInput defaultValue={article.eyecatch_path} />
                 </div>
                 <div>
                   <BlogEditor body={article.body} draftKey={draftKey} />
