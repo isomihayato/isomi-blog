@@ -64,7 +64,8 @@ Route::post('/ad_intermediates/update', [AdIntermediateController::class, 'updat
 Route::resource('/ad_intermediates', AdIntermediateController::class)->middleware(['auth', 'verified']);
 Route::get('/get_ad_select', [ArticleAdController::class, 'getSelectData'])->middleware(['auth', 'verified']);
 Route::resource('/infomations', InfomationController::class, ['except' => ['index', 'show']])->middleware(['auth', 'verified']);
-Route::get('/infomations', [InfomationController::class, 'index'])->name('infomations.index');
+// 管理画面用のお知らせ一覧(公開日前のものも含む)。ログインした管理者だけが見られる
+Route::get('/infomations', [InfomationController::class, 'index'])->middleware(['auth', 'verified'])->name('infomations.index');
 Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('infomations.show');
 Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
 // お気に入りはログインなしで押せるため、端末(Cookie)ごとに1回までにする(BLOG-58)。削除の API は置かない

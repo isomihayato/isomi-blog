@@ -47,8 +47,11 @@ export default function ArticleDetails({
   relative_articles,
   prev_article,
   next_article,
+  popular_articles,
 }) {
   const articleUrl = `${SITE_URL}/articles/details/${article.id}`;
+  // アイキャッチ画像があればそれを、なければサイト共通の画像を使う(サーバー側の app.blade.php と同じ)
+  const ogImageUrl = article.og_image_url ?? OG_IMAGE_URL;
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments ?? []);
   const [commentsError, setCommentsError] = React.useState(false); // コメントの取得に失敗したか
@@ -236,19 +239,20 @@ export default function ArticleDetails({
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={article.describe ?? ''} />
         <meta property="og:url" content={articleUrl} />
-        <meta property="og:image" content={OG_IMAGE_URL} />
+        <meta property="og:image" content={ogImageUrl} />
         <meta property="fb:app_id" content="1437461986868001" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@info_space_box" />
         <meta name="twitter:title" content={article.title} />
         <meta name="twitter:description" content={article.describe ?? ''} />
-        <meta name="twitter:image" content={OG_IMAGE_URL} />
+        <meta name="twitter:image" content={ogImageUrl} />
         <link rel="canonical" href={articleUrl} />
       </Head>
       <Front
         loginOpen={loginOpen}
         setLoginOpen={setLoginOpen}
         onLoginSuccess={() => setLogged(isLoggedIn())}
+        onAuthChange={() => setLogged(isLoggedIn())}
       />
       {/* パンくず:トップ > ジャンル名 > 記事タイトル(ジャンル別の一覧ページはないため、ジャンル名は文字だけ) */}
       <Breadcrumbs aria-label="パンくずリスト" style={{ margin: '10px 15px' }}>
@@ -304,6 +308,7 @@ export default function ArticleDetails({
               <RightSideBar
                 chapters={chapters}
                 relativeArticles={relative_articles}
+                popularArticles={popular_articles ?? []}
               />
             </Item>
           ) : null}
@@ -317,6 +322,7 @@ export default function ArticleDetails({
 ArticleDetails.propTypes = {
   article: PropTypes.object.isRequired,
   relative_articles: PropTypes.array.isRequired,
+  popular_articles: PropTypes.array,
   prev_article: PropTypes.object,
   next_article: PropTypes.object,
 };
