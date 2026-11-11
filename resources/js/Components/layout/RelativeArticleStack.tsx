@@ -4,7 +4,8 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { Link } from '@inertiajs/react';
 import { ArticleType } from '../types/ArticleTypes';
-import { articleCardSx, formatPublishedDate } from './articleCardStyle';
+import { articleCardSx } from './articleCardStyle';
+import { formatJstDate } from '../common/dateFormat';
 import EyecatchThumbnail from './EyecatchThumbnail';
 
 type Props = {
@@ -35,7 +36,7 @@ export default function RelativeArticleStack(props: Props) {
             />
             <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
               <Box component="time" sx={{ fontSize: '.8rem' }}>
-                {formatPublishedDate(article.published_at)}
+                {formatJstDate(article.published_at)}
               </Box>
               <Box
                 sx={{

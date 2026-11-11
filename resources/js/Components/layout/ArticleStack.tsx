@@ -6,7 +6,8 @@ import { Link } from '@inertiajs/react';
 import Tags from '@/Components/Tags';
 import GenreChip from '@/Components/GenreChip';
 import { ArticleType } from '../types/ArticleTypes';
-import { articleCardSx, formatPublishedDate } from './articleCardStyle';
+import { articleCardSx } from './articleCardStyle';
+import { formatJstDate } from '../common/dateFormat';
 import EyecatchThumbnail from './EyecatchThumbnail';
 
 type Props = {
@@ -46,9 +47,7 @@ export default function ArticleStack(props: Props) {
                 <span className="article-card__above">
                   <GenreChip genre={article.genre} />
                 </span>
-                <time dateTime={formatPublishedDate(article.published_at)}>
-                  {formatPublishedDate(article.published_at)}
-                </time>
+                <ArticleDates article={article} />
                 <span>written by りっすん</span>
               </Box>
               <Box
@@ -96,5 +95,25 @@ export default function ArticleStack(props: Props) {
         ))}
       </Stack>
     </Box>
+  );
+}
+
+/** 公開日と、公開日より後に更新していれば最終更新日 */
+function ArticleDates(props: { article: ArticleType }) {
+  const { article } = props;
+  const published = formatJstDate(article.published_at);
+  const updated = formatJstDate(article.updated_at);
+
+  return (
+    <>
+      <span>
+        <time dateTime={published}>{published}</time> 公開
+      </span>
+      {updated > published ? (
+        <span>
+          <time dateTime={updated}>{updated}</time> 更新
+        </span>
+      ) : null}
+    </>
   );
 }

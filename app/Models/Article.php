@@ -54,6 +54,33 @@ class Article extends Model
         'eyecatch_path',
     ];
 
+    /** 読了時間の計算に使う、1分あたりに読める文字数 */
+    public const READING_CHARS_PER_MINUTE = 500;
+
+    /**
+     * 本文の文字数から出した読了時間の目安(分、最低1分)。本文がなければ null
+     *
+     * コードブロック・画像・リンク先のURL・HTMLタグ・Markdown の記号・空白は文字数に入れない。
+     */
+    public function getReadingMinutesAttribute(): ?int
+    {
+        $body = (string) $this->body;
+        if (trim($body) === '') {
+            return null;
+        }
+
+        $text = preg_replace([
+            '/^(```|~~~).*?^\1/ms', // コードブロック
+            '/!\[[^\]]*\]\([^)]*\)/u', // 画像
+            '/\]\([^)]*\)/u', // リンク先のURL(リンクの文字は残す)
+            '/<[^>]+>/u', // HTMLタグ
+            '/[#>*_`~|\-\[\]]/u', // Markdown の記号
+            '/\s+/u', // 空白・改行
+        ], '', $body);
+
+        return max(1, (int) ceil(mb_strlen($text) / self::READING_CHARS_PER_MINUTE));
+    }
+
     /** サイトのURL(OGP の画像など、絶対URLが必要なところで使う) */
     public const SITE_URL = 'https://info-space-box.net';
 
