@@ -153,8 +153,9 @@ class ArticleEyecatchTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Welcome')
-                ->where('articles_pagenation.data.0.eyecatch_path', '/storage/upload/thumb.webp')
-                ->where('articles_pagenation.data.1.eyecatch_path', null)
+                // 一覧は新しい順(公開日時が同じなら id の大きい順)なので、後に作った記事が先頭になる
+                ->where('articles_pagenation.data.0.eyecatch_path', null)
+                ->where('articles_pagenation.data.1.eyecatch_path', '/storage/upload/thumb.webp')
             );
     }
 

@@ -24,6 +24,9 @@ class FrontController extends Controller
         $articles_pagenation = Article::select(Article::LIST_COLUMNS)
             ->where('visible', true)
             ->whereBetween('published_at', [$from, $to])
+            // 新しい順。公開日時が同じ記事があってもページをまたいで重複・欠落しないよう、id でも並べる
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
             // PCで余白が多くならないよう、1ページ10件にする
             ->paginate(10);
         return Inertia::render('Welcome', [
@@ -243,6 +246,9 @@ class FrontController extends Controller
             // 公開日前のお知らせは一覧に出さない
             ->whereNotNull('infomations.publish_at')
             ->where('infomations.publish_at', '<=', now())
+            // 新しい順。公開日時が同じお知らせがあってもページをまたいで重複・欠落しないよう、id でも並べる
+            ->orderByDesc('infomations.publish_at')
+            ->orderByDesc('infomations.id')
             ->paginate(10);
         return Inertia::render('Front/InfomationList', ['infomations_pagenation' => $infomations_pagenation]);
     }
