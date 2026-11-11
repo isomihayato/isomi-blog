@@ -49,10 +49,10 @@ Route::middleware('firebase.auth')->group(function () {
 Route::post('/comments/get/comments', [CommentController::class, 'get_comments'])->name('comments.get_comments');
 // Route::resource('/comments', CommentController::class);
 // Route::resources('articles', 'ArticleController', ['except' => ['show']])->middleware(['auth', 'verified']);
-// Route::post('/articles/search', [ArticleController::class, 'search'])->name('articles.search');
 Route::get('/articles/search', [FrontController::class, 'search'])->name('fronts.search');
 
-Route::resource('articles', ArticleController::class)->middleware(['auth', 'verified']);
+// 記事の更新は POST /articles/update/{id}(update_article)を使う。resource の update(PUT/PATCH)は使わない
+Route::resource('articles', ArticleController::class)->except(['update'])->middleware(['auth', 'verified']);
 Route::post('/articles/update/{id}', [ArticleController::class, 'update_article'])->middleware(['auth', 'verified']);
 Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->middleware(['auth', 'verified']);
 Route::resource('/article_ad_templates', ArticleAdTemplateController::class)->middleware(['auth', 'verified']);

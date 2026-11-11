@@ -45,20 +45,6 @@ export default function postComment(data: any, cb: any, er: any) {
   }, er);
 }
 
-export function getComments(articleId: number, cb: any) {
-  AxiosWrapper({
-    method: 'get',
-    url: '/comments/article_comments/' + articleId,
-    data: null,
-    callback: (res) => {
-      cb(res);
-    },
-    errors: (res) => {
-      cb(res);
-    },
-  });
-}
-
 // コメントを編集(失敗時は er を呼ぶ。自分のコメント以外は 403)
 export function postUpdateComment(data: any, cb: any, er: any) {
   withIdToken((headers) => {
