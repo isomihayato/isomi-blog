@@ -62,9 +62,6 @@ Route::get('/get_ad_select', [ArticleAdController::class, 'getSelectData'])->mid
 Route::resource('/infomations', InfomationController::class, ['except' => ['index', 'show']])->middleware(['auth', 'verified']);
 Route::get('/infomations', [InfomationController::class, 'index'])->name('infomations.index');
 Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('infomations.show');
-Route::get('/debug-sentry', function () {
-    throw new Exception('My first Sentry error!');
-});
 Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
 Route::post('/favorites', [FavoritesController::class, 'store'])->name('favorites.store');
 Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');
