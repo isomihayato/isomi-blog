@@ -9,9 +9,11 @@ type Props = {
   btnText: string;
   loading: boolean;
   success: boolean;
+  // loading 中以外にも押せなくしたいとき(未入力があるときなど)
+  disabled?: boolean;
 };
 export default function BtnCircular(props: Props) {
-  const { btnText, loading, success } = props;
+  const { btnText, loading, success, disabled = false } = props;
 
   const buttonSx = {
     ...(success && {
@@ -29,7 +31,7 @@ export default function BtnCircular(props: Props) {
           type="submit"
           variant="contained"
           sx={buttonSx}
-          disabled={loading}
+          disabled={loading || disabled}
         >
           {btnText}
         </Button>

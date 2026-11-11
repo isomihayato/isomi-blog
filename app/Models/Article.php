@@ -63,13 +63,12 @@ class Article extends Model
     }
 
     /**
-     * 公開済みの記事だけに絞る(表示フラグがオンで、公開日時が過去のもの)
+     * 公開中の記事(表示が ON で、公開日時が過去30年以内〜現在)。記事一覧と同じ条件
      */
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('visible', true)
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now());
+            ->whereBetween('published_at', [now()->subYears(30)->startOfYear(), now()]);
     }
 
     /**

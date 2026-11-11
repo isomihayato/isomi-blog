@@ -1,11 +1,10 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { isMobile } from 'react-device-detect';
 import Tags from '@/Components/Tags';
 import { Suspense } from 'react';
 import { ArticleType } from '../types/ArticleTypes';
 import SnsSideBar from '@/Components/sidebar/SnsSideBar';
-import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 import { useFavoriteClick } from '@/Components/common/favorite';
 import GenreChip from '@/Components/GenreChip';
 import CachedIcon from '@mui/icons-material/Cached';
@@ -36,29 +35,13 @@ type Props = {
   setAction: React.Dispatch<React.SetStateAction<string>>;
 };
 export default function ArticleDetailMain(props: Props) {
-  const { action, article, articleElements, elements } = props;
+  const { article, articleElements, elements } = props;
+  // お気に入り数はページ表示時に受け取る(以前はコメントの投稿・編集のたびにも API で取り直していた)
   const [favorites, setFavorites] = React.useState<number | undefined>(
-    undefined,
-  ); // お気に入り数
+    article.favorites_count,
+  );
   const onFavorite = useFavoriteClick(article.id, setFavorites);
-  React.useState(undefined); // お気に入り登録済みかどうか
 
-  useEffect(() => {
-    getFavoritesCount(
-      String(article.id),
-      (res) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        console.log('favorites', res.data.favorites);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        setFavorites(res.data.favorites);
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
-  }, [action]);
   const snsNavShow = window.location.href.includes('/articles/details/')
     ? true
     : false;
@@ -92,7 +75,7 @@ export default function ArticleDetailMain(props: Props) {
   const underTitleSpanStype = {
     fontSize: '.8rem',
     fontWeight: '600',
-    color: '#787878',
+    color: '#666', // 白背景の上で 5.74:1
   };
   return (
     <>
@@ -118,9 +101,7 @@ export default function ArticleDetailMain(props: Props) {
                   <span style={underTitleSpanStype}>
                     {article.published_at.slice(0, 10)}に公開
                   </span>
-                  <CachedIcon
-                    style={{ marginLeft: '10px', color: '#787878' }}
-                  />
+                  <CachedIcon style={{ marginLeft: '10px', color: '#666' }} />
                   <span style={underTitleSpanStype}>
                     {article.updated_at.slice(0, 10)}
                   </span>

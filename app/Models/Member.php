@@ -16,6 +16,14 @@ class Member extends Model
         'fb_uid'
     ];
 
+    /**
+     * 画面やAPIのレスポンスに含めない項目
+     * fb_uid はコメント投稿の本人確認に使うため、他人に見えてはいけない
+     */
+    protected $hidden = [
+        'fb_uid',
+    ];
+
     public function comments()
     {
         return $this->hasMany(Comment::class);

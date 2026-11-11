@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button } from '@mui/material';
 import PropTypes from 'prop-types';
+import { adTemplateSaveErrorMessage } from '@/Components/common/adTemplateSaveError';
 import AdForm from '@/Components/forms/AdForm';
 import postAdvertisements from '@/Components/axios/axiosAdIntermediate';
 
@@ -18,13 +19,13 @@ export default function ArticleAdTemplatesCreate({ auth }) {
     postAdvertisements(
       form_tmp,
       (res) => {
-        console.log('res', res);
-        if (res.status === 200) {
+        if (res.data?.status === 'success') {
           window.location.href = '/article_ad_templates';
         }
       },
-      (res) => {
-        console.log(res);
+      (err) => {
+        // 1件でも不正な広告枠があれば、何も保存されない
+        window.alert(adTemplateSaveErrorMessage(err));
       },
     );
   };
