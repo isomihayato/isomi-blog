@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Comment;
@@ -26,6 +27,16 @@ class Article extends Model
         'published_at',
         'created_at',
         'updated_at',
+    ];
+
+    /**
+     * ジャンルの番号と名前(フロントの articleFilter.tsx の convertGenre と同じ)
+     */
+    public const GENRES = [
+        0 => '備忘録',
+        1 => '読書まとめ',
+        2 => '便利記事系',
+        3 => 'ポエム',
     ];
 
     protected $fillable = [
@@ -54,9 +65,23 @@ class Article extends Model
     /**
      * 公開中の記事(表示が ON で、公開日時が過去30年以内〜現在)。記事一覧と同じ条件
      */
-    public function scopePublished($query)
+    public function scopePublished(Builder $query): Builder
     {
         return $query->where('visible', true)
             ->whereBetween('published_at', [now()->subYears(30)->startOfYear(), now()]);
+    }
+
+    /**
+     * タグ(カンマ区切りの文字列)に、指定したタグと完全に一致するものを含む記事に絞る
+     * 「PHP」で「PHPUnit」が当たらないよう、前後をカンマで囲んで LIKE で比較する
+     */
+    public function scopeWithTag(Builder $query, string $tag): Builder
+    {
+        $escaped = addcslashes(trim($tag), '\\%_');
+        // カンマの前後の空白は無視する
+        return $query->whereRaw(
+            "CONCAT(',', REPLACE(REPLACE(tags, ', ', ','), ' ,', ','), ',') LIKE ?",
+            ['%,' . $escaped . ',%']
+        );
     }
 }
