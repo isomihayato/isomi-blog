@@ -9,7 +9,40 @@
     <meta property="og:site_name" content="INFO BOX">
     <meta property="og:locale" content="ja">
 
-    <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    @php
+        // 記事詳細だけ、記事ごとの title / description / OGP をサーバー側で出力する。
+        // JSを実行しないクローラー(X・Facebook・はてなブックマークなど)にも届くようにするため。
+        // inertia 属性を付けたタグは、クライアント側の <Head> が同じタグで置き換える(重複しない)。
+        $ogArticle = ($page['component'] ?? null) === 'Front/ArticleDetails'
+            ? data_get($page, 'props.article')
+            : null;
+    @endphp
+    @if ($ogArticle)
+        @php
+            $ogSiteUrl = 'https://info-space-box.net';
+            $ogTitle = data_get($ogArticle, 'title');
+            $ogDescription = data_get($ogArticle, 'describe');
+            $ogUrl = $ogSiteUrl . '/articles/details/' . data_get($ogArticle, 'id');
+            $ogImage = $ogSiteUrl . '/img/og_image.webp';
+        @endphp
+        <title inertia>{{ $ogTitle }} - {{ config('app.name', 'Laravel') }}</title>
+        <meta inertia name="keywords" content="{{ data_get($ogArticle, 'tags') }}">
+        <meta inertia name="description" content="{{ $ogDescription }}">
+        <meta inertia property="og:type" content="article">
+        <meta inertia property="og:title" content="{{ $ogTitle }}">
+        <meta inertia property="og:description" content="{{ $ogDescription }}">
+        <meta inertia property="og:url" content="{{ $ogUrl }}">
+        <meta inertia property="og:image" content="{{ $ogImage }}">
+        <meta inertia property="fb:app_id" content="1437461986868001">
+        <meta inertia name="twitter:card" content="summary_large_image">
+        <meta inertia name="twitter:site" content="@info_space_box">
+        <meta inertia name="twitter:title" content="{{ $ogTitle }}">
+        <meta inertia name="twitter:description" content="{{ $ogDescription }}">
+        <meta inertia name="twitter:image" content="{{ $ogImage }}">
+        <link inertia rel="canonical" href="{{ $ogUrl }}">
+    @else
+        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    @endif
 
     <!-- Fonts -->
     <link href="/css/basic.css" rel="stylesheet" async />
