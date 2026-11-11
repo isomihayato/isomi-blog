@@ -157,6 +157,12 @@ textarea[name='comment_body'] {
 .preview img {
   margin: 0 auto;
 }
+/* 本文の画像が画面からはみ出さないようにする(高さは縦横比を保つ) */
+#main pre img,
+.markdown-preview img {
+  max-width: 100%;
+  height: auto;
+}
 /*
  * 画面幅の切り替えは MUI のブレイクポイント md(900px) にそろえる。
  * JS 側は useBreakpointUp('md') / sx の { xs, md } 指定で同じ境界を使う。

@@ -30,7 +30,14 @@ import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
+import { convertGenre } from '@/Components/filters/articleFilter';
 import PreviewNotice from '@/Components/feedback/PreviewNotice';
+
+// 本文の画像は、画面に近づいてから読み込む(初期表示を軽くする)
+// eslint-disable-next-line react/prop-types, no-unused-vars
+function LazyImage({ node, ...props }) {
+  return <img loading="lazy" decoding="async" {...props} />;
+}
 
 const SITE_URL = 'https://info-space-box.net';
 const OG_IMAGE_URL = `${SITE_URL}/img/og_image.webp`;
@@ -79,7 +86,7 @@ export default function ArticleDetails({
               rehypeAutolinkHeadings,
               ...(codeHighlight ? [codeHighlight] : []),
             ]}
-            components={{ pre: CodeBlock }}
+            components={{ pre: CodeBlock, img: LazyImage }}
           >
             {article.body}
           </Markdown>
@@ -245,14 +252,18 @@ export default function ArticleDetails({
         setLoginOpen={setLoginOpen}
         onLoginSuccess={() => setLogged(isLoggedIn())}
       />
-      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+      {/* パンくず:トップ > ジャンル名 > 記事タイトル(ジャンル別の一覧ページはないため、ジャンル名は文字だけ) */}
+      <Breadcrumbs aria-label="パンくずリスト" style={{ margin: '10px 15px' }}>
         <Link underline="hover" color="inherit" href="/">
           <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
           Top 記事一覧
         </Link>
-        <Typography color="text.primary">
+        <Typography color="text.secondary">
+          {convertGenre(article.genre)}
+        </Typography>
+        <Typography color="text.primary" aria-current="page">
           <AutoStoriesIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          記事詳細
+          {article.title}
         </Typography>
       </Breadcrumbs>
       <PreviewNotice article={article} />

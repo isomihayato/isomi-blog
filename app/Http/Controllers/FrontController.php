@@ -78,8 +78,12 @@ class FrontController extends Controller
 
     public function article($id)
     {
+        // 非公開・公開予定の記事は404にする。管理画面にログイン中のときだけ、プレビューのため表示する(BLOG-19)
         // コメントとお気に入り数もページ表示時に渡す(画面から取り直さない)
-        $article = Article::with(['comments.member'])->withCount('favorites')->findOrFail($id);
+        $article = Article::with(['comments.member'])
+            ->withCount('favorites')
+            ->when(!auth()->check(), fn ($query) => $query->published())
+            ->findOrFail($id);
         // この端末(Cookie)でお気に入り登録済みかどうか(BLOG-58)
         $article->setAttribute('favorited', FavoritesController::isFavoritedByVisitor(request(), $article->id));
         // SNS でシェアされたときの画像(アイキャッチ画像、なければサイト共通の画像)

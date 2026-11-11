@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Stack, styled } from '@mui/material';
+import { Avatar, IconButton, Skeleton, Stack, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -8,7 +8,7 @@ import { getStorage } from '../common/functions';
 import { useBreakpointUp } from '../common/useBreakpoint';
 import { ArticleType } from '../types/ArticleTypes';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
-import PocketLink from '../sns/PocketLink';
+import CopyLinkButton from '../sns/CopyLinkButton';
 import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
 
 /** SNSボタン:マウスを乗せたとき・キーボードで選んだときに分かるようにする */
@@ -75,9 +75,18 @@ export default React.memo(function SnsSideBar(props: Props) {
                 color: '#555', // ページ背景 #dddddd の上で 5.49:1
                 fontWeight: 'bold',
                 textAlign: 'center',
+                // 数が読み込まれても、桁が変わっても、周りがずれないように幅と高さを固定する
+                width: '40px',
+                height: '24px',
+                lineHeight: '24px',
+                margin: '0 auto',
               }}
             >
-              {favorites}
+              {favorites === undefined ? (
+                <Skeleton variant="text" width={24} sx={{ mx: 'auto' }} />
+              ) : (
+                favorites
+              )}
             </div>
             {/* 操作(いいね)はボタンにする。Tab キーで選べて、押せると分かる */}
             <IconButton
@@ -127,7 +136,7 @@ export default React.memo(function SnsSideBar(props: Props) {
               windowHeight={460}
               className="Demo__some-network__share-button"
             >
-              <HatenaIcon size={32} />
+              <HatenaIcon size={40} round />
             </HatenaShareButton>
             <div style={{ textAlign: 'center' }}>
               <HatenaShareCount
@@ -137,7 +146,10 @@ export default React.memo(function SnsSideBar(props: Props) {
             </div>
           </Item>
           <Item>
-            <PocketLink url={window.location.href} title={article.title} />
+            {/* Pocket は 2025年7月にサービスを終了したため、リンクのコピーに置き換え */}
+            <CopyLinkButton
+              url={`https://info-space-box.net/articles/details/${article.id}`}
+            />
           </Item>
         </Stack>
       )}
