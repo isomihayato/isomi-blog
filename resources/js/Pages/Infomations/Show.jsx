@@ -17,7 +17,7 @@ import { Head } from '@inertiajs/react';
 // 本文(Markdown)の先頭から、記号を除いた説明文を作る
 function makeDescription(body) {
   return (body ?? '')
-    .replace(/[#>*_`~\[\]()!-]/g, '')
+    .replace(/[#>*_`~[\]()!-]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 120);

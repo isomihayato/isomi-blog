@@ -77,5 +77,7 @@ export async function axiosAwait(props: AxiosType) {
   return null;
 }
 AxiosWrapper.defaultProps = {
-  errors: () => {},
+  errors: () => {
+    // 既定ではエラー時に何もしない
+  },
 };

@@ -55,6 +55,19 @@ class ArticleOgpTest extends TestCase
         $response->assertSee('<link inertia rel="canonical" href="' . $url . '">', false);
     }
 
+    public function test_article_with_eyecatch_uses_it_as_og_image(): void
+    {
+        // アイキャッチ画像がある記事は、サーバー側の og:image / twitter:image もその画像にする(BLOG-9)
+        $article = $this->createArticle(['eyecatch_path' => '/storage/upload/eyecatch.webp']);
+        $image = 'https://info-space-box.net/storage/upload/eyecatch.webp';
+
+        $response = $this->get('/articles/details/' . $article->id);
+
+        $response->assertOk();
+        $response->assertSee('<meta inertia property="og:image" content="' . $image . '">', false);
+        $response->assertSee('<meta inertia name="twitter:image" content="' . $image . '">', false);
+    }
+
     public function test_article_meta_tags_are_escaped(): void
     {
         $article = $this->createArticle([

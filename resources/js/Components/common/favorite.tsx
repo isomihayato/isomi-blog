@@ -17,6 +17,7 @@ export function playFavoriteAnimation(element: HTMLElement | null) {
 
 /**
  * お気に入り数を楽観的に更新するクリックハンドラを返す。
+ * - この端末で登録済みのとき(サーバーは1端末1回まで)は、アニメーションだけ再生して送信しない
  * - クリック直後に件数を +1 しアニメーションを開始(API応答を待たない)
  * - API成功時はサーバーが返した件数で確定(最新リクエストの応答のみ反映)
  * - API失敗時は +1 した分を取り消す
@@ -24,13 +25,18 @@ export function playFavoriteAnimation(element: HTMLElement | null) {
 export function useFavoriteClick(
   articleId: number,
   setFavorites: React.Dispatch<React.SetStateAction<number | undefined>>,
+  favorited: boolean,
+  setFavorited: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   const latestRequest = React.useRef(0);
 
   return React.useCallback(() => {
+    playFavoriteAnimation(document.getElementById('favorite'));
+    if (favorited) return;
+
     const requestId = ++latestRequest.current;
     setFavorites((prev) => (prev ?? 0) + 1);
-    playFavoriteAnimation(document.getElementById('favorite'));
+    setFavorited(true);
 
     postFavorite(
       { article_id: articleId },
@@ -43,7 +49,8 @@ export function useFavoriteClick(
       (err) => {
         console.log(err);
         setFavorites((prev) => Math.max((prev ?? 1) - 1, 0));
+        setFavorited(false);
       },
     );
-  }, [articleId, setFavorites]);
+  }, [articleId, setFavorites, favorited, setFavorited]);
 }

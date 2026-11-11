@@ -23,7 +23,8 @@
             $ogTitle = data_get($ogArticle, 'title');
             $ogDescription = data_get($ogArticle, 'describe');
             $ogUrl = $ogSiteUrl . '/articles/details/' . data_get($ogArticle, 'id');
-            $ogImage = $ogSiteUrl . '/img/og_image.webp';
+            // アイキャッチ画像があればそれを、なければサイト共通の画像を使う(BLOG-9)
+            $ogImage = data_get($ogArticle, 'og_image_url') ?: $ogSiteUrl . '/img/og_image.webp';
         @endphp
         <title inertia>{{ $ogTitle }} - {{ config('app.name', 'Laravel') }}</title>
         <meta inertia name="keywords" content="{{ data_get($ogArticle, 'tags') }}">
@@ -68,9 +69,7 @@
     <script async nonce="{{ Vite::cspNonce() }}" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9210370957298715"
      crossorigin="anonymous"></script>
     <!-- Google Tag Manager -->
-    <!-- hatena bookmarkのボタン -->
-    <script type="text/javascript" nonce="{{ Vite::cspNonce() }}" src="https://b.st-hatena.com/js/bookmark_button.js" charSet="utf-8" async="async"></script>
-    <script async nonce="{{ Vite::cspNonce() }}" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <!-- X・はてなブックマークのボタン用スクリプトは、ボタンを表示するときだけ読み込む(main/Front.tsx) -->
     <script nonce="{{ Vite::cspNonce() }}">
         (function(w, d, s, l, i) {
             w[l] = w[l] || [];

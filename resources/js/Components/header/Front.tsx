@@ -12,7 +12,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginDialog from '../feedback/LoginDialog';
 import { Alert, Avatar, ListItemIcon, Menu, MenuItem } from '@mui/material';
-import { deleteStorage, getStorage } from '../common/functions';
+import { getStorage } from '../common/functions';
+import { FBClient, watchLoginState } from '../auth/FireBaseClient';
+import { isLoginSucceeded, toLoginMessage } from '../auth/loginMessages';
 import { useEffect } from 'react';
 import InfoAlert from '../feedback/InfoAlert';
 import HomeIcon from '@mui/icons-material/Home';
@@ -38,38 +40,46 @@ const MENU_ITEMS = [
 
 type Props = {
   loginOpen?: boolean;
-  setLoginOpen?: React.SetStateAction<boolean>;
+  setLoginOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   onLoginSuccess?: () => void;
+  // ログイン状態が変わったとき(別タブでのログアウト・セッション切れを含む)に呼ぶ
+  onAuthChange?: () => void;
 };
 export default function Front(props: Props) {
-  const { loginOpen, setLoginOpen, onLoginSuccess } = props;
+  const { loginOpen, setLoginOpen, onLoginSuccess, onAuthChange } = props;
   const [open, setOpen] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [drawer, setDrawer] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [status, setStatus] = React.useState('-1,');
   const [photoURL, setPhotoURL] = React.useState(getStorage('photoUrl'));
+  // ログイン状態は Firebase の状態に合わせて更新された localStorage から読む
+  const [, setAuthVersion] = React.useState(0);
   const user = getStorage('user');
+  useEffect(() => {
+    return watchLoginState(() => {
+      setPhotoURL(getStorage('photoUrl'));
+      setAuthVersion((v) => v + 1);
+      onAuthChange?.();
+    });
+  }, []);
   useEffect(() => {
     setOpen(loginOpen);
   }, [loginOpen]);
   useEffect(() => {
     setPhotoURL(getStorage('photoUrl'));
   }, [status]);
-  const statusHndlr = (status: string) => {
-    if (status === 'signin' || status === 'success') {
-      setStatus('0,ログインしました。');
-      onLoginSuccess?.();
-    } else if (status === 'create') {
-      setStatus('0,新規登録しました。');
-      onLoginSuccess?.();
-    } else if (
-      status === 'error:auth/account-exists-with-different-credential'
-    ) {
-      setStatus('1,他のSNSアカウントで登録済みです。');
+  const statusHndlr = (result: string) => {
+    const message = toLoginMessage(result);
+    if (message === null) {
+      setStatus('-1,');
     } else {
-      setStatus('2,エラーが発生しました。');
+      const level = { success: '0', warning: '1', error: '2' }[
+        message.severity
+      ];
+      setStatus(`${level},${message.text}`);
     }
+    if (isLoginSucceeded(result)) onLoginSuccess?.();
   };
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -122,7 +132,7 @@ export default function Front(props: Props) {
           </IconButton>
           <img
             src="/img/info_box.webp"
-            alt="ロゴ"
+            alt="INFO BOX"
             style={{ marginRight: '5px', width: '110px' }}
           />
           <Typography
@@ -132,6 +142,14 @@ export default function Front(props: Props) {
           >
             BOX
           </Typography>
+          <IconButton
+            color="inherit"
+            href="/articles/search"
+            aria-label="記事検索"
+            sx={{ mr: 1 }}
+          >
+            <SearchIcon />
+          </IconButton>
           {user === undefined || user === null ? (
             <Button color="inherit" onClick={() => setOpen(true)}>
               Login
@@ -156,9 +174,9 @@ export default function Front(props: Props) {
             onClose={menuClose}
           >
             <MenuItem
-              onClick={() => {
-                deleteStorage('user');
-                deleteStorage('photoURL');
+              onClick={async () => {
+                // Firebase のセッションも消す(localStorage だけ消すと、再読み込みでログイン状態に戻る)
+                await new FBClient().signOut();
                 window.location.href = '/';
               }}
             >
@@ -174,9 +192,8 @@ export default function Front(props: Props) {
         open={open}
         closeHndlr={() => {
           setOpen(false);
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          //@ts-ignore
-          setLoginOpen(false);
+          // setLoginOpen を渡していないページ(記事詳細以外)もあるので、あるときだけ呼ぶ
+          setLoginOpen?.(false);
         }}
         statusHndlr={statusHndlr}
       />

@@ -30,11 +30,13 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate($this->eyecatchRules());
         $now = now();
         $article = Article::create([
             'title' => $request->input('title'),
             'body' => $request->input('body'),
             'describe' => $request->input('describe'),
+            'eyecatch_path' => $request->input('eyecatch_path'),
             'tags' => $request->input('tags'),
             'user_id' => $request->input('user_id'),
             'sort' => 1,
@@ -61,6 +63,7 @@ class ArticleController extends Controller
 
     public function update_article(Request $request, $id)
     {
+        $request->validate($this->eyecatchRules());
         try {
             $article = Article::find($id);
             $article->update($request->all());
@@ -81,6 +84,16 @@ class ArticleController extends Controller
     }
 
     /**
+     * アイキャッチ画像の入力検証。任意のURLを入れられないよう、uploadImg で保存した画像のパスだけを受け付ける
+     */
+    private function eyecatchRules(): array
+    {
+        return [
+            'eyecatch_path' => ['nullable', 'string', 'max:255', 'regex:'.Article::EYECATCH_PATH_PATTERN],
+        ];
+    }
+
+    /**
      * 公開ディスクの sitemap.xml を作り直す(削除済みの記事は含まない)
      */
     private function updateSitemap(): void
@@ -93,9 +106,14 @@ class ArticleController extends Controller
         $sitemapContent .= '<url><loc>https://info-space-box.net/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>';
         $sitemapContent .= '<url><loc>https://info-space-box.net/articles/search</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
         $sitemapContent .= '<url><loc>https://info-space-box.net/infomations/list</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>';
+        // ジャンル別の記事一覧
+        foreach (array_keys(Article::GENRES) as $genre) {
+            $sitemapContent .= '<url><loc>https://info-space-box.net/articles/genre/' . $genre . '</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>';
+        }
 
         // 記事のURLを動的に追加
-        $articles = Article::all(); // すべての記事を取得
+        // 公開済みの記事だけを載せる(非公開・公開予定の記事のURLを知らせない)
+        $articles = Article::published()->get();
         foreach ($articles as $article) {
             $sitemapContent .= '<url><loc>https://info-space-box.net/articles/details/' . $article->id . '</loc><changefreq>daily</changefreq><priority>1.0</priority></url>';
         }
