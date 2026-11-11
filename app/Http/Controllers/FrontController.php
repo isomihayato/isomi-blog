@@ -91,6 +91,8 @@ class FrontController extends Controller
             ->findOrFail($id);
         // この端末(Cookie)でお気に入り登録済みかどうか(BLOG-58)
         $article->setAttribute('favorited', FavoritesController::isFavoritedByVisitor(request(), $article->id));
+        // SNS でシェアされたときの画像(アイキャッチ画像、なければサイト共通の画像)
+        $article->append('og_image_url');
         $article_genre = $article->genre;
         if ($article_genre !== null) {
             // 関連記事は一覧表示のみのため本文(body)等は取得しない

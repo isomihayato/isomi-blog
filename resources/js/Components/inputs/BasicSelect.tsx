@@ -29,7 +29,8 @@ export default function BasicSelect(props: Props) {
           label={label}
           name={name}
           onChange={(e) => {
-            callback(e.target.value);
+            // callback は任意(記事作成・編集のジャンルなど、フォームの値として送るだけの場合は渡されない)
+            callback?.(e.target.value);
           }}
         >
           {rows.map((row, index) => {
