@@ -30,6 +30,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
+import { convertGenre } from '@/Components/filters/articleFilter';
 import PreviewNotice from '@/Components/feedback/PreviewNotice';
 
 const SITE_URL = 'https://info-space-box.net';
@@ -243,14 +244,18 @@ export default function ArticleDetails({
         setLoginOpen={setLoginOpen}
         onLoginSuccess={() => setLogged(isLoggedIn())}
       />
-      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
+      {/* パンくず:トップ > ジャンル名 > 記事タイトル(ジャンル別の一覧ページはないため、ジャンル名は文字だけ) */}
+      <Breadcrumbs aria-label="パンくずリスト" style={{ margin: '10px 15px' }}>
         <Link underline="hover" color="inherit" href="/">
           <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
           Top 記事一覧
         </Link>
-        <Typography color="text.primary">
+        <Typography color="text.secondary">
+          {convertGenre(article.genre)}
+        </Typography>
+        <Typography color="text.primary" aria-current="page">
           <AutoStoriesIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          記事詳細
+          {article.title}
         </Typography>
       </Breadcrumbs>
       <PreviewNotice article={article} />
