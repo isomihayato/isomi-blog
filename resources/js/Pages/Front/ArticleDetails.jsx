@@ -47,6 +47,7 @@ export default function ArticleDetails({
   relative_articles,
   prev_article,
   next_article,
+  popular_articles,
 }) {
   const articleUrl = `${SITE_URL}/articles/details/${article.id}`;
   // アイキャッチ画像があればそれを、なければサイト共通の画像を使う(サーバー側の app.blade.php と同じ)
@@ -251,6 +252,7 @@ export default function ArticleDetails({
         loginOpen={loginOpen}
         setLoginOpen={setLoginOpen}
         onLoginSuccess={() => setLogged(isLoggedIn())}
+        onAuthChange={() => setLogged(isLoggedIn())}
       />
       {/* パンくず:トップ > ジャンル名 > 記事タイトル(ジャンル別の一覧ページはないため、ジャンル名は文字だけ) */}
       <Breadcrumbs aria-label="パンくずリスト" style={{ margin: '10px 15px' }}>
@@ -306,6 +308,7 @@ export default function ArticleDetails({
               <RightSideBar
                 chapters={chapters}
                 relativeArticles={relative_articles}
+                popularArticles={popular_articles ?? []}
               />
             </Item>
           ) : null}
@@ -319,6 +322,7 @@ export default function ArticleDetails({
 ArticleDetails.propTypes = {
   article: PropTypes.object.isRequired,
   relative_articles: PropTypes.array.isRequired,
+  popular_articles: PropTypes.array,
   prev_article: PropTypes.object,
   next_article: PropTypes.object,
 };
