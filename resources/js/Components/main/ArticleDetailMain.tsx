@@ -1,11 +1,10 @@
 import { Box, Chip, Grid, Paper, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { isMobile } from 'react-device-detect';
 import Tags from '@/Components/Tags';
 import { Suspense } from 'react';
 import { ArticleType } from '../types/ArticleTypes';
 import SnsSideBar from '@/Components/sidebar/SnsSideBar';
-import { getFavoritesCount } from '@/Components/axios/axiosFavorite';
 import { useFavoriteClick } from '@/Components/common/favorite';
 import { convertGenre, makeGenreColor } from '../filters/articleFilter';
 import CachedIcon from '@mui/icons-material/Cached';
@@ -36,11 +35,13 @@ type Props = {
   setAction: React.Dispatch<React.SetStateAction<string>>;
 };
 export default function ArticleDetailMain(props: Props) {
-  const { action, article, articleElements, elements } = props;
+  const { article, articleElements, elements } = props;
+  // お気に入り数はページ表示時に受け取る(以前はコメントの投稿・編集のたびにも API で取り直していた)
   const [favorites, setFavorites] = React.useState<number | undefined>(
-    undefined,
-  ); // お気に入り数
-  const [favorited, setFavorited] = React.useState(false); // この端末でお気に入り登録済みかどうか
+    article.favorites_count,
+  );
+  // この端末でお気に入り登録済みかどうか(BLOG-58。件数と同じくページ表示時に受け取る)
+  const [favorited, setFavorited] = React.useState(article.favorited === true);
   const onFavorite = useFavoriteClick(
     article.id,
     setFavorites,
@@ -48,25 +49,6 @@ export default function ArticleDetailMain(props: Props) {
     setFavorited,
   );
 
-  useEffect(() => {
-    getFavoritesCount(
-      String(article.id),
-      (res) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        console.log('favorites', res.data.favorites);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        setFavorites(res.data.favorites);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        setFavorited(res.data.favorited === true);
-      },
-      (err) => {
-        console.log(err);
-      },
-    );
-  }, [action]);
   const snsNavShow = window.location.href.includes('/articles/details/')
     ? true
     : false;

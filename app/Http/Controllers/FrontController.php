@@ -78,7 +78,10 @@ class FrontController extends Controller
 
     public function article($id)
     {
-        $article = Article::with(['comments.member'])->findOrFail($id);
+        // コメントとお気に入り数もページ表示時に渡す(画面から取り直さない)
+        $article = Article::with(['comments.member'])->withCount('favorites')->findOrFail($id);
+        // この端末(Cookie)でお気に入り登録済みかどうか(BLOG-58)
+        $article->setAttribute('favorited', FavoritesController::isFavoritedByVisitor(request(), $article->id));
         $article_genre = $article->genre;
         if ($article_genre !== null) {
             // 関連記事は一覧表示のみのため本文(body)等は取得しない
