@@ -4,6 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Button, Switch } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
+import { clearDraft } from '@/Components/common/draftStorage';
 import { updateInfomation } from '@/Components/axios/axiosInfomation';
 
 export default function Edit({ auth, categories, infomation }) {
@@ -23,6 +24,8 @@ export default function Edit({ auth, categories, infomation }) {
       data,
       (response) => {
         if (response.data.status === 'success') {
+          // 保存できたので、自動保存した書きかけは消す
+          clearDraft(`infomation:${infomation.id}`);
           window.location.href = '/infomations';
         }
       },
@@ -100,7 +103,10 @@ export default function Edit({ auth, categories, infomation }) {
                     >
                       本文
                     </label>
-                    <BlogEditor body={infomation.body} />
+                    <BlogEditor
+                      body={infomation.body}
+                      draftKey={`infomation:${infomation.id}`}
+                    />
                   </div>
                   <div className="mb-4">
                     <label

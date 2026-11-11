@@ -1,21 +1,22 @@
+/* 色・フォントの CSS 変数(--color-primary など)は resources/js/theme.ts から出力する */
 #body {
-  background-color: #dddddd;
+  background-color: var(--color-background, #dddddd);
 }
 html {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   line-height: 1.7;
 }
 .font-style {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   line-height: 1.7;
 }
 pre p,
 li {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   font-size: 1rem;
 }
 #introduce__content {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   line-height: 1.7;
   font-size: 0.9rem;
 }
@@ -24,12 +25,114 @@ li {
   margin-left: 2rem;
 }
 span.MuiStepLabel-label {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   color: black !important;
 }
 pre {
   white-space: pre-wrap;
-  word-break: break-all;
+  /* 単語の途中では改行せず、長いURLなどが収まらないときだけ折り返す */
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+/* 文中のコード(インラインコード) */
+:not(pre) > code {
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  background-color: #eff1f3;
+  color: #24292f;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+/* コードブロック(```) */
+.code-block {
+  position: relative;
+  margin: 0; /* 本文の外側の pre(pre-wrap)の改行で余白がつくため、ここでは付けない */
+}
+.code-block__pre {
+  margin: 0;
+}
+.code-block__pre > code {
+  padding-top: 40px; /* 右上のコピーボタンとコードが重ならないようにする */
+}
+pre > code {
+  display: block;
+  overflow-x: auto; /* 折り返さずに横スクロール */
+  padding: 16px;
+  border-radius: 6px;
+  background-color: #1e1e1e;
+  color: #e6edf3;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+.code-block__copy.MuiIconButton-root {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  color: #c9d1d9;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.code-block__copy.MuiIconButton-root:hover,
+.code-block__copy.MuiIconButton-root:focus-visible {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* シンタックスハイライト(rehype-highlight / highlight.js のクラス)。背景 #1e1e1e に対してコントラスト比 4.5:1 以上の色 */
+.hljs-comment,
+.hljs-quote,
+.hljs-meta {
+  color: #8b949e;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-doctag,
+.hljs-template-tag {
+  color: #ff7b72;
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable.language_,
+.hljs-symbol {
+  color: #79c0ff;
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-section {
+  color: #d2a8ff;
+}
+.hljs-built_in,
+.hljs-type,
+.hljs-title.class_,
+.hljs-variable,
+.hljs-params {
+  color: #ffa657;
+}
+.hljs-name,
+.hljs-tag,
+.hljs-selector-class,
+.hljs-selector-id {
+  color: #7ee787;
+}
+.hljs-addition {
+  color: #aff5b4;
+  background-color: #033a16;
+}
+.hljs-deletion {
+  color: #ffdcd7;
+  background-color: #67060c;
 }
 pre p {
   color: black;
@@ -68,7 +171,7 @@ textarea[name='comment_body'] {
     margin: 56px 0 16px;
     padding-bottom: 4px;
     font-weight: bold;
-    border-left: solid 8px #20c200;
+    border-left: solid 8px var(--color-secondary-light);
     border-bottom: solid 1px #d0d0d0;
     padding-left: 5px;
   }
@@ -94,13 +197,6 @@ textarea[name='comment_body'] {
     line-height: 1.8;
     margin: 32px 0 16px;
   }
-  code {
-    display: inline-block;
-    padding: 5px; /* 余白を追加 */
-    background-color: black;
-    color: #32be16;
-    width: 100%;
-  }
   form {
     margin: 25px 0;
   }
@@ -115,17 +211,6 @@ textarea[name='comment_body'] {
   .form__outer {
     padding: 24px 90px;
   }
-  div.cover {
-    height: 437px;
-    width: 50%;
-    background-color: #666666a1;
-    position: absolute;
-    text-align: center;
-    padding: 200px 0;
-    font-size: 1.3rem;
-    color: white;
-    font-weight: bold;
-  }
   li.MuiBreadcrumbs-li {
     font-size: 0.9rem;
   }
@@ -134,7 +219,7 @@ textarea[name='comment_body'] {
   }
 
   #footer {
-    background-color: #32be16;
+    background-color: var(--color-secondary); /* 白文字で 5.26:1 */
     color: white;
     font-weight: bold;
   }
@@ -157,7 +242,7 @@ textarea[name='comment_body'] {
   body h2 {
     font-size: 1.4rem;
     font-weight: bold;
-    border-left: solid 8px #20c200;
+    border-left: solid 8px var(--color-secondary-light);
     border-bottom: solid 1px #d0d0d0;
     margin-bottom: 10px;
     padding-left: 5px;
@@ -184,7 +269,7 @@ textarea[name='comment_body'] {
   }
   #footer {
     margin-top: 25px;
-    background-color: #32be16;
+    background-color: var(--color-secondary); /* 白文字で 5.26:1 */
     color: white;
     font-weight: bold;
   }
@@ -198,13 +283,6 @@ textarea[name='comment_body'] {
     font-size: 0.6rem;
     margin-top: 16px;
   }
-  code {
-    display: inline-block;
-    padding: 5px; /* 余白を追加 */
-    background-color: black;
-    color: #32be16;
-    width: 100%;
-  }
   .comment__outer {
     width: 90%;
     margin: 0 auto;
@@ -212,16 +290,5 @@ textarea[name='comment_body'] {
   }
   .form__outer {
     padding: 15px 20px;
-  }
-  div.cover {
-    height: 437px;
-    background-color: #666666a1;
-    position: absolute;
-    width: 83%;
-    text-align: center;
-    padding: 200px 0;
-    font-size: 1.3rem;
-    color: white;
-    font-weight: bold;
   }
 }
