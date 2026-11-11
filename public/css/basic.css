@@ -1,21 +1,22 @@
+/* 色・フォントの CSS 変数(--color-primary など)は resources/js/theme.ts から出力する */
 #body {
-  background-color: #dddddd;
+  background-color: var(--color-background, #dddddd);
 }
 html {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   line-height: 1.7;
 }
 .font-style {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   line-height: 1.7;
 }
 pre p,
 li {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   font-size: 1rem;
 }
 #introduce__content {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   line-height: 1.7;
   font-size: 0.9rem;
 }
@@ -24,7 +25,7 @@ li {
   margin-left: 2rem;
 }
 span.MuiStepLabel-label {
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: var(--font-sans, 'Noto Sans JP', sans-serif);
   color: black !important;
 }
 pre {
@@ -176,7 +177,7 @@ textarea[name='comment_body'] {
     margin: 56px 0 16px;
     padding-bottom: 4px;
     font-weight: bold;
-    border-left: solid 8px #20c200;
+    border-left: solid 8px var(--color-secondary-light);
     border-bottom: solid 1px #d0d0d0;
     padding-left: 5px;
   }
@@ -216,17 +217,6 @@ textarea[name='comment_body'] {
   .form__outer {
     padding: 24px 90px;
   }
-  div.cover {
-    height: 437px;
-    width: 50%;
-    background-color: #666666a1;
-    position: absolute;
-    text-align: center;
-    padding: 200px 0;
-    font-size: 1.3rem;
-    color: white;
-    font-weight: bold;
-  }
   li.MuiBreadcrumbs-li {
     font-size: 0.9rem;
   }
@@ -235,7 +225,7 @@ textarea[name='comment_body'] {
   }
 
   #footer {
-    background-color: #32be16;
+    background-color: var(--color-secondary); /* 白文字で 5.26:1 */
     color: white;
     font-weight: bold;
   }
@@ -258,7 +248,7 @@ textarea[name='comment_body'] {
   body h2 {
     font-size: 1.4rem;
     font-weight: bold;
-    border-left: solid 8px #20c200;
+    border-left: solid 8px var(--color-secondary-light);
     border-bottom: solid 1px #d0d0d0;
     margin-bottom: 10px;
     padding-left: 5px;
@@ -285,7 +275,7 @@ textarea[name='comment_body'] {
   }
   #footer {
     margin-top: 25px;
-    background-color: #32be16;
+    background-color: var(--color-secondary); /* 白文字で 5.26:1 */
     color: white;
     font-weight: bold;
   }
@@ -306,16 +296,5 @@ textarea[name='comment_body'] {
   }
   .form__outer {
     padding: 15px 20px;
-  }
-  div.cover {
-    height: 437px;
-    background-color: #666666a1;
-    position: absolute;
-    width: 83%;
-    text-align: center;
-    padding: 200px 0;
-    font-size: 1.3rem;
-    color: white;
-    font-weight: bold;
   }
 }

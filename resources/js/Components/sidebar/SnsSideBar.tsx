@@ -1,4 +1,4 @@
-import { Avatar, Skeleton, Stack, styled } from '@mui/material';
+import { Avatar, IconButton, Skeleton, Stack, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import { isMobile } from 'react-device-detect';
@@ -10,6 +10,15 @@ import { ArticleType } from '../types/ArticleTypes';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
 import PocketLink from '../sns/PocketLink';
 import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
+
+/** SNSボタン:マウスを乗せたとき・キーボードで選んだときに分かるようにする */
+const snsButtonSx = {
+  '& .MuiAvatar-root': { transition: 'background-color .2s' },
+  '&:hover .MuiAvatar-root, &:focus-visible .MuiAvatar-root': {
+    bgcolor: 'primary.main',
+  },
+  '&:focus-visible': { outline: '2px solid', outlineOffset: '2px' },
+};
 
 type Props = {
   article: ArticleType;
@@ -25,7 +34,18 @@ export default React.memo(function SnsSideBar(props: Props) {
     padding: theme.spacing(1),
     color: theme.palette.text.secondary,
   }));
-  const favoriteClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const articleUrl = `https://info-space-box.net/articles/details/${article.id}`;
+  const xShareUrl =
+    'https://twitter.com/intent/tweet?' +
+    new URLSearchParams({
+      url: articleUrl,
+      text: `${article.title} | りっすん`,
+      hashtags: 'infobox',
+    }).toString();
+  const facebookShareUrl =
+    'https://www.facebook.com/sharer.php?' +
+    new URLSearchParams({ u: articleUrl }).toString();
+  const favoriteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     onFavorite();
   };
@@ -50,7 +70,7 @@ export default React.memo(function SnsSideBar(props: Props) {
           <Item>
             <div
               style={{
-                color: '#9a9a9a',
+                color: '#555', // ページ背景 #dddddd の上で 5.49:1
                 fontWeight: 'bold',
                 textAlign: 'center',
                 // 数が読み込まれても、桁が変わっても、周りがずれないように幅と高さを固定する
@@ -66,29 +86,45 @@ export default React.memo(function SnsSideBar(props: Props) {
                 favorites
               )}
             </div>
-            <Avatar onClick={favoriteClick} style={{ float: 'right' }}>
-              <FavoriteIcon id="favorite" />
-            </Avatar>
+            {/* 操作(いいね)はボタンにする。Tab キーで選べて、押せると分かる */}
+            <IconButton
+              aria-label="この記事にいいねする"
+              onClick={favoriteClick}
+              sx={{ p: 0, float: 'right', ...snsButtonSx }}
+            >
+              <Avatar>
+                <FavoriteIcon id="favorite" />
+              </Avatar>
+            </IconButton>
           </Item>
           <Item>
-            <Avatar
-              onClick={() =>
-                (window.location.href =
-                  encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | りっすん&hashtags=infobox
-  `))
-              }
+            {/* 共有はリンクにする(新しいタブで開く) */}
+            <IconButton
+              component="a"
+              href={xShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X(Twitter)で共有する"
+              sx={{ p: 0, ...snsButtonSx }}
             >
-              <XIcon />
-            </Avatar>
+              <Avatar>
+                <XIcon />
+              </Avatar>
+            </IconButton>
           </Item>
           <Item>
-            <Avatar
-              onClick={() =>
-                (window.location.href = `http://www.facebook.com/sharer.php?u=https://info-space-box.net/articles/details/${article.id}`)
-              }
+            <IconButton
+              component="a"
+              href={facebookShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebookで共有する"
+              sx={{ p: 0, ...snsButtonSx }}
             >
-              <FacebookIcon />
-            </Avatar>
+              <Avatar>
+                <FacebookIcon />
+              </Avatar>
+            </IconButton>
           </Item>
           <Item>
             <HatenaShareButton

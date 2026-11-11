@@ -50,6 +50,16 @@ export default function Index({ auth, articles }) {
                                                                 >
                                                                     編集
                                                                 </Button>
+                                                                {/* 実際の記事画面で確認する(非公開・公開前でもログイン中は見られる) */}
+                                                                <Button
+                                                                  variant='outlined'
+                                                                  href={'/articles/details/' + article.id}
+                                                                  target='_blank'
+                                                                  rel='noopener'
+                                                                  sx={{ ml: 1 }}
+                                                                >
+                                                                    プレビュー
+                                                                </Button>
                                                             </td>
                                                             <td className="border px-4 py-2">
                                                                 <Button 

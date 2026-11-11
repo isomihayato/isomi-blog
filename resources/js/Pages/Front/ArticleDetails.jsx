@@ -16,13 +16,13 @@ import Markdown from 'react-markdown';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import CodeBlock from '@/Components/dataDispaly/CodeBlock';
+import ArticleNeighborNav from '@/Components/navigations/ArticleNeighborNav';
 import { isMobile } from 'react-device-detect';
 import CommentCard from '@/Components/surface/CommentCard';
 import CommentsCard from '@/Components/surface/CommentsCard';
 import { postComments } from '@/Components/axios/axiosComment';
 import { getStorage } from '@/Components/common/functions';
 import { Head } from '@inertiajs/react';
-import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import RightSideBar from '@/Components/sidebar/RightSideBar';
 import { postAdvertisement } from '@/Components/axios/axiosAdvertisement';
@@ -30,15 +30,24 @@ import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
+import PreviewNotice from '@/Components/feedback/PreviewNotice';
 
 // 本文の画像は、画面に近づいてから読み込む(初期表示を軽くする)
 // eslint-disable-next-line react/prop-types, no-unused-vars
 function LazyImage({ node, ...props }) {
-  // eslint-disable-next-line jsx-a11y/alt-text
   return <img loading="lazy" decoding="async" {...props} />;
 }
 
-export default function ArticleDetails({ article, relative_articles }) {
+const SITE_URL = 'https://info-space-box.net';
+const OG_IMAGE_URL = `${SITE_URL}/img/og_image.webp`;
+
+export default function ArticleDetails({
+  article,
+  relative_articles,
+  prev_article,
+  next_article,
+}) {
+  const articleUrl = `${SITE_URL}/articles/details/${article.id}`;
   const [action, setAction] = React.useState(''); // editやdeleteなどのアクション時、comments変数を再読み込み
   const [comments, setComments] = React.useState(article.comments ?? []);
   const [commentsError, setCommentsError] = React.useState(false); // コメントの取得に失敗したか
@@ -76,6 +85,10 @@ export default function ArticleDetails({ article, relative_articles }) {
             {article.body}
           </Markdown>
         </pre>
+        <ArticleNeighborNav
+          prevArticle={prev_article ?? null}
+          nextArticle={next_article ?? null}
+        />
       </>
     );
   };
@@ -198,12 +211,12 @@ export default function ArticleDetails({ article, relative_articles }) {
               />
             );
           })}
-          {logged ? (
-            <></>
-          ) : (
-            <div className="cover">ログインしてコメントする</div>
-          )}
-          <CommentCard articleId={article.id} setAction={setAction} />
+          {/* 未ログイン時はフォームを無効にし、ログインダイアログを開くボタンを出す */}
+          <CommentCard
+            articleId={article.id}
+            setAction={setAction}
+            onLoginClick={() => setLoginOpen(true)}
+          />
         </Box>
       </Box>
     </>,
@@ -211,27 +224,23 @@ export default function ArticleDetails({ article, relative_articles }) {
 
   return (
     <>
-      <Helmet>
-        <meta name="keywords" content={article.tags} />
-        <meta name="description" content={article.describe} />
+      {/* app.blade.php がサーバー側で出力する記事のmetaタグと同じ内容にする(Headが置き換える) */}
+      <Head title={article.title}>
+        <meta name="keywords" content={article.tags ?? ''} />
+        <meta name="description" content={article.describe ?? ''} />
         <meta property="og:type" content="article" />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={article.describe ?? ''} />
+        <meta property="og:url" content={articleUrl} />
+        <meta property="og:image" content={OG_IMAGE_URL} />
+        <meta property="fb:app_id" content="1437461986868001" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@info_space_box" />
         <meta name="twitter:title" content={article.title} />
-        <meta name="twitter:description" content={article.describe} />
-        <meta name="twitter:image" content="/img/og_image.webp"></meta>
-        <meta property="og:title" content={article.title} />
-        <meta property="og:url" content={window.location.href} />
-        <meta property="og:image" content="/img/og_image.webp" />
-        <meta property="og:description" content={article.describe} />
-        <meta property="og:site_name" content="INFO BOX" />
-        <meta property="fb:app_id" content="1437461986868001" />
-        <link
-          rel="canonical"
-          href={`https://info-space-box.net/articles/details/${article.id}`}
-        />
-      </Helmet>
-      <Head title={article.title} />
+        <meta name="twitter:description" content={article.describe ?? ''} />
+        <meta name="twitter:image" content={OG_IMAGE_URL} />
+        <link rel="canonical" href={articleUrl} />
+      </Head>
       <Front
         loginOpen={loginOpen}
         setLoginOpen={setLoginOpen}
@@ -247,6 +256,7 @@ export default function ArticleDetails({ article, relative_articles }) {
           記事詳細
         </Typography>
       </Breadcrumbs>
+      <PreviewNotice article={article} />
       <Box margin={'0 auto'} className="font-style">
         <Stack
           direction="row"
@@ -298,4 +308,6 @@ export default function ArticleDetails({ article, relative_articles }) {
 ArticleDetails.propTypes = {
   article: PropTypes.object.isRequired,
   relative_articles: PropTypes.array.isRequired,
+  prev_article: PropTypes.object,
+  next_article: PropTypes.object,
 };
