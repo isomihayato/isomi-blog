@@ -18,3 +18,5 @@ yarn-error.log
 /.idea
 /.vscode
 .eslintcache
+# ローカル開発用の docker compose 設定(docker-compose.override.example.yml から作る)
+/docker-compose.override.yml

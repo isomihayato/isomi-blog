@@ -1,15 +1,24 @@
-import { Avatar, Stack, styled } from '@mui/material';
+import { Avatar, IconButton, Stack, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
-import { isMobile } from 'react-device-detect';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import XIcon from '@mui/icons-material/X';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { getStorage } from '../common/functions';
+import { useBreakpointUp } from '../common/useBreakpoint';
 import { ArticleType } from '../types/ArticleTypes';
 import SPBottonAppBar from '../surface/SPBottonAppBar';
-import PocketLink from '../sns/PocketLink';
+import CopyLinkButton from '../sns/CopyLinkButton';
 import { HatenaIcon, HatenaShareButton, HatenaShareCount } from 'react-share';
+
+/** SNSボタン:マウスを乗せたとき・キーボードで選んだときに分かるようにする */
+const snsButtonSx = {
+  '& .MuiAvatar-root': { transition: 'background-color .2s' },
+  '&:hover .MuiAvatar-root, &:focus-visible .MuiAvatar-root': {
+    bgcolor: 'primary.main',
+  },
+  '&:focus-visible': { outline: '2px solid', outlineOffset: '2px' },
+};
 
 type Props = {
   article: ArticleType;
@@ -19,20 +28,33 @@ type Props = {
 export default React.memo(function SnsSideBar(props: Props) {
   const { article, favorites, onFavorite } = props;
   const user = getStorage('user');
+  // スマホ幅(md 未満)では画面下のバー、それより広い画面では本文横の縦並びにする
+  const isDesktop = useBreakpointUp('md');
   const Item = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff0',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     color: theme.palette.text.secondary,
   }));
-  const favoriteClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const articleUrl = `https://info-space-box.net/articles/details/${article.id}`;
+  const xShareUrl =
+    'https://twitter.com/intent/tweet?' +
+    new URLSearchParams({
+      url: articleUrl,
+      text: `${article.title} | りっすん`,
+      hashtags: 'infobox',
+    }).toString();
+  const facebookShareUrl =
+    'https://www.facebook.com/sharer.php?' +
+    new URLSearchParams({ u: articleUrl }).toString();
+  const favoriteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     onFavorite();
   };
 
   return (
     <>
-      {isMobile ? (
+      {!isDesktop ? (
         <SPBottonAppBar
           article={article}
           favorites={favorites}
@@ -45,41 +67,57 @@ export default React.memo(function SnsSideBar(props: Props) {
           padding={'10px 30px'}
           justifyContent="flex-end"
           alignItems="center"
-          style={isMobile ? {} : { marginTop: '0px', marginRight: '0px' }}
+          style={{ marginTop: '0px', marginRight: '0px' }}
         >
           <Item>
             <div
               style={{
-                color: '#9a9a9a',
+                color: '#555', // ページ背景 #dddddd の上で 5.49:1
                 fontWeight: 'bold',
                 textAlign: 'center',
               }}
             >
               {favorites}
             </div>
-            <Avatar onClick={favoriteClick} style={{ float: 'right' }}>
-              <FavoriteIcon id="favorite" />
-            </Avatar>
+            {/* 操作(いいね)はボタンにする。Tab キーで選べて、押せると分かる */}
+            <IconButton
+              aria-label="この記事にいいねする"
+              onClick={favoriteClick}
+              sx={{ p: 0, float: 'right', ...snsButtonSx }}
+            >
+              <Avatar>
+                <FavoriteIcon id="favorite" />
+              </Avatar>
+            </IconButton>
           </Item>
           <Item>
-            <Avatar
-              onClick={() =>
-                (window.location.href =
-                  encodeURI(`https://twitter.com/intent/tweet?url=https://info-space-box.net/articles/details/${article.id}&text=${article.title} | りっすん&hashtags=infobox
-  `))
-              }
+            {/* 共有はリンクにする(新しいタブで開く) */}
+            <IconButton
+              component="a"
+              href={xShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X(Twitter)で共有する"
+              sx={{ p: 0, ...snsButtonSx }}
             >
-              <XIcon />
-            </Avatar>
+              <Avatar>
+                <XIcon />
+              </Avatar>
+            </IconButton>
           </Item>
           <Item>
-            <Avatar
-              onClick={() =>
-                (window.location.href = `http://www.facebook.com/sharer.php?u=https://info-space-box.net/articles/details/${article.id}`)
-              }
+            <IconButton
+              component="a"
+              href={facebookShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebookで共有する"
+              sx={{ p: 0, ...snsButtonSx }}
             >
-              <FacebookIcon />
-            </Avatar>
+              <Avatar>
+                <FacebookIcon />
+              </Avatar>
+            </IconButton>
           </Item>
           <Item>
             <HatenaShareButton
@@ -89,7 +127,7 @@ export default React.memo(function SnsSideBar(props: Props) {
               windowHeight={460}
               className="Demo__some-network__share-button"
             >
-              <HatenaIcon size={32} />
+              <HatenaIcon size={40} round />
             </HatenaShareButton>
             <div style={{ textAlign: 'center' }}>
               <HatenaShareCount
@@ -99,7 +137,10 @@ export default React.memo(function SnsSideBar(props: Props) {
             </div>
           </Item>
           <Item>
-            <PocketLink url={window.location.href} title={article.title} />
+            {/* Pocket は 2025年7月にサービスを終了したため、リンクのコピーに置き換え */}
+            <CopyLinkButton
+              url={`https://info-space-box.net/articles/details/${article.id}`}
+            />
           </Item>
         </Stack>
       )}

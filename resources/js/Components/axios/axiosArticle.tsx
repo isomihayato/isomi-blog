@@ -56,7 +56,7 @@ export function updateArticle(
 export function getSearchArticle(searchTerm: string, cb: ErrFunction) {
   AxiosWrapper({
     method: 'get',
-    url: `/articles/search?search=${searchTerm}`,
+    url: `/articles/search?search=${encodeURIComponent(searchTerm)}`,
     data: '',
     callback: (res: AxiosResponse<unknown, object>) => {
       cb(res);
