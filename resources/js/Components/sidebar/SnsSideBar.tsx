@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Stack, styled } from '@mui/material';
+import { Avatar, IconButton, Skeleton, Stack, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -75,9 +75,18 @@ export default React.memo(function SnsSideBar(props: Props) {
                 color: '#555', // ページ背景 #dddddd の上で 5.49:1
                 fontWeight: 'bold',
                 textAlign: 'center',
+                // 数が読み込まれても、桁が変わっても、周りがずれないように幅と高さを固定する
+                width: '40px',
+                height: '24px',
+                lineHeight: '24px',
+                margin: '0 auto',
               }}
             >
-              {favorites}
+              {favorites === undefined ? (
+                <Skeleton variant="text" width={24} sx={{ mx: 'auto' }} />
+              ) : (
+                favorites
+              )}
             </div>
             {/* 操作(いいね)はボタンにする。Tab キーで選べて、押せると分かる */}
             <IconButton
