@@ -4,12 +4,14 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CurrentMemberController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\InfomationController;
 use App\Http\Controllers\ArticleAdTemplateController;
 use App\Http\Controllers\ArticleAdController;
 use App\Http\Controllers\AdIntermediateController;
 use App\Http\Controllers\FavoritesController;
+use App\Http\Controllers\FeedController;
 use App\Models\Article;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,19 +35,26 @@ Route::post('/send_email', [FrontController::class, 'sendEmail'])->name('fronts.
 Route::get('/infomations/list', [FrontController::class, 'infomation_list'])->name('fronts.infomation_list');
 Route::get('/infomations/show_by_bar', [InfomationController::class, 'get_show_by_bar'])->name('infomations.showByBar');
 Route::get('/articles/details/{id}', [FrontController::class, 'article'])->name('fronts.article');
+Route::get('/articles/genre/{genre}', [FrontController::class, 'genre'])->whereNumber('genre')->name('fronts.genre');
+Route::get('/articles/tag/{tag}', [FrontController::class, 'tag'])->where('tag', '.*')->name('fronts.tag');
+Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 Route::get('/member/login', [FrontController::class, 'login'])->name('fronts.login');
 Route::post('/advertisements', [FrontController::class, 'ad_list'])->name('fronts.ad_list');
 Route::post('/members', [MembersController::class, 'store'])->name('members.store');
-Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
-Route::post('/comments/update', [CommentController::class, 'update'])->name('comments.update');
-Route::delete(('/comments/{comment}'), [CommentController::class, 'destroy'])->name('comments.destroy');
+// コメントの投稿・編集・削除は、Firebase の IDトークンで本人確認をする
+Route::middleware('firebase.auth')->group(function () {
+    Route::get('/members/me', CurrentMemberController::class)->name('members.me');
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comments/update', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+});
 Route::post('/comments/get/comments', [CommentController::class, 'get_comments'])->name('comments.get_comments');
 // Route::resource('/comments', CommentController::class);
 // Route::resources('articles', 'ArticleController', ['except' => ['show']])->middleware(['auth', 'verified']);
-// Route::post('/articles/search', [ArticleController::class, 'search'])->name('articles.search');
 Route::get('/articles/search', [FrontController::class, 'search'])->name('fronts.search');
 
-Route::resource('articles', ArticleController::class)->middleware(['auth', 'verified']);
+// 記事の更新は POST /articles/update/{id}(update_article)を使う。resource の update(PUT/PATCH)は使わない
+Route::resource('articles', ArticleController::class)->except(['update'])->middleware(['auth', 'verified']);
 Route::post('/articles/update/{id}', [ArticleController::class, 'update_article'])->middleware(['auth', 'verified']);
 Route::post('/articles/uploadImg', [ArticleController::class, 'uploadImg'])->middleware(['auth', 'verified']);
 Route::resource('/article_ad_templates', ArticleAdTemplateController::class)->middleware(['auth', 'verified']);
@@ -57,12 +66,9 @@ Route::get('/get_ad_select', [ArticleAdController::class, 'getSelectData'])->mid
 Route::resource('/infomations', InfomationController::class, ['except' => ['index', 'show']])->middleware(['auth', 'verified']);
 Route::get('/infomations', [InfomationController::class, 'index'])->name('infomations.index');
 Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('infomations.show');
-Route::get('/debug-sentry', function () {
-    throw new Exception('My first Sentry error!');
-});
 Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
+// お気に入りはログインなしで押せるため、端末(Cookie)ごとに1回までにする(BLOG-58)。削除の API は置かない
 Route::post('/favorites', [FavoritesController::class, 'store'])->name('favorites.store');
-Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');
 
 
 // Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show')->middleware(['auth', 'verified']);

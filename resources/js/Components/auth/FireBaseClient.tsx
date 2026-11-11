@@ -11,18 +11,35 @@ import {
 import { setStorage } from '@/Components/common/functions';
 import 'firebase/auth';
 import { registerMember } from '@/Components/axios/axiosMember';
+// Firebase の設定は .env の VITE_FIREBASE_* から読む(環境ごとに別の Firebase プロジェクトを使えるようにする)。
+// .env に値がないときは、これまでの本番の値を使う(本番の .env に追加する前にデプロイしても動くようにするため)。
+// Web 用の APIキーはブラウザに配信される前提の値。悪用を防ぐ制限は Firebase / Google Cloud のコンソールでかける(BLOG-68)。
+const env = import.meta.env;
 const firebaseConfig = {
-  apiKey: 'AIzaSyCYeWqXbNz5kvbPymgWTWHSgZFYHfiIkwY',
-  authDomain: 'info-box-eea0c.firebaseapp.com',
-  projectId: 'info-box-eea0c',
-  storageBucket: 'info-box-eea0c.appspot.com',
-  messagingSenderId: '968801419268',
-  appId: '1:968801419268:web:9de0cd22b035d24b537551',
-  measurementId: 'G-S5HP2QHWW3',
+  apiKey:
+    env.VITE_FIREBASE_API_KEY || 'AIzaSyCYeWqXbNz5kvbPymgWTWHSgZFYHfiIkwY',
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || 'info-box-eea0c.firebaseapp.com',
+  projectId: env.VITE_FIREBASE_PROJECT_ID || 'info-box-eea0c',
+  storageBucket:
+    env.VITE_FIREBASE_STORAGE_BUCKET || 'info-box-eea0c.appspot.com',
+  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID || '968801419268',
+  appId:
+    env.VITE_FIREBASE_APP_ID || '1:968801419268:web:9de0cd22b035d24b537551',
+  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID || 'G-S5HP2QHWW3',
 };
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+/**
+ * ログイン中のユーザーの Firebase IDトークンを返す(ログインしていなければ null)。
+ * サーバーはこのトークンで本人確認をする。期限が切れていれば Firebase が自動で更新する。
+ */
+export async function getIdToken(): Promise<string | null> {
+  // ページを開いた直後は、保存されたログイン状態の読み込みが終わるまで待つ
+  await auth.authStateReady();
+  return auth.currentUser ? auth.currentUser.getIdToken() : null;
+}
 
 export class FBClient {
   async passwordSignIn(email: string, password: string) {
