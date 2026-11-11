@@ -13,4 +13,5 @@ export type ArticleType = {
   updated_at: string;
   published_at: string;
   member_uid: string;
+  favorites_count?: number; // お気に入り数(記事詳細のみ)
 };

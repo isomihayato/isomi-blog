@@ -1,9 +1,17 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Button } from '@mui/material';
 
 
 export default function Index({ auth, articles }) {
+    // 記事をソフトデリートする(確認のうえ DELETE /articles/{id} を送る)
+    const handleDelete = (article) => {
+        if (!window.confirm(`「${article.title}」を削除しますか?`)) {
+            return;
+        }
+        router.delete(`/articles/${article.id}`);
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -42,11 +50,21 @@ export default function Index({ auth, articles }) {
                                                                 >
                                                                     編集
                                                                 </Button>
+                                                                {/* 実際の記事画面で確認する(非公開・公開前でもログイン中は見られる) */}
+                                                                <Button
+                                                                  variant='outlined'
+                                                                  href={'/articles/details/' + article.id}
+                                                                  target='_blank'
+                                                                  rel='noopener'
+                                                                  sx={{ ml: 1 }}
+                                                                >
+                                                                    プレビュー
+                                                                </Button>
                                                             </td>
                                                             <td className="border px-4 py-2">
                                                                 <Button 
                                                                   variant='contained' 
-                                                                  onClick={()=>{window.location.href="/articles/"+article.id+"/delete"}}
+                                                                  onClick={() => handleDelete(article)}
                                                                 >
                                                                     削除
                                                                 </Button>
