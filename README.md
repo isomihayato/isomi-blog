@@ -29,5 +29,12 @@ if(env('APP_ENV') === 'production') {
 ```
 を削除
 
+#### 4. (npm run dev を使うとき)Vite のポートを公開する
+本番では Vite の開発サーバーのポートを公開しないため、docker-compose.yml には書いていない。
+ローカルで `npm run dev` を使うときだけ、次のファイルを作ってから `sail up` する(本番サーバーには作らない)。
+```
+cp docker-compose.override.example.yml docker-compose.override.yml
+```
+
 #### (コード編集後)AppServiceProvider.phpの変更点を削除
 

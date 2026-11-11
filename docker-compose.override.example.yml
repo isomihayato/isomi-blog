@@ -1,0 +1,10 @@
+# ローカル開発用の追加設定(BLOG-66)
+# npm run dev(Vite の開発サーバー)をコンテナの外のブラウザから使うときだけ、
+# このファイルを docker-compose.override.yml にコピーする。
+#   cp docker-compose.override.example.yml docker-compose.override.yml
+# docker-compose.override.yml は .gitignore に入れてあるので、本番サーバーには置かないこと
+# (置くと本番でも Vite のポートが公開される)。
+services:
+  laravel.test:
+    ports:
+      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
