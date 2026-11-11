@@ -21,8 +21,8 @@
     <link rel="icon" href="/favicon.ico">
     <link rel="alternate" type="application/rss+xml" title="INFO BOX" href="https://info-space-box.net/feed">
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S5HP2QHWW3"></script>
-    <script>
+    <script async nonce="{{ Vite::cspNonce() }}" src="https://www.googletagmanager.com/gtag/js?id=G-S5HP2QHWW3"></script>
+    <script nonce="{{ Vite::cspNonce() }}">
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
@@ -32,13 +32,13 @@
 
         gtag('config', 'G-S5HP2QHWW3');
     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9210370957298715"
+    <script async nonce="{{ Vite::cspNonce() }}" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9210370957298715"
      crossorigin="anonymous"></script>
     <!-- Google Tag Manager -->
     <!-- hatena bookmarkのボタン -->
-    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charSet="utf-8" async="async"></script>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <script>
+    <script type="text/javascript" nonce="{{ Vite::cspNonce() }}" src="https://b.st-hatena.com/js/bookmark_button.js" charSet="utf-8" async="async"></script>
+    <script async nonce="{{ Vite::cspNonce() }}" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script nonce="{{ Vite::cspNonce() }}">
         (function(w, d, s, l, i) {
             w[l] = w[l] || [];
             w[l].push({
@@ -57,7 +57,8 @@
     <!-- End Google Tag Manager -->
     <!-- 構造化データ(JSON-LD)。クローラーに届くようサーバー側で出力する -->
     {{ \App\Support\StructuredData::render($page) }}
-    @routes
+    {{-- <script> には CSP の nonce を付ける(AddSecurityHeaders ミドルウェア / BLOG-67) --}}
+    @routes(null, Vite::cspNonce())
     @viteReactRefresh
     @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
     @inertiaHead
