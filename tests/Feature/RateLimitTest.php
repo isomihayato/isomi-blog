@@ -109,7 +109,6 @@ class RateLimitTest extends TestCase
     public function test_favorites_are_limited_to_10_per_minute(): void
     {
         $this->assertLimited(10, fn () => $this->postJson('/favorites', ['article_id' => 999999]));
-        $this->deleteJson('/favorites/1')->assertStatus(429);
     }
 
     public function test_limit_is_reset_after_a_minute(): void

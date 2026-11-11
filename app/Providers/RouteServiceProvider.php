@@ -58,7 +58,7 @@ class RouteServiceProvider extends ServiceProvider
         // コメントの投稿・編集・削除(本人確認を通ったリクエストを数える)
         RateLimiter::for('comments', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
 
-        // お気に入りの登録・削除
+        // お気に入りの登録(削除の API は BLOG-58 でなくした)
         RateLimiter::for('favorites', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
 
         // 広告の取得: 1ページで1回呼ばれる読み取りなので、ページの閲覧を妨げない程度にする

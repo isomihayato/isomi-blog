@@ -67,8 +67,8 @@ Route::resource('/infomations', InfomationController::class, ['except' => ['inde
 Route::get('/infomations', [InfomationController::class, 'index'])->name('infomations.index');
 Route::get('/infomations/{id}', [InfomationController::class, 'show'])->name('infomations.show');
 Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
+// お気に入りはログインなしで押せるため、端末(Cookie)ごとに1回までにする(BLOG-58)。削除の API は置かない
 Route::post('/favorites', [FavoritesController::class, 'store'])->name('favorites.store')->middleware('throttle:favorites');
-Route::delete('/favorites/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy')->middleware('throttle:favorites');
 
 
 // Route::get('articles/{id}', [ArticleController::class, 'show'])->name('articles.show')->middleware(['auth', 'verified']);
