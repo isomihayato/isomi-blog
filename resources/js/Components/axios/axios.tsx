@@ -7,6 +7,7 @@ type WrapperType<T = unknown> = {
   callback: (response: AxiosResponse<T>) => void;
   errors: (error: object) => void;
   contentType?: string;
+  headers?: Record<string, string>;
 };
 type AxiosType<T = unknown> = {
   method: Method;
@@ -14,7 +15,7 @@ type AxiosType<T = unknown> = {
   data: T;
 };
 export default function AxiosWrapper(props: WrapperType) {
-  const { method, url, data, callback, errors, contentType } = props;
+  const { method, url, data, callback, errors, contentType, headers } = props;
   // 接続先は指定せず、ページと同じドメインに送る(本番・ローカルとも設定不要)
   axios({
     method: method,
@@ -23,6 +24,7 @@ export default function AxiosWrapper(props: WrapperType) {
     withCredentials: true,
     headers: {
       'Content-Type': contentType ? contentType : 'application/json',
+      ...headers,
     },
   })
     .then((response) => {

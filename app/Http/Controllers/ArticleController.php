@@ -16,17 +16,6 @@ class ArticleController extends Controller
         return Inertia::render('Articles/Index', ['articles' => $articles]);
     }
 
-    public function search(Request $request)
-    {
-        // 1990年を取得
-        $from = now()->subYears(30)->startOfYear();
-        // 現在の年を取得
-        $to = now();
-        $search_word = "%$request->search%";
-        $articles = Article::where('title', 'like', $search_word)->where('visible', true)->whereBetween('published_at', [$from, $to])->get();
-        return response()->json(['articles' => $articles]);
-    }
-
     public function show($id)
     {
         return Inertia::render('Articles/Show', ['id' => $id]);
@@ -56,6 +45,46 @@ class ArticleController extends Controller
             'updated_at' => $now,
             'visible' => $request->input('visible') ?? true,
         ]);
+        $this->updateSitemap();
+        return response()->json(['status' => "success"]);
+    }
+
+    public function edit($id)
+    {
+        $article = Article::find($id);
+        $article_ad_templates = DB::table('article_ad_templates')->pluck('name', 'id');
+        return Inertia::render(
+            'Articles/Edit',
+            ['id' => $id, 'article' => $article, 'article_ad_templates' => $article_ad_templates]
+        );
+    }
+
+    public function update_article(Request $request, $id)
+    {
+        try {
+            $article = Article::find($id);
+            $article->update($request->all());
+            return response()->json(['status' => "success"]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => "error", 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function destroy($id)
+    {
+        // ソフトデリート(コメント・お気に入りの行は残す)
+        Article::findOrFail($id)->delete();
+        // 削除した記事をサイトマップから外す
+        $this->updateSitemap();
+
+        return redirect()->route('articles.index');
+    }
+
+    /**
+     * 公開ディスクの sitemap.xml を作り直す(削除済みの記事は含まない)
+     */
+    private function updateSitemap(): void
+    {
         // サイトマップのベース部分を作成
         $sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>';
         $sitemapContent .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
@@ -76,42 +105,21 @@ class ArticleController extends Controller
 
         // publicフォルダの中のsitemap.xmlに書き込む
         Storage::disk('public')->put('sitemap.xml', $sitemapContent);
-        return response()->json(['status' => "success"]);
-    }
-
-    public function edit($id)
-    {
-        $article = Article::find($id);
-        $article_ad_templates = DB::table('article_ad_templates')->pluck('name', 'id');
-        return Inertia::render(
-            'Articles/Edit',
-            ['id' => $id, 'article' => $article, 'article_ad_templates' => $article_ad_templates]
-        );
-    }
-
-    public function update(Request $request, $id)
-    {
-        return redirect()->route('articles.show', ['id' => $id]);
-    }
-
-    public function update_article(Request $request, $id)
-    {
-        try {
-            $article = Article::find($id);
-            $article->update($request->all());
-            return response()->json(['status' => "success"]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => "error", 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function destroy($id)
-    {
-        return redirect()->route('articles.index');
     }
 
     public function uploadImg(Request $request)
     {
+        // 公開ディレクトリに置くので、画像(SVG を除く)だけを受け付ける。ファイルがないときは500ではなく422にする
+        $request->validate([
+            'file' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
+        ], [
+            'file.required' => '画像ファイルを選んでください。',
+            'file.file' => '画像ファイルを選んでください。',
+            'file.uploaded' => '画像をアップロードできませんでした。5MB以下の画像を選んでください。',
+            'file.image' => 'アップロードできるのは画像(JPEG・PNG・GIF・WebP)だけです。',
+            'file.mimes' => 'アップロードできるのは画像(JPEG・PNG・GIF・WebP)だけです。',
+            'file.max' => '画像は5MB以下にしてください。',
+        ]);
         $path = $request->file('file')->store('upload', 'public');
         $basename = $request->getUriForPath('');
         return response()->json(['url' => "$basename/storage/$path"]);

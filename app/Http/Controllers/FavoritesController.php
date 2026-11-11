@@ -10,9 +10,10 @@ class FavoritesController extends Controller
 {
     public function index(Request $request)
     {
-        $favorites = DB::table('favorites')->where(['article_id'=> $request->article_id])->get();
+        // 全件を取り出さずに、DB で数える
+        $favorites = DB::table('favorites')->where('article_id', $request->article_id)->count();
 
-        return response()->json(['favorites' => count($favorites)]);
+        return response()->json(['favorites' => $favorites]);
 
     }
 
