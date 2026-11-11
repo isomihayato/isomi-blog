@@ -109,6 +109,17 @@ class ArticleController extends Controller
 
     public function uploadImg(Request $request)
     {
+        // 公開ディレクトリに置くので、画像(SVG を除く)だけを受け付ける。ファイルがないときは500ではなく422にする
+        $request->validate([
+            'file' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
+        ], [
+            'file.required' => '画像ファイルを選んでください。',
+            'file.file' => '画像ファイルを選んでください。',
+            'file.uploaded' => '画像をアップロードできませんでした。5MB以下の画像を選んでください。',
+            'file.image' => 'アップロードできるのは画像(JPEG・PNG・GIF・WebP)だけです。',
+            'file.mimes' => 'アップロードできるのは画像(JPEG・PNG・GIF・WebP)だけです。',
+            'file.max' => '画像は5MB以下にしてください。',
+        ]);
         $path = $request->file('file')->store('upload', 'public');
         $basename = $request->getUriForPath('');
         return response()->json(['url' => "$basename/storage/$path"]);
