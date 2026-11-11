@@ -1,10 +1,9 @@
 import React from 'react';
-import { Breadcrumbs, Link } from '@mui/material';
 import Front from '@/Components/header/Front';
 import MainFront from '@/Components/main/Front';
 import FrontFooter from '@/Components/footer/FrontFooter';
 import ArticleStack from '@/Components/layout/ArticleStack';
-import HomeIcon from '@mui/icons-material/Home';
+import { PageBreadcrumbs, PageTitle } from '@/Components/layout/FrontPage';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import BlogPagination from '@/Components/navigations/BlogPagination';
@@ -18,7 +17,7 @@ export default function Welcome({ articles_pagenation }) {
         <meta name="keywords" content={'INFO BOX,INFO BOX 記事一覧'} />
         <meta
           name="description"
-          content="記事一覧 ${articles_pagenation.current_page}ページ目 | INFO BOX"
+          content={`記事一覧 ${articles_pagenation.current_page}ページ目 | INFO BOX`}
         />
         <meta property="og:type" content="website" />
         <link rel="canonical" href="https://info-space-box.net" />
@@ -27,15 +26,12 @@ export default function Welcome({ articles_pagenation }) {
         title={`技術系記事一覧 ${articles_pagenation.current_page}ページ目`}
       />
       <Front />
-      <Breadcrumbs aria-label="breadcrumb" style={{ margin: '10px 15px' }}>
-        <Link underline="hover" color="inherit" href="/">
-          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          Top 記事一覧ページ
-        </Link>
-      </Breadcrumbs>
+      {/* トップページは「Top 記事一覧」が表示中のページになる */}
+      <PageBreadcrumbs items={[]} />
       <MainFront
         element={
           <>
+            <PageTitle>記事一覧</PageTitle>
             <ArticleStack articles={articles} />
             <BlogPagination paginator={articles_pagenation} />
           </>

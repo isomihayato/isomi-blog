@@ -4,12 +4,14 @@ import { Head } from '@inertiajs/react';
 import { Button, Input, Select, MenuItem, Switch } from '@mui/material';
 import BlogEditor from '@/Components/BlogEditor';
 import EyecatchInput from '@/Components/inputs/EyecatchInput';
+import { clearDraft } from '@/Components/common/draftStorage';
 import { updateArticle } from '@/Components/axios/axiosArticle';
 import PropTypes from 'prop-types';
 import BasicSelect from '@/Components/inputs/BasicSelect';
 
 export default function Edit({ auth, id, article, article_ad_templates }) {
   const label = { inputProps: { name: 'visible', 'aria-label': '表示' } };
+  const draftKey = `article:${id}`;
   const genreRows = [
     { value: 0, label: '備忘録' },
     { value: 1, label: '読書まとめ' },
@@ -33,6 +35,8 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
     };
     updateArticle(id, data, (response) => {
       if (response.data.status === 'success') {
+        // 保存できたので、自動保存した書きかけは消す
+        clearDraft(draftKey);
         window.location.href = '/articles';
       }
     });
@@ -91,7 +95,7 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
                   <EyecatchInput defaultValue={article.eyecatch_path} />
                 </div>
                 <div>
-                  <BlogEditor body={article.body} />
+                  <BlogEditor body={article.body} draftKey={draftKey} />
                 </div>
                 <div>
                   <Input
@@ -137,6 +141,16 @@ export default function Edit({ auth, id, article, article_ad_templates }) {
                 <div>
                   <Button variant="contained" type="submit">
                     新規作成
+                  </Button>
+                  {/* 保存済みの内容を、実際の記事画面で確認する(非公開・公開前でもログイン中は見られる) */}
+                  <Button
+                    variant="outlined"
+                    href={`/articles/details/${id}`}
+                    target="_blank"
+                    rel="noopener"
+                    sx={{ ml: 1 }}
+                  >
+                    プレビュー
                   </Button>
                 </div>
               </form>

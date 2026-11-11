@@ -7,6 +7,7 @@ type WrapperType<T = unknown> = {
   callback: (response: AxiosResponse<T>) => void;
   errors: (error: object) => void;
   contentType?: string;
+  headers?: Record<string, string>;
 };
 type AxiosType<T = unknown> = {
   method: Method;
@@ -14,7 +15,7 @@ type AxiosType<T = unknown> = {
   data: T;
 };
 export default function AxiosWrapper(props: WrapperType) {
-  const { method, url, data, callback, errors, contentType } = props;
+  const { method, url, data, callback, errors, contentType, headers } = props;
   // axios.defaults.baseURL = 'https://info-space-box.net';
   axios.defaults.baseURL = 'http://localhost:81';
   axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
@@ -27,6 +28,7 @@ export default function AxiosWrapper(props: WrapperType) {
       SameSite: 'None',
       'Content-Type': contentType ? contentType : 'application/json',
       Secure: true,
+      ...headers,
     },
   })
     .then((response) => {
@@ -84,5 +86,7 @@ export async function axiosAwait(props: AxiosType) {
   return null;
 }
 AxiosWrapper.defaultProps = {
-  errors: () => {},
+  errors: () => {
+    // 既定ではエラー時に何もしない
+  },
 };

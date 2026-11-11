@@ -11,7 +11,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    // ユーザー登録は無効(管理者のみ利用するため)。RegisteredUserController もコメントアウトしている
+    // ユーザー登録は無効(管理者のみ利用するため)。登録のルート・コントローラー・画面は置いていない
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
                 ->name('login');
