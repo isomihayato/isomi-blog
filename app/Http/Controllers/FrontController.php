@@ -23,7 +23,8 @@ class FrontController extends Controller
         $articles_pagenation = Article::select(Article::LIST_COLUMNS)
             ->where('visible', true)
             ->whereBetween('published_at', [$from, $to])
-            ->paginate(5);
+            // PCで余白が多くならないよう、1ページ10件にする
+            ->paginate(10);
         return Inertia::render('Welcome', ['articles_pagenation' => $articles_pagenation]);
     }
 
