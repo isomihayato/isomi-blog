@@ -78,7 +78,10 @@ class FrontController extends Controller
 
     public function article($id)
     {
-        $article = Article::with(['comments.member'])->findOrFail($id);
+        // 非公開・公開予定の記事は404にする。管理画面にログイン中のときだけ、プレビューのため表示する(BLOG-19)
+        $article = Article::with(['comments.member'])
+            ->when(!auth()->check(), fn ($query) => $query->published())
+            ->findOrFail($id);
         $article_genre = $article->genre;
         if ($article_genre !== null) {
             // 関連記事は一覧表示のみのため本文(body)等は取得しない
