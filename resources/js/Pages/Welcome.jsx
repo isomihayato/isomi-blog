@@ -10,10 +10,11 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import BlogPagination from '@/Components/navigations/BlogPagination';
 import { Head } from '@inertiajs/react';
-import { isMobile } from 'react-device-detect';
+import { useBreakpointUp } from '@/Components/common/useBreakpoint';
 
 export default function Welcome({ articles_pagenation, popular_articles }) {
   const articles = articles_pagenation.data;
+  const isMobile = !useBreakpointUp('md'); // md(900px)未満はスマホ用レイアウト
   // 人気記事ランキングは1ページ目だけに出す(お気に入りがある記事がなければ出さない)。
   // スマホでは記事一覧が画面外に押し出されないよう、一覧の下に出す
   const popularSection =
