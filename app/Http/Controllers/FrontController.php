@@ -80,6 +80,8 @@ class FrontController extends Controller
     {
         // コメントとお気に入り数もページ表示時に渡す(画面から取り直さない)
         $article = Article::with(['comments.member'])->withCount('favorites')->findOrFail($id);
+        // この端末(Cookie)でお気に入り登録済みかどうか(BLOG-58)
+        $article->setAttribute('favorited', FavoritesController::isFavoritedByVisitor(request(), $article->id));
         // SNS でシェアされたときの画像(アイキャッチ画像、なければサイト共通の画像)
         $article->append('og_image_url');
         $article_genre = $article->genre;
