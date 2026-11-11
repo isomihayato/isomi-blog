@@ -91,7 +91,17 @@ class InfomationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        DB::table('infomations')->where('id', $id)->update($request->all());
+        // 想定外のキー(_token など)をそのままDBに入れると500エラーになるので、受け付ける項目だけを検証して使う
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
+            'category_id' => 'required|integer|exists:categories,id',
+            'publish_at' => 'required|date',
+            'show_by_bar' => 'required|boolean',
+        ]);
+        $infomation = Infomation::findOrFail($id);
+        $infomation->update($validated);
+
         return response()->json(['status' => 'success']);
     }
 

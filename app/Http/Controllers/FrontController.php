@@ -78,7 +78,8 @@ class FrontController extends Controller
 
     public function article($id)
     {
-        $article = Article::with(['comments.member'])->findOrFail($id);
+        // コメントとお気に入り数もページ表示時に渡す(画面から取り直さない)
+        $article = Article::with(['comments.member'])->withCount('favorites')->findOrFail($id);
         $article_genre = $article->genre;
         if ($article_genre !== null) {
             // 関連記事は一覧表示のみのため本文(body)等は取得しない
@@ -95,6 +96,48 @@ class FrontController extends Controller
             'relative_articles' => $relative_articles ?? null,
             'prev_article' => $prev_article,
             'next_article' => $next_article,
+        ]);
+    }
+
+    /**
+     * ジャンル別の記事一覧(公開済みの記事を新しい順)
+     */
+    public function genre(int $genre)
+    {
+        abort_unless(array_key_exists($genre, Article::GENRES), 404);
+
+        $articles_pagenation = Article::select(Article::LIST_COLUMNS)
+            ->published()
+            ->where('genre', $genre)
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Front/ArticleList', [
+            'list_type' => 'genre',
+            'genre' => $genre,
+            'name' => Article::GENRES[$genre],
+            'articles_pagenation' => $articles_pagenation,
+        ]);
+    }
+
+    /**
+     * タグ別の記事一覧(公開済みの記事を新しい順)
+     */
+    public function tag(string $tag)
+    {
+        $tag = trim($tag);
+        abort_if($tag === '', 404);
+
+        $articles_pagenation = Article::select(Article::LIST_COLUMNS)
+            ->published()
+            ->withTag($tag)
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Front/ArticleList', [
+            'list_type' => 'tag',
+            'name' => $tag,
+            'articles_pagenation' => $articles_pagenation,
         ]);
     }
 

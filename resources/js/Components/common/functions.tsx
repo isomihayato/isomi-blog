@@ -9,13 +9,13 @@ export default function formatDate(date) {
   }
 export function getStorage(item: string) {
   let s_item = undefined;
-  if (localStorage.hasOwnProperty(item)) {
+  if (Object.prototype.hasOwnProperty.call(localStorage, item)) {
     s_item = JSON.parse(localStorage[item]);
   }
   return s_item;
 }
 
-export function setStorage(item_name: string, item: Object) {
+export function setStorage(item_name: string, item: unknown) {
   localStorage.setItem(item_name, JSON.stringify(item));
 }
 export function deleteStorage(item_name: string) {
