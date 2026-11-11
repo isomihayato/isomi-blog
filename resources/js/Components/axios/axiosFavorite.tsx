@@ -1,5 +1,5 @@
 import { ErrFunction, ResFunction } from '../types/CommonTypes';
-import AxiosWrapper, { axiosAwait } from './axios';
+import AxiosWrapper from './axios';
 
 export function getFavoritesCount(
   article_id: string,
@@ -27,24 +27,6 @@ export function postFavorite(
     method: 'post',
     url: '/favorites',
     data: data,
-    callback: (res) => {
-      cb(res);
-    },
-    errors: (res) => {
-      cbErr(res);
-    },
-  });
-}
-
-export function deleteFavorite(
-  id: number,
-  cb: ResFunction,
-  cbErr: ErrFunction,
-) {
-  AxiosWrapper({
-    method: 'delete',
-    url: `/favorites/${id}`,
-    data: '',
     callback: (res) => {
       cb(res);
     },

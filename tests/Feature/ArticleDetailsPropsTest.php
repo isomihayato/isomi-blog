@@ -42,7 +42,25 @@ class ArticleDetailsPropsTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('article.favorites_count', 3)
+                ->where('article.favorited', false)
                 ->has('article.comments')
+            );
+    }
+
+    // BLOG-58: お気に入り登録済みの端末(Cookie)には favorited = true を渡す
+    public function test_article_details_has_favorited_for_visitor(): void
+    {
+        $this->withoutVite();
+        $article = $this->createArticle();
+        $visitorId = (string) \Illuminate\Support\Str::uuid();
+        $article->favorites()->create(['visitor_id' => $visitorId]);
+
+        $this->withCookie(\App\Http\Controllers\FavoritesController::VISITOR_COOKIE, $visitorId)
+            ->get('/articles/details/'.$article->id)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('article.favorites_count', 1)
+                ->where('article.favorited', true)
             );
     }
 
@@ -55,6 +73,6 @@ class ArticleDetailsPropsTest extends TestCase
 
         $this->getJson('/favorites?article_id='.$article->id)
             ->assertOk()
-            ->assertExactJson(['favorites' => 2]);
+            ->assertExactJson(['favorites' => 2, 'favorited' => false]);
     }
 }

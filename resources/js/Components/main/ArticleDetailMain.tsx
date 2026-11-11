@@ -39,7 +39,14 @@ export default function ArticleDetailMain(props: Props) {
   const [favorites, setFavorites] = React.useState<number | undefined>(
     article.favorites_count,
   );
-  const onFavorite = useFavoriteClick(article.id, setFavorites);
+  // この端末でお気に入り登録済みかどうか(BLOG-58。件数と同じくページ表示時に受け取る)
+  const [favorited, setFavorited] = React.useState(article.favorited === true);
+  const onFavorite = useFavoriteClick(
+    article.id,
+    setFavorites,
+    favorited,
+    setFavorited,
+  );
 
   const snsNavShow = window.location.href.includes('/articles/details/')
     ? true
