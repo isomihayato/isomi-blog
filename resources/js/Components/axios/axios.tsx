@@ -16,18 +16,14 @@ type AxiosType<T = unknown> = {
 };
 export default function AxiosWrapper(props: WrapperType) {
   const { method, url, data, callback, errors, contentType, headers } = props;
-  // axios.defaults.baseURL = 'https://info-space-box.net';
-  axios.defaults.baseURL = 'http://localhost:81';
-  axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+  // 接続先は指定せず、ページと同じドメインに送る(本番・ローカルとも設定不要)
   axios({
     method: method,
     url: url,
     data: data,
     withCredentials: true,
     headers: {
-      SameSite: 'None',
       'Content-Type': contentType ? contentType : 'application/json',
-      Secure: true,
       ...headers,
     },
   })
@@ -42,12 +38,7 @@ export default function AxiosWrapper(props: WrapperType) {
 
 export async function axiosAwait(props: AxiosType) {
   const { method, url, data } = props;
-  // axios.defaults.baseURL = 'https://info-space-box.net';
-  axios.defaults.baseURL = 'http://localhost:81';
-  axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-  axios.defaults.headers.common['SameSite'] = 'None';
-  axios.defaults.headers.common['Secure'] = true;
-
+  // 接続先は指定せず、ページと同じドメインに送る(本番・ローカルとも設定不要)
   if (method == 'GET') {
     try {
       const response = await axios.get(url);
