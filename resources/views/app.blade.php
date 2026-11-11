@@ -14,8 +14,10 @@
     <!-- Fonts -->
     <link href="/css/basic.css" rel="stylesheet" async />
     <link href="/css/animation.css" rel="stylesheet" async />
-    <link rel="preconnect" href="https://fonts.bunny.net" async>
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- 本文のフォント(Noto Sans JP)。日本語は文字の範囲ごとに分割して配信されるため、表示する文字のファイルだけ読み込まれる -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="/favicon.ico">
     <link rel="alternate" type="application/rss+xml" title="INFO BOX" href="https://info-space-box.net/feed">
     <!-- Google tag (gtag.js) -->
