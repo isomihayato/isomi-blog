@@ -4,15 +4,22 @@ on:
   push:
     branches: ['main']
 
+# GITHUB_TOKEN の権限は読み取りだけにする
+permissions:
+  contents: read
+
 jobs:
   laravel-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        # 外部の Action はタグではなくコミットの SHA で固定する(タグは付け替えられるため)。
+        # 更新は Dependabot(.github/dependabot.yml)の PR で行う
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Deploy Server
-        uses: appleboy/ssh-action@master
+        # 本番サーバーの SSH 秘密鍵を渡すため、必ず SHA で固定する
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.ISOMI_SSH_HOST }}
           username: ${{ secrets.ISOMI_PROD_USERNAME }}

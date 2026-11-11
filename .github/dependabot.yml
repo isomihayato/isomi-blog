@@ -1,0 +1,12 @@
+# GitHub Actions のバージョン(SHA で固定したもの)を Dependabot で更新する
+version: 2
+updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    # Action の更新をまとめて1つの PR にする
+    groups:
+      github-actions:
+        patterns:
+          - '*'
