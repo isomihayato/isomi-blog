@@ -102,6 +102,48 @@ class FrontController extends Controller
     }
 
     /**
+     * ジャンル別の記事一覧(公開済みの記事を新しい順)
+     */
+    public function genre(int $genre)
+    {
+        abort_unless(array_key_exists($genre, Article::GENRES), 404);
+
+        $articles_pagenation = Article::select(Article::LIST_COLUMNS)
+            ->published()
+            ->where('genre', $genre)
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Front/ArticleList', [
+            'list_type' => 'genre',
+            'genre' => $genre,
+            'name' => Article::GENRES[$genre],
+            'articles_pagenation' => $articles_pagenation,
+        ]);
+    }
+
+    /**
+     * タグ別の記事一覧(公開済みの記事を新しい順)
+     */
+    public function tag(string $tag)
+    {
+        $tag = trim($tag);
+        abort_if($tag === '', 404);
+
+        $articles_pagenation = Article::select(Article::LIST_COLUMNS)
+            ->published()
+            ->withTag($tag)
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('Front/ArticleList', [
+            'list_type' => 'tag',
+            'name' => $tag,
+            'articles_pagenation' => $articles_pagenation,
+        ]);
+    }
+
+    /**
      * 同じジャンルの公開済み記事のうち、公開日の順で前(古い)と次(新しい)の記事を返す。
      * 公開日が同じときは id の順にする。ない側は null。
      *

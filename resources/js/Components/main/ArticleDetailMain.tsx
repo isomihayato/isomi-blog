@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Paper, Typography } from '@mui/material';
+import { Box, Grid, Paper, Typography } from '@mui/material';
 import React from 'react';
 import { isMobile } from 'react-device-detect';
 import Tags from '@/Components/Tags';
@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { ArticleType } from '../types/ArticleTypes';
 import SnsSideBar from '@/Components/sidebar/SnsSideBar';
 import { useFavoriteClick } from '@/Components/common/favorite';
-import { convertGenre, makeGenreColor } from '../filters/articleFilter';
+import GenreChip from '@/Components/GenreChip';
 import CachedIcon from '@mui/icons-material/Cached';
 import {
   FacebookShareButton,
@@ -101,14 +101,7 @@ export default function ArticleDetailMain(props: Props) {
                 <span
                   style={{ margin: '15px 0 0 20px', display: 'inline-block' }}
                 >
-                  <Chip
-                    label={convertGenre(article.genre)}
-                    style={{
-                      backgroundColor: makeGenreColor(article.genre),
-                      color: 'white',
-                      fontWeight: 'bold',
-                    }}
-                  />
+                  <GenreChip genre={article.genre} size="medium" />
                 </span>
                 <div style={makeTitleStyle()}>
                   <h1> {article.title}</h1>
