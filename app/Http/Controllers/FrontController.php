@@ -16,14 +16,9 @@ class FrontController extends Controller
 {
     public function index()
     {
-        // 1990年を取得
-        $from = now()->subYears(30)->startOfYear();
-        // 現在の年を取得
-        $to = now();
         // 一覧表示に不要な本文(body)等は取得しない(ペイロード削減)
         $articles_pagenation = Article::select(Article::LIST_COLUMNS)
-            ->where('visible', true)
-            ->whereBetween('published_at', [$from, $to])
+            ->published()
             // 新しい順。公開日時が同じ記事があってもページをまたいで重複・欠落しないよう、id でも並べる
             ->orderByDesc('published_at')
             ->orderByDesc('id')
@@ -99,8 +94,11 @@ class FrontController extends Controller
         $article_genre = $article->genre;
         if ($article_genre !== null) {
             // 関連記事は一覧表示のみのため本文(body)等は取得しない
+            // 非公開・公開予定の記事と、表示中の記事自身は出さない
             $relative_articles = Article::select(Article::LIST_COLUMNS)
+                ->published()
                 ->where('genre', $article_genre)
+                ->where('id', '!=', $article->id)
                 ->orderBy('published_at', 'desc')
                 ->take(4)
                 ->get();
