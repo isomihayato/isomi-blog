@@ -250,6 +250,7 @@ export default function ArticleDetails({
         loginOpen={loginOpen}
         setLoginOpen={setLoginOpen}
         onLoginSuccess={() => setLogged(isLoggedIn())}
+        onAuthChange={() => setLogged(isLoggedIn())}
       />
       {/* パンくず:トップ > ジャンル名 > 記事タイトル(ジャンル別の一覧ページはないため、ジャンル名は文字だけ) */}
       <Breadcrumbs aria-label="パンくずリスト" style={{ margin: '10px 15px' }}>

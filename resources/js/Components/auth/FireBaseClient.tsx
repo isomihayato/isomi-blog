@@ -6,9 +6,16 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   GithubAuthProvider,
+  onAuthStateChanged,
+  signOut,
+  User,
 } from 'firebase/auth';
 
-import { setStorage } from '@/Components/common/functions';
+import {
+  deleteStorage,
+  getStorage,
+  setStorage,
+} from '@/Components/common/functions';
 import 'firebase/auth';
 import { registerMember } from '@/Components/axios/axiosMember';
 // Firebase の設定は .env の VITE_FIREBASE_* から読む(環境ごとに別の Firebase プロジェクトを使えるようにする)。
@@ -31,6 +38,49 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
+// ログイン状態として localStorage に保存しているキー
+const USER_KEY = 'user';
+const PHOTO_KEY = 'photoUrl';
+
+function saveLoginState(user: User) {
+  setStorage(USER_KEY, { uid: user.uid });
+  if (user.photoURL) {
+    setStorage(PHOTO_KEY, user.photoURL);
+  } else {
+    deleteStorage(PHOTO_KEY);
+  }
+}
+
+function clearLoginState() {
+  deleteStorage(USER_KEY);
+  deleteStorage(PHOTO_KEY);
+}
+
+/**
+ * Firebase のログイン状態の変化を監視し、localStorage の値をそれに合わせる。
+ * Firebase 側でセッションが切れた(別タブでログアウトした、期限切れなど)ときに、
+ * 画面だけ「ログイン中」のままにならないようにする。
+ * 戻り値は監視をやめる関数。
+ */
+export function watchLoginState(onChange: (loggedIn: boolean) => void) {
+  return onAuthStateChanged(auth, (user) => {
+    const stored = getStorage(USER_KEY);
+    if (user) {
+      if (!stored || stored.uid !== user.uid) saveLoginState(user);
+    } else if (stored) {
+      clearLoginState();
+    }
+    onChange(Boolean(user));
+  });
+}
+
+// Firebase のエラーコードを、画面で使う結果の文字列("error:<コード>")にする
+function toErrorResult(error: unknown): string {
+  if (error instanceof FirebaseError) return `error:${error.code}`;
+  console.error(error);
+  return 'error:unknown';
+}
+
 /**
  * ログイン中のユーザーの Firebase IDトークンを返す(ログインしていなければ null)。
  * サーバーはこのトークンで本人確認をする。期限が切れていれば Firebase が自動で更新する。
@@ -50,24 +100,15 @@ export class FBClient {
     try {
       const auth = getAuth();
       const result = await signInWithPopup(auth, provider);
-      console.log({ fb_uid: result.user.uid, photo_url: result.user.photoURL });
       // 会員登録が終わる前にコメントを投稿されないよう、完了を待ってからログイン状態にする
       await registerMember({
         fb_uid: result.user.uid,
         photo_url: result.user.photoURL,
       }).catch((err) => console.log(err));
-      setStorage('photoUrl', result.user.photoURL);
-      setStorage('user', { uid: result.user.uid });
+      saveLoginState(result.user);
       return 'success';
-    } catch (error: FirebaseError) {
-      console.log(error);
-
-      if (error.code === 'auth/account-exists-with-different-credential') {
-        alert(
-          `${error.email}は他のSNSアカウントによるログインで登録済みです。`,
-        );
-        return error.code;
-      }
+    } catch (error) {
+      return toErrorResult(error);
     }
   }
 
@@ -76,60 +117,64 @@ export class FBClient {
     try {
       const auth = getAuth();
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
       // 会員登録が終わる前にコメントを投稿されないよう、完了を待ってからログイン状態にする
       await registerMember({ fb_uid: result.user.uid }).catch((err) =>
         console.log(err),
       );
-      setStorage('user', { uid: result.user.uid });
+      saveLoginState(result.user);
       return 'success';
-    } catch (error: any) {
-      console.log(error);
-
-      if (error.code === 'auth/account-exists-with-different-credential') {
-        alert(
-          `${error.email}は他のSNSアカウントによるログインで登録済みです。`,
-        );
-        return error.code;
-      }
+    } catch (error) {
+      return toErrorResult(error);
     }
   }
 
-  async mailAndPassword(email: string, password: string) {
+  /**
+   * メールアドレスとパスワードでログインする。
+   * 失敗しても新規登録はしない(打ち間違いで別のアカウントが作られないように)。
+   */
+  async mailSignIn(email: string, password: string) {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log(result);
       // 以前の会員登録に失敗していた場合に備えて登録し直す(登録済みなら何もしない)
       await registerMember({ fb_uid: result.user.uid }).catch((err) =>
         console.log(err),
       );
-      setStorage('user', { uid: result.user.uid });
+      saveLoginState(result.user);
       return 'signin';
-    } catch (error: any) {
-      if (error.code === 'auth/account-exists-with-different-credential') {
-        alert(
-          `${error.email}は他のSNSアカウントによるログインで登録済みです。`,
-        );
-        return 'error:auth/account-exists-with-different-credential';
-      } else {
-        try {
-          const createResult = await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password,
-          );
-          // 会員登録が終わる前にコメントを投稿されないよう、完了を待ってからログイン状態にする
-          await registerMember({ fb_uid: createResult.user.uid }).catch((err) =>
-            console.log(err),
-          );
-          setStorage('user', { uid: createResult.user.uid });
-          return 'create';
-        } catch (e) {
-          if (e instanceof FirebaseError) {
-            return e.code;
-          }
-        }
-      }
+    } catch (error) {
+      return toErrorResult(error);
+    }
+  }
+
+  /**
+   * メールアドレスとパスワードで新規登録する。
+   */
+  async mailSignUp(email: string, password: string) {
+    try {
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      // 会員登録が終わる前にコメントを投稿されないよう、完了を待ってからログイン状態にする
+      await registerMember({ fb_uid: result.user.uid }).catch((err) =>
+        console.log(err),
+      );
+      saveLoginState(result.user);
+      return 'create';
+    } catch (error) {
+      return toErrorResult(error);
+    }
+  }
+
+  /**
+   * ログアウトする。Firebase のセッションと localStorage の両方を消す。
+   */
+  async signOut() {
+    try {
+      await signOut(auth);
+    } finally {
+      clearLoginState();
     }
   }
 
