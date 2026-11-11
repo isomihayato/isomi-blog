@@ -46,13 +46,25 @@ export default function Pagination(props: Proops) {
         className={`pagination-link ${
           current_page === index ? 'current-page' : ''
         }`}
-        style={{
-          margin: '0 5px',
-          color:
-            current_page === index
-              ? 'rgba(0, 0, 0, 0.6)'
-              : 'silver                                                                                                                                                                        ',
-        }}
+        aria-current={current_page === index ? 'page' : undefined}
+        style={
+          current_page === index
+            ? {
+                // 現在のページは背景色と太字で示す(白文字 × #1e7d0c = 5.26:1)
+                margin: '0 5px',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                backgroundColor: '#1e7d0c',
+                color: '#fff',
+                fontWeight: 'bold',
+              }
+            : {
+                // それ以外のページ(#555 × ページ背景 #dddddd = 5.49:1)
+                margin: '0 5px',
+                padding: '2px 8px',
+                color: '#555',
+              }
+        }
       >
         {index}
       </a>,

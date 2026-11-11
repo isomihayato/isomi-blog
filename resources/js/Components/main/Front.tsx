@@ -42,7 +42,7 @@ export default function Front(props: Props) {
               sx={{ mt: 2 }}
               style={{
                 fontSize: '1.2rem',
-                backgroundColor: '#1976d2',
+                backgroundColor: 'var(--color-primary)',
                 color: '#fff',
                 fontWeight: 'bold',
                 padding: '10px',
