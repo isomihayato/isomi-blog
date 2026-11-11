@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
-import { Avatar, Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import VerticalStepper from '../navigations/VerticalSteper';
 import { ArticleType } from '../types/ArticleTypes';
 import RelativeArticleStack from '../layout/RelativeArticleStack';
+import type { ArticleHeading } from '../common/articleHeadings';
 import PopularArticles, { PopularArticleType } from '../layout/PopularArticles';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -15,131 +15,102 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 type Props = {
-  chapters: string[];
+  headings: ArticleHeading[];
   relativeArticles: ArticleType[];
   popularArticles?: PopularArticleType[];
 };
 export default function RightSideBar(props: Props) {
-  const { chapters, relativeArticles, popularArticles = [] } = props;
-  const [isSticky, setIsSticky] = useState(false);
-  const elementRef = useRef(null);
-  // 目次を画面上部に固定し始めるスクロール位置。目次より上(プロフィール・人気記事)の高さで変わるので、
-  // 固定していない間に目次の位置から計算する
-  const stickyThresholdRef = useRef(456);
+  const { headings, relativeArticles, popularArticles = [] } = props;
   const rightSideWidth = '300px';
 
-  const handleScroll = () => {
-    const scrolled = window.scrollY;
-    const mokuji = elementRef.current as HTMLElement | null;
-    if (mokuji && mokuji.style.position !== 'fixed') {
-      stickyThresholdRef.current =
-        mokuji.getBoundingClientRect().top + scrolled;
-    }
-    const stickyThreshold = stickyThresholdRef.current;
-    const main = document.getElementById('main');
-    if (main.clientHeight <= scrolled) {
-      setIsSticky(false);
-    } else if (scrolled >= stickyThreshold) {
-      setIsSticky(true);
-    } else {
-      setIsSticky(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  // 目次と関連記事は CSS の position: sticky で画面に追従させる。
+  // (以前は JS で static と fixed を切り替えていたため、切り替えのときに表示位置が飛んでいた)
+  // sticky が効くよう、親の列(ArticleDetails の右側の Item)は本文と同じ高さまで伸ばしている。
   return (
-    <>
-      <Stack
-        spacing={2}
-        style={{ marginTop: '50px', width: rightSideWidth }}
-        textAlign={'left'}
-      >
-        <Item>
+    <Box
+      sx={{
+        width: rightSideWidth,
+        height: 'calc(100% - 50px)',
+        marginTop: '50px',
+        textAlign: 'left',
+      }}
+    >
+      <Item>
+        <Box>
           <Box>
-            <Box>
-              <Box id="introduce__header" style={{ marginBottom: '15px' }}>
-                <Grid container alignItems="center">
-                  <Grid item md={3} textAlign={'right'}>
-                    <img
-                      src="/img/risu.webp"
-                      style={{ width: '80px' }}
-                      alt="ブログ管理人アイコン"
-                    />
-                  </Grid>
-                  <Grid item md={9} textAlign={'left'} pl={'10px'}>
-                    <span>Written by</span>
-                    <Typography
-                      variant="subtitle1"
-                      sx={{ fontWeight: 'bold', color: 'black' }}
-                    >
-                      りっすん
-                    </Typography>
-                  </Grid>
+            <Box id="introduce__header" style={{ marginBottom: '15px' }}>
+              <Grid container alignItems="center">
+                <Grid item md={3} textAlign={'right'}>
+                  <img
+                    src="/img/risu.webp"
+                    style={{ width: '80px' }}
+                    alt="ブログ管理人アイコン"
+                  />
                 </Grid>
-              </Box>
-              <Box id="introduce__content">
-                3年目のWeb開発エンジニアリス🐿️
-                <br />
-                フロント・バックエンド開発を行っています。
-                <br />
-                様々な技術をほっぺに蓄え、時には発信していきます。
-              </Box>
+                <Grid item md={9} textAlign={'left'} pl={'10px'}>
+                  <span>Written by</span>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 'bold', color: 'black' }}
+                  >
+                    りっすん
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+            <Box id="introduce__content">
+              3年目のWeb開発エンジニアリス🐿️
+              <br />
+              フロント・バックエンド開発を行っています。
+              <br />
+              様々な技術をほっぺに蓄え、時には発信していきます。
             </Box>
           </Box>
+        </Box>
+      </Item>
+      {popularArticles.length > 0 ? (
+        <Item sx={{ mt: 2 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 'bold', color: 'black' }}
+          >
+            人気記事ランキング
+          </Typography>
+          <PopularArticles articles={popularArticles} />
         </Item>
-        {popularArticles.length > 0 ? (
-          <Item>
-            <Typography
-              variant="subtitle1"
-              sx={{ fontWeight: 'bold', color: 'black' }}
-            >
-              人気記事ランキング
-            </Typography>
-            <PopularArticles articles={popularArticles} />
-          </Item>
-        ) : null}
-        <Item
-          id="rightSideBar__mokuji"
-          ref={elementRef}
-          style={{
-            position: isSticky ? 'fixed' : 'static',
-            top: isSticky ? 0 : 'auto',
-            width: rightSideWidth,
-          }}
-        >
+      ) : null}
+      <Box
+        sx={{
+          position: 'sticky',
+          top: '16px',
+          mt: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          // 画面より高いときは、この中だけをスクロールできるようにする
+          maxHeight: 'calc(100vh - 32px)',
+          overflowY: 'auto',
+        }}
+      >
+        <Item id="rightSideBar__mokuji">
           <Typography
             variant="subtitle1"
             sx={{ fontWeight: 'bold', color: 'black' }}
           >
             目次
           </Typography>
-          <VerticalStepper chapters={chapters} />
+          <VerticalStepper headings={headings} />
         </Item>
-        <Item
-          style={{
-            position: isSticky ? 'fixed' : 'static',
-            width: rightSideWidth,
-            top: isSticky
-              ? document.getElementById('rightSideBar__mokuji').clientHeight +
-                15
-              : 'auto',
-          }}
-        >
+        <Item>
           <Typography
             variant="subtitle1"
             sx={{ fontWeight: 'bold', color: 'black' }}
           >
             関連記事
-            <RelativeArticleStack articles={relativeArticles} />
           </Typography>
+          <RelativeArticleStack articles={relativeArticles} />
         </Item>
-      </Stack>
-    </>
+      </Box>
+    </Box>
   );
 }

@@ -25,11 +25,14 @@ import { getStorage } from '@/Components/common/functions';
 import { Head } from '@inertiajs/react';
 import PropTypes from 'prop-types';
 import RightSideBar from '@/Components/sidebar/RightSideBar';
+import MobileToc from '@/Components/navigations/MobileToc';
+import RelativeArticleStack from '@/Components/layout/RelativeArticleStack';
 import { postAdvertisement } from '@/Components/axios/axiosAdvertisement';
 import HomeIcon from '@mui/icons-material/Home';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import { styled } from '@mui/material/styles';
 import LeftSideBar from '@/Components/sidebar/LeftSideBar';
+import { extractArticleHeadings } from '@/Components/common/articleHeadings';
 import { convertGenre } from '@/Components/filters/articleFilter';
 import PreviewNotice from '@/Components/feedback/PreviewNotice';
 
@@ -57,7 +60,11 @@ export default function ArticleDetails({
   const [commentsError, setCommentsError] = React.useState(false); // コメントの取得に失敗したか
   const [advertisements, setAdvertisements] = React.useState([]);
   const [loginOpen, setLoginOpen] = React.useState(false); // ログインダイアログの表示
-  const [chapters, setChapters] = React.useState([]); // 記事の章リスト
+  // 記事の章リスト(本文の見出しと同じ id を持つ)。記事が変わったら作り直す
+  const headings = React.useMemo(
+    () => extractArticleHeadings(article.body),
+    [article.body],
+  );
   const [codeHighlight, setCodeHighlight] = React.useState(null); // コードのハイライト用 rehype プラグイン(読み込み後にセット)
   const adElementRef = useRef(null);
   // 右サイドバー(目次・関連記事)は lg 以上、左の広告は本文と重ならない幅を確保できる xl 以上で表示する
@@ -77,9 +84,18 @@ export default function ArticleDetails({
     padding: theme.spacing(1),
   }));
 
+  const [mobileTocOpen, setMobileTocOpen] = React.useState(false); // スマホの目次を開いているか
   const ArticleContent = () => {
     return (
       <>
+        {/* 右サイドバー(目次・関連記事)を出さない画面幅では、本文の先頭に折りたためる目次を置く */}
+        {!showRightSideBar ? (
+          <MobileToc
+            headings={headings}
+            open={mobileTocOpen}
+            onChange={setMobileTocOpen}
+          />
+        ) : null}
         <pre>
           <Markdown
             rehypePlugins={[
@@ -92,6 +108,18 @@ export default function ArticleDetails({
             {article.body}
           </Markdown>
         </pre>
+        {/* 右サイドバーを出さない画面幅では、本文の下に関連記事を出す */}
+        {!showRightSideBar && relative_articles?.length > 0 ? (
+          <Box sx={{ mt: 4 }}>
+            <Typography
+              component="p"
+              sx={{ fontWeight: 'bold', fontSize: '1.1rem', mb: 1 }}
+            >
+              関連記事
+            </Typography>
+            <RelativeArticleStack articles={relative_articles} />
+          </Box>
+        ) : null}
         <ArticleNeighborNav
           prevArticle={prev_article ?? null}
           nextArticle={next_article ?? null}
@@ -106,17 +134,6 @@ export default function ArticleDetails({
     import('@/Components/common/rehypeCodeHighlight')
       .then((module) => setCodeHighlight(() => module.default))
       .catch((e) => console.error(e));
-  }, []);
-
-  React.useEffect(() => {
-    // article.bodyから章を抽出し、chaptersオブジェクトを作成
-    // 絵文字,記号,空白を削除し、## で始まる行を抽出
-    const cha = article.body?.split('\n').filter((b) => {
-      if (b.startsWith('## ') || b.startsWith('### ')) {
-        return b;
-      }
-    });
-    setChapters(cha);
   }, []);
 
   React.useEffect(() => {
@@ -304,9 +321,10 @@ export default function ArticleDetails({
             />
           </Item>
           {showRightSideBar ? (
-            <Item sx={{ flexShrink: 0 }}>
+            // 目次を sticky で追従させるため、右側の列は本文と同じ高さまで伸ばす
+            <Item sx={{ flexShrink: 0, alignSelf: 'stretch' }}>
               <RightSideBar
-                chapters={chapters}
+                headings={headings}
                 relativeArticles={relative_articles}
                 popularArticles={popular_articles ?? []}
               />

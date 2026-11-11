@@ -1,5 +1,12 @@
-import React, { useEffect } from 'react';
-import { Stepper, Step, StepLabel, StepConnector, styled } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+  Stepper,
+  Step,
+  StepButton,
+  StepConnector,
+  styled,
+} from '@mui/material';
+import type { ArticleHeading } from '../common/articleHeadings';
 
 // ステップコネクタのスタイルをカスタマイズ
 const ColorlibConnector = styled(StepConnector)(() => ({
@@ -38,78 +45,101 @@ const ColorlibStepSmallIcon = styled('div')<{
   marginLeft: '3px',
 }));
 
+// 見出しの上端が画面上端からこの距離(px)より上に来たら、その章を「現在位置」とする
+const ACTIVE_OFFSET = 100;
+
 type Props = {
-  chapters: Array<string>;
+  headings: ArticleHeading[];
 };
 
+/**
+ * 現在のスクロール位置で読んでいる章の番号を返す。
+ * 見出しの上端が ACTIVE_OFFSET より上にある最後の見出しを現在位置とする。
+ */
+function findActiveIndex(headings: ArticleHeading[]): number {
+  // ページの最下部まで来たら、最後の章を現在位置にする(短い最終章が上端まで届かない場合のため)
+  const scrolledToBottom =
+    window.innerHeight + window.scrollY >=
+    document.documentElement.scrollHeight - 2;
+
+  let active = 0;
+  headings.forEach((heading, index) => {
+    const element = document.getElementById(heading.id);
+    if (element && element.getBoundingClientRect().top <= ACTIVE_OFFSET) {
+      active = index;
+    }
+  });
+  if (scrolledToBottom && headings.length > 0) {
+    const last = document.getElementById(headings[headings.length - 1].id);
+    if (last && last.getBoundingClientRect().top < window.innerHeight) {
+      active = headings.length - 1;
+    }
+  }
+  return active;
+}
+
 function CustomizedSteppers(props: Props) {
-  const { chapters } = props;
-  const [activeStep, setActiveStep] = React.useState(0);
-  const steps = chapters.map((label) =>
-    label.replace(/[^0-9a-zA-Z\u3041-\u3096\u30A1-\u30FA\u4E00-\u9FA5]/g, ''),
-  );
+  const { headings } = props;
+  const [activeStep, setActiveStep] = useState(0);
 
-  const handleScroll = () => {
-    steps.forEach((chapter, index) => {
-      const element = document.getElementById(chapter);
-      if (element) {
-        const boundingRect = element.getBoundingClientRect();
-        const position = boundingRect.top + window.scrollY;
-
-        if (window.scrollY >= position) {
-          setActiveStep(index);
-        }
-      }
-    });
-  };
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    if (headings.length === 0) return undefined;
+
+    // スクロールのたびに計算しないよう、1フレームに1回だけ判定する
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      setActiveStep(findActiveIndex(headings));
+    };
+    const handleScroll = () => {
+      if (frame === 0) frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      if (frame !== 0) window.cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [headings]);
+
+  const handleClick = (heading: ArticleHeading, index: number) => {
+    const element = document.getElementById(heading.id);
+    if (!element) return;
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // 見出しへのリンクを共有できるよう、URLのハッシュも更新する(履歴は増やさない)
+    window.history.replaceState(window.history.state, '', `#${heading.id}`);
+    setActiveStep(index);
+  };
 
   return (
     <Stepper
       activeStep={activeStep}
       connector={<ColorlibConnector />}
       orientation="vertical"
+      nonLinear
     >
-      {chapters?.map((label, index) => {
-        const chapter = label.replace(
-          /[^0-9a-zA-Z\u3041-\u3096\u30A1-\u30FA\u4E00-\u9FA5]/g,
-          '',
+      {headings.map((heading, index) => {
+        const active = index === activeStep;
+        const icon =
+          heading.depth <= 2 ? (
+            <ColorlibStepIcon ownerState={{ active }} />
+          ) : (
+            <ColorlibStepSmallIcon ownerState={{ active }} />
+          );
+        return (
+          <Step key={heading.id}>
+            <StepButton
+              icon={icon}
+              onClick={() => handleClick(heading, index)}
+              sx={{ textAlign: 'left' }}
+            >
+              {heading.text}
+            </StepButton>
+          </Step>
         );
-        if (label.startsWith('## ')) {
-          // 条件に応じてStepコンポーネントをdivタグで囲む
-          return (
-            <Step key={chapter}>
-              <StepLabel
-                StepIconComponent={() => (
-                  <ColorlibStepIcon
-                    ownerState={{ active: index === activeStep }}
-                  />
-                )}
-              >
-                {chapter}
-              </StepLabel>
-            </Step>
-          );
-        } else if (label.startsWith('### ')) {
-          return (
-            <Step key={chapter}>
-              <StepLabel
-                StepIconComponent={() => (
-                  <ColorlibStepSmallIcon
-                    ownerState={{ active: index === activeStep }}
-                  />
-                )}
-              >
-                {chapter}
-              </StepLabel>
-            </Step>
-          );
-        }
       })}
     </Stepper>
   );
